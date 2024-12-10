@@ -21,6 +21,21 @@ static void welcome(void)
     printf("  | |  | | | | | | \\__ \\ | | |  __/ | |\n");
     printf("  |_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
 }
+
+int main(int argc,char *argv[])
+{
+    welcome();
+    
+    if(argc == 1)
+        return 1;
+
+    if(ft_strncmp(argv[1],"exit",4) == 0)
+    {
+        printf("Saida com sucesso");
+        exit(EXIT_SUCCESS);
+    }
+}
+/*
 int main(int argc, char *argv[],char *envp[])
 {
     welcome();
@@ -41,7 +56,6 @@ int main(int argc, char *argv[],char *envp[])
             free_double_array(minishell_envp);
             break;
         }
-      //  printf("Prompt: %s\n", prompt);
         if(ft_strncmp(prompt,"env",3) == 0)
             ft_print_double_array(minishell_envp);
         free(prompt);
@@ -52,4 +66,4 @@ int main(int argc, char *argv[],char *envp[])
     return 0;
 }
 
-
+*/
