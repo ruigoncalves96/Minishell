@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-
+/*
 static void welcome(void)
 {
     printf("   __  __  _       _     _         _ _ \n");
@@ -21,8 +21,44 @@ static void welcome(void)
     printf("  | |  | | | | | | \\__ \\ | | |  __/ | |\n");
     printf("  |_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
 }
+*/
+static void	echo(char **arr,bool flag_n)
+{   
+   int i;
 
+   i = 0;
+   while (arr[i])
+   {
+     printf("%s", arr[i]);
+        if (arr[i + 1])
+            printf(" ");
+        i++;
+   }
+   if(flag_n == true)
+    printf("\n");
+        
+}
 
+int main(int argc,char *argv[])
+{
+
+    if(argc < 2)
+        return 1;
+    
+    bool flag = true;
+    int start;
+    if(strncmp(argv[1],"echo",4) == 0)
+    {
+        start = 2;
+        if(argc > 2 && strncmp(argv[2],"-n",2) == 0)
+        {
+            flag = false;
+            start = 3;
+        }
+        echo(&argv[start],flag);
+    }
+    return 0;
+}
 
 /*Codigo teste do exit
 int main(void)
@@ -43,7 +79,7 @@ int main(void)
 }
 */
 
-
+/*
 static void init_variables_builtins(t_builtins *builtins)
 {
     builtins->exit_status = 0;
@@ -83,6 +119,7 @@ int main(int argc, char *argv[],char *envp[])
     free_double_array(minishell_envp);
     return 0;
 }
+*/
 
 
 
