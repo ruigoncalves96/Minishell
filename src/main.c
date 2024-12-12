@@ -22,23 +22,38 @@ static void welcome(void)
     printf("  |_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
 }
 
-int main(int argc,char *argv[])
+static void init_variables_builtins(t_builtins *builtins)
 {
-    welcome();
-    
-    if(argc == 1)
-        return 1;
-
-    if(ft_strncmp(argv[1],"exit",4) == 0)
-    {
-        printf("Saida com sucesso");
-        exit(EXIT_SUCCESS);
-    }
+    builtins->exit_status = 0;
 }
-/*
+
+/*Codigo teste do exit
+int main(void)
+
+{
+    t_builtins builtins;
+
+    init_variables_builtins(&builtins);
+    welcome();
+
+    char *args4[] = {"exit", "OLAADASF", NULL};
+
+    create_exit_code(&builtins, args4);
+    printf("Exit status: %ld\n", builtins.exit_status);
+    exit(builtins.exit_status);
+ 
+    return 0;
+}
+*/
+
+
 int main(int argc, char *argv[],char *envp[])
 {
     welcome();
+    
+    t_builtins builtins;
+
+    init_variables_builtins(&builtins);
     (void) argc;
     (void) argv;
     char **minishell_envp;
@@ -66,4 +81,4 @@ int main(int argc, char *argv[],char *envp[])
     return 0;
 }
 
-*/
+

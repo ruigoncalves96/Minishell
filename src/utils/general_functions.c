@@ -32,3 +32,15 @@ void	ft_print_double_array(char **array)
 		i++;
     }
 }
+int array_size(char **array)
+{
+    int count;
+
+    if (!array) 
+        return 0;
+
+    count = 0;
+    while (array[count] != NULL) 
+        count++;
+    return count;
+}

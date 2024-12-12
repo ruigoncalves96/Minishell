@@ -16,7 +16,7 @@ char **copy_envp(char *envp[])
     if(minishell_envp == NULL)
         return NULL;
     
-    //So falta copiar 
+    //Vou copiar ennv
     i = 0;
     while (envp[i])
     {
