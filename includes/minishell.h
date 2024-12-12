@@ -35,7 +35,9 @@ int array_size(char **array);
 //env
 char **copy_envp(char *envp[]);
 
-//Void
+//Exit
 void  create_exit_code(t_builtins *builtins,char *arr[]);
 
+//PWD
+void pwd_builtin(void);
 #endif

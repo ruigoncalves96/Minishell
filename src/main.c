@@ -22,10 +22,7 @@ static void welcome(void)
     printf("  |_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
 }
 
-static void init_variables_builtins(t_builtins *builtins)
-{
-    builtins->exit_status = 0;
-}
+
 
 /*Codigo teste do exit
 int main(void)
@@ -47,6 +44,10 @@ int main(void)
 */
 
 
+static void init_variables_builtins(t_builtins *builtins)
+{
+    builtins->exit_status = 0;
+}
 int main(int argc, char *argv[],char *envp[])
 {
     welcome();
@@ -73,6 +74,8 @@ int main(int argc, char *argv[],char *envp[])
         }
         if(ft_strncmp(prompt,"env",3) == 0)
             ft_print_double_array(minishell_envp);
+        else if(ft_strncmp(prompt,"pwd",3) == 0)
+            pwd_builtin();
         free(prompt);
     }
     
@@ -80,5 +83,6 @@ int main(int argc, char *argv[],char *envp[])
     free_double_array(minishell_envp);
     return 0;
 }
+
 
 
