@@ -22,41 +22,24 @@ static void welcome(void)
     printf("  |_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
 }
 */
-static void	echo(char **arr,bool flag_n)
-{   
-   int i;
 
-   i = 0;
-   while (arr[i])
-   {
-     printf("%s", arr[i]);
-        if (arr[i + 1])
-            printf(" ");
-        i++;
-   }
-   if(flag_n == true)
-    printf("\n");
-        
+
+static void init_variables_builtins(t_builtins *builtins)
+{
+    builtins->exit_status = 0;
+    builtins->echo_flag = true;
 }
-
 int main(int argc,char *argv[])
 {
 
     if(argc < 2)
         return 1;
     
-    bool flag = true;
-    int start;
+    t_builtins vars;
+    init_variables_builtins(&vars);
+    
     if(strncmp(argv[1],"echo",4) == 0)
-    {
-        start = 2;
-        if(argc > 2 && strncmp(argv[2],"-n",2) == 0)
-        {
-            flag = false;
-            start = 3;
-        }
-        echo(&argv[start],flag);
-    }
+        handle_echo(argc,argv);
     return 0;
 }
 
@@ -80,10 +63,6 @@ int main(void)
 */
 
 /*
-static void init_variables_builtins(t_builtins *builtins)
-{
-    builtins->exit_status = 0;
-}
 int main(int argc, char *argv[],char *envp[])
 {
     welcome();

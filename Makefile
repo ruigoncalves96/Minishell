@@ -32,7 +32,7 @@ OBJ_DIR      = $(SRC_DIR)/obj
 LIBFT     = $(LIBFT_DIR)/libft.a
 
 SRC_FILES = main.c \
-	    $(addprefix builtins/, exit.c env.c pwd.c) \
+	    $(addprefix builtins/, exit.c env.c pwd.c echo.c) \
 	    $(addprefix utils/, general_functions.c)
 #	    $(addprefix executer/, executer.c) \
 	    $(addprefix parsing/, parsing.c) \

@@ -24,6 +24,7 @@
 typedef struct	s_builtins
 {
     long exit_status;
+    bool echo_flag;
 }t_builtins;
 
 //General functions
@@ -40,4 +41,8 @@ void  create_exit_code(t_builtins *builtins,char *arr[]);
 
 //PWD
 void pwd_builtin(void);
+
+//Echo
+void echo(char **arr, bool echo_flag);
+void handle_echo(int argc, char *argv[]);
 #endif
