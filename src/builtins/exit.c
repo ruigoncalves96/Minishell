@@ -72,12 +72,12 @@ static int  ft_atol(const char *str, long *result)
     while (str[i] >= '0' && str[i] <= '9')
     {
         if (num > (LONG_MAX - (str[i] - '0')) / 10) // Detecta overflow
-            return (0); // Retorna erro
+            return (0);
         num = (num * 10) + (str[i] - '0');
         i++;
     }
     *result = num * neg;
-    return (1); // Sucesso
+    return (1);
 }
 
 

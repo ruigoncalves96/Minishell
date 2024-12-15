@@ -39,6 +39,9 @@ char **copy_envp(char *envp[]);
 //Exit
 void  create_exit_code(t_builtins *builtins,char *arr[]);
 
+//cd
+void cd_builtin(char *path);
+
 //PWD
 void pwd_builtin(void);
 
