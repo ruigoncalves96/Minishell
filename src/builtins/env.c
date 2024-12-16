@@ -16,7 +16,7 @@ char **copy_envp(char *envp[])
     if(minishell_envp == NULL)
         return NULL;
     
-    //So falta copiar 
+    //Vou copiar ennv
     i = 0;
     while (envp[i])
     {
@@ -31,3 +31,28 @@ char **copy_envp(char *envp[])
     minishell_envp[i] = NULL;
     return (minishell_envp);
 }
+
+/*
+void  builtin_env(char *envp[],char *argv[])
+{
+   char **minishell_envp;
+   
+    if(ft_strncmp(argv[0],"env",3) == 0)
+    {
+        if(ft_strncmp(argv[1],"-i",2) == 0)
+        {   
+            minishell_envp = malloc(sizeof(char *));
+            if(!minishell_envp)
+                return NULL;
+            minishell_envp[0] == NULL;
+            ft_print_double_array(minishell_envp);
+            free(minishell_envp);
+        }else{
+            //env
+             minishell_envp = copy_envp(envp);
+             ft_print_double_array(minishell_envp);
+             free_double_array(minishell_envp);
+        }
+    }
+}
+*/
