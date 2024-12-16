@@ -1,4 +1,5 @@
 #include "../../includes/minishell.h"
+#include <string.h>
 
 void echo(char **arr, bool echo_flag)
 {   
