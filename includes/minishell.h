@@ -24,6 +24,8 @@
 typedef struct	s_builtins
 {
     long exit_status;
+    char **minishell_env;
+    char **export_env;
     bool echo_flag;
 }t_builtins;
 
@@ -48,4 +50,10 @@ void pwd_builtin(void);
 //Echo
 void echo(char **arr, bool echo_flag);
 void handle_echo(int argc, char *argv[]);
+
+//Export
+char *get_key(char *env);
+void sort_env_ascii_order(char **env);
+void print_x_declaration(char **env);
+void handle_export(char **export_env);
 #endif

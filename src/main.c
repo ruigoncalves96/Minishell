@@ -13,10 +13,7 @@
 #include "../includes/minishell.h"
 
 
-
-
-
-
+// Mensagem de boas-vindas
 static void welcome(void)
 {
     printf("   __  __  _       _     _         _ _ \n");
@@ -26,12 +23,43 @@ static void welcome(void)
     printf("  |_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
 }
 
-
-static void init_variables_builtins(t_builtins *builtins)
+// Inicializa a estrutura t_builtins
+static void init_variables_builtins(t_builtins *builtins, char *envp[])
 {
     builtins->exit_status = 0;
     builtins->echo_flag = true;
+    builtins->minishell_env = copy_envp(envp);
+    builtins->export_env = copy_envp(envp);
 }
+
+
+
+
+int main(int argc, char *argv[], char *env[])
+{
+    (void)argc;
+    (void)argv;
+
+    welcome();
+
+    // Inicializa a estrutura
+    t_builtins vars;
+    init_variables_builtins(&vars, env);
+
+    // Lida com o comando export
+    handle_export(vars.export_env);
+
+    // Imprime o env original (teste)
+    printf("\n=== Original Env ===\n");
+    ft_print_double_array(vars.minishell_env);
+
+    // Libera memória alocada
+    free_double_array(vars.minishell_env);
+    free_double_array(vars.export_env);
+
+    return 0;
+}
+
 /*
 
 int main(int argc,char *argv[])
@@ -68,7 +96,7 @@ int main(void)
 }
 */
 
-
+/*
 int main(int argc, char *argv[],char *envp[])
 {
     welcome();
@@ -106,6 +134,7 @@ int main(int argc, char *argv[],char *envp[])
     free_double_array(minishell_envp);
     return 0;
 }
+*/
 
 
 
