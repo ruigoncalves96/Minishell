@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2024/12/10 13:22:59 by randrade         ###   ########.fr       */
+/*   Updated: 2024/12/19 16:31:19 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,39 +71,36 @@ int main(void)
 
 int main(int argc, char *argv[],char *envp[])
 {
+    t_builtins	builtins;
+    t_prompt_info	prompt_info;
+
+    (void)argv;
+    if (argc != 1)
+	    return (1);
     welcome();
-    
-    t_builtins builtins;
-
     init_variables_builtins(&builtins);
-    (void) argc;
-    (void) argv;
-    char **minishell_envp;
-    char *prompt;
-
-    minishell_envp = copy_envp(envp);
-    if(!minishell_envp)
-        return (-1);
-
+    ft_memset(&prompt_info, 0, sizeof(t_prompt_info));
+    prompt_info.env = copy_envp(envp);
+    if(!prompt_info.env)
+	    return (1);
     while (1)
     {
-        prompt = readline("Minishell> ");
-        if(!prompt)
+        prompt_info.prompt = readline("Minishell> ");
+        if(!prompt_info.prompt)
         {
-            free_double_array(minishell_envp);
+            free_double_array(prompt_info.env);
             break;
         }
-        if(ft_strncmp(prompt,"env",3) == 0)
-            ft_print_double_array(minishell_envp);
-        else if(ft_strncmp(prompt,"pwd",3) == 0)
+	ft_parsing(&prompt_info);
+        if(ft_strncmp(prompt_info.prompt,"env",3) == 0)
+            ft_print_double_array(prompt_info.env);
+        else if(ft_strncmp(prompt_info.prompt,"pwd",3) == 0)
             pwd_builtin();
-        else if(ft_strncmp(prompt,"cd",2) == 0)
-            cd_builtin(prompt);
-        free(prompt);
+        else if(ft_strncmp(prompt_info.prompt,"cd",2) == 0)
+            cd_builtin(prompt_info.prompt);
+        free(prompt_info.prompt);
     }
-    
-
-    free_double_array(minishell_envp);
+    free_double_array(prompt_info.env);
     return 0;
 }
 

@@ -33,9 +33,9 @@ LIBFT     = $(LIBFT_DIR)/libft.a
 
 SRC_FILES = main.c \
 	    $(addprefix builtins/, exit.c env.c pwd.c echo.c cd.c) \
-	    $(addprefix utils/, general_functions.c)
+	    $(addprefix utils/, general_functions.c) \
+	    $(addprefix parsing/, parsing.c)
 #	    $(addprefix executer/, executer.c) \
-	    $(addprefix parsing/, parsing.c) \
 
 SRC  = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))
@@ -59,7 +59,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME): $(LIBFT) $(OBJS)
-	@$(CC) $(OBJS) $(LIBFT) $(READLINE) -o $(NAME)
+	@$(CC) $(FLAGS) $(OBJS) $(LIBFT) $(READLINE) -o $(NAME)
 	@echo "$(GREEN)Compilation successful! ✅$(RESET)"
 	@echo "$(BLUE)Running checks...$(RESET)"
 	@if [ -f $(NAME) ]; then echo "$(GREEN)$(NAME) created successfully! 🎉$(RESET)"; fi
