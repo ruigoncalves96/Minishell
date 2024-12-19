@@ -12,7 +12,6 @@
 
 #include "../includes/minishell.h"
 
-
 // Mensagem de boas-vindas
 static void welcome(void)
 {
@@ -33,25 +32,20 @@ static void init_variables_builtins(t_builtins *builtins, char *envp[])
 }
 
 
-
-
 int main(int argc, char *argv[], char *env[])
 {
     (void)argc;
     (void)argv;
 
+    flag_env();
     welcome();
 
     // Inicializa a estrutura
     t_builtins vars;
     init_variables_builtins(&vars, env);
 
-    // Lida com o comando export
+    // Lida com o comando individual export
     handle_export(vars.export_env);
-
-    // Imprime o env original (teste)
-    printf("\n=== Original Env ===\n");
-    ft_print_double_array(vars.minishell_env);
 
     // Libera memória alocada
     free_double_array(vars.minishell_env);

@@ -32,6 +32,33 @@ char **copy_envp(char *envp[])
     return (minishell_envp);
 }
 
+void flag_env()
+{
+    char *pwd;
+    char *flag_env[4];
+
+    pwd = getcwd(NULL, 0); 
+    if(pwd == NULL)
+    {
+        printf("Deu erro dentro da funcao flag_env com a guardar o pwd");
+        return;
+    }
+    flag_env[0] = ft_strdup(pwd);
+    free(pwd);
+    flag_env[1] = ft_strdup("SHLVL=1");
+    flag_env[2] = ft_strdup("_=/usr/bin/env");
+    flag_env[3] = NULL;
+    ft_print_double_array(flag_env);
+}
+
+//Vou dar return em um double point char com o env -i ja colocado la
+
+/*
+    Ao fazer o env -i este e o que deve la estar
+    PWD=/home/redgtxt
+    SHLVL=1
+    _=/usr/bin/env
+*/
 /*
 void  builtin_env(char *envp[],char *argv[])
 {

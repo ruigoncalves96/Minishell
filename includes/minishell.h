@@ -37,6 +37,7 @@ int array_size(char **array);
         //Bultins
 //env
 char **copy_envp(char *envp[]);
+void flag_env();
 
 //Exit
 void  create_exit_code(t_builtins *builtins,char *arr[]);
@@ -56,4 +57,6 @@ char *get_key(char *env);
 void sort_env_ascii_order(char **env);
 void print_x_declaration(char **env);
 void handle_export(char **export_env);
+
+//
 #endif
