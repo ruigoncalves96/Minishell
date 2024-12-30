@@ -27,7 +27,7 @@ void sort_env_ascii_order(char **env)
         {
             char *key1 = get_key(env[i]);
             char *key2 = get_key(env[j]);
-            if (strcmp(key1, key2) > 0) // Compara as chaves
+            if (ft_strcmp(key1, key2) > 0) // Compara as chaves
             {
                 tmp = env[i];
                 env[i] = env[j];
@@ -50,7 +50,6 @@ void print_x_declaration(char **env)
         printf("declare -x ");
         char *key = get_key(env[i]);
         printf("%s", key);
-
         // Verifica se há um valor associado (presença de '=')
         char *value = ft_strchr(env[i], '=');
         if (value)

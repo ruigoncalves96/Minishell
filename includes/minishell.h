@@ -33,6 +33,7 @@ typedef struct	s_builtins
 void free_double_array(char *array[]);
 void	ft_print_double_array(char **array);
 int array_size(char **array);
+int	ft_strcmp(const char *s1, const char *s2);
 
         //Bultins
 //env

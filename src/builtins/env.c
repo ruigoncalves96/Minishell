@@ -40,7 +40,7 @@ void flag_env()
     pwd = getcwd(NULL, 0); 
     if(pwd == NULL)
     {
-        printf("Deu erro dentro da funcao flag_env com a guardar o pwd");
+        printf("Deu erro dentro da funcao flag_env guardar o pwd");
         return;
     }
     flag_env[0] = ft_strdup(pwd);
@@ -52,7 +52,6 @@ void flag_env()
 }
 
 //Vou dar return em um double point char com o env -i ja colocado la
-
 /*
     Ao fazer o env -i este e o que deve la estar
     PWD=/home/redgtxt

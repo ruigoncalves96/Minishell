@@ -12,6 +12,40 @@
 
 #include "../includes/minishell.h"
 
+static void init_variables_builtins(t_builtins *builtins, char *envp[])
+{
+    builtins->exit_status = 0;
+    builtins->echo_flag = true;
+    builtins->minishell_env = copy_envp(envp);
+    builtins->export_env = copy_envp(envp);
+}
+int main(int argc,char *argv[],char *envp[])
+{
+    (void)argc;
+    (void)argv;
+    t_builtins vars;
+    init_variables_builtins(&vars, envp);
+    int i;
+    char *key1;
+  // char *key1 = get_key();
+    i = 0;
+    while (vars.minishell_env[i])
+     {
+        key1 = get_key(vars.minishell_env[i]);
+        if(ft_strcmp(key1,"HOME=") != 0)
+        {
+            //A minha key nao e igual a nehuma ou seja eu nao existo
+            printf("Eu nao existo");
+        }else
+        {
+            //Encontrei um key value igual ao meu eu existo
+            printf("Eu existo");
+        }
+        i++;
+    }
+    
+}
+/* 
 // Mensagem de boas-vindas
 static void welcome(void)
 {
@@ -23,15 +57,8 @@ static void welcome(void)
 }
 
 // Inicializa a estrutura t_builtins
-static void init_variables_builtins(t_builtins *builtins, char *envp[])
-{
-    builtins->exit_status = 0;
-    builtins->echo_flag = true;
-    builtins->minishell_env = copy_envp(envp);
-    builtins->export_env = copy_envp(envp);
-}
 
-
+Int main para testar ENV -I || EXPORT
 int main(int argc, char *argv[], char *env[])
 {
     (void)argc;
@@ -54,6 +81,7 @@ int main(int argc, char *argv[], char *env[])
     return 0;
 }
 
+*/
 /*
 
 int main(int argc,char *argv[])
