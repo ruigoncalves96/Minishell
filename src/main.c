@@ -25,24 +25,34 @@ int main(int argc,char *argv[],char *envp[])
     (void)argv;
     t_builtins vars;
     init_variables_builtins(&vars, envp);
-    int i;
-    char *key1;
-  // char *key1 = get_key();
-    i = 0;
+
+    int i = 0;
+    char *key;
+    bool found = false;
+
     while (vars.minishell_env[i])
-     {
-        key1 = get_key(vars.minishell_env[i]);
-        if(ft_strcmp(key1,"HOME=") != 0)
-        {
-            //A minha key nao e igual a nehuma ou seja eu nao existo
-            printf("Eu nao existo");
-        }else
-        {
-            //Encontrei um key value igual ao meu eu existo
-            printf("Eu existo");
+    {
+        key = get_key(vars.minishell_env[i]);
+
+        if (ft_strcmp(key, "HOME") == 0) {
+            printf("Eu existo\n");
+            found = true;
         }
+        free(key);
+        // OK BOA a chave existe vou parar de procurar por ela
+        if (found)
+            break;
         i++;
     }
+
+    if (!found)
+     {
+        printf("Eu não existo\n");
+        //[]Proximo passo introduzir a variavel dentro dentro do ENV
+        
+    }
+
+    return 0;
     
 }
 /* 

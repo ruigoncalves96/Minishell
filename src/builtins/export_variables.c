@@ -2,7 +2,7 @@
 
 //Funcao vai procurar por uma 
 /*
-    Tenho de verificar se a key existe no env
+    Tenho de verificar se a key existe no env -- Posso descobrir isso ao compararar a key passado com as keys que estao dentro do env
     Para isso posso usar o strcmp
         Se o valor for 0 a key existe
          se for diferente ela nao existe no env
