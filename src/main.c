@@ -29,14 +29,15 @@ int main(int argc,char *argv[],char *envp[])
     int i = 0;
     char *key;
     bool found = false;
-
+   // char *str = "Rui=\"futebol\"";
     while (vars.minishell_env[i])
     {
         key = get_key(vars.minishell_env[i]);
 
-        if (ft_strcmp(key, "HOME") == 0) {
+        if (ft_strcmp(key, "corrida") == 0) {
             printf("Eu existo\n");
             found = true;
+            vars.minishell_env[i] = ft_strdup("corrida=\"legal\"");
         }
         free(key);
         // OK BOA a chave existe vou parar de procurar por ela
@@ -49,9 +50,9 @@ int main(int argc,char *argv[],char *envp[])
      {
         printf("Eu não existo\n");
         //[]Proximo passo introduzir a variavel dentro dentro do ENV
-        
+        vars.minishell_env[i] = ft_strdup("LEGAL=\"fisfk\"");
     }
-
+        ft_print_double_array(vars.minishell_env);
     return 0;
     
 }
