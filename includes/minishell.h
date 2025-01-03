@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2024/12/19 16:32:25 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/03 17:20:17 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,42 @@
 #include <limits.h>
 #include <stdbool.h>
 
+#define EXECUTER 1
+#define REDIRECT 2
+#define PIPE 3
 
 typedef struct	s_builtins
 {
-    long exit_status;
-    bool echo_flag;
-}t_builtins;
+	long	exit_status;
+	bool	echo_flag;
+}		t_builtins;
 
 typedef struct	s_prompt_info
 {
 	char	*prompt;
 	char	**env;
-//	t_tokens	tokens;
 }		t_prompt_info;
+
+typedef struct	s_executer
+{
+	int	type;
+	char	**command;
+}		t_executer;
+
+typedef struct	s_redirect
+{
+	int	type;
+	int	fd;
+	char	*filename;
+	void	*command;
+}		t_redirect;
+
+typedef struct	s_pipe
+{
+	int	type;
+	void	*left;
+	void	*right;
+}		t_pipe;
 
 //General functions
 void free_double_array(char *array[]);

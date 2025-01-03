@@ -1,45 +1,54 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstsize.c                                       :+:      :+:    :+:   */
+/*   ft_lstadd_last.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 00:49:36 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/03 17:35:25 by randrade         ###   ########.fr       */
+/*   Created: 2024/04/25 17:08:58 by randrade          #+#    #+#             */
+/*   Updated: 2025/01/03 17:43:02 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_lstsize(t_list *lst)
+void	ft_lstadd_last(t_list **lst, t_list *new)
 {
-	int	i;
+	t_list	*last;
 
-	i = 0;
-	while (lst != NULL)
+	if (lst == NULL)
+		return ;
+	if (*lst)
 	{
-		lst = lst->next;
-		++i;
+		last = ft_lstlast(*lst);
+		last->next = new;
+		new->previous = last;
 	}
-	return (i);
+	else
+	{
+		*lst = new;
+		new->previous = NULL;
+	}
+	new->next = NULL;
 }
 
 /*
+
 ----- Parameters -----
 
-	lst: The beginning of the list.
+	lst: The address of a pointer to the first link of a list.
+	new: The address of a pointer to the node to be added to the list.
 
 ----- Return Value -----
 
-	The length of the list.
+	None.
 
------ External functs -----
+----- External functs. -----
 
 	None.
 
 ----- Description -----
 
-	Counts the number of nodes in a list.
+	Adds the node ’new’ at the end of the list.
 
 */

@@ -1,38 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstsize.c                                       :+:      :+:    :+:   */
+/*   ft_lstadd_first.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 00:49:36 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/03 17:35:25 by randrade         ###   ########.fr       */
+/*   Created: 2024/04/24 19:21:44 by randrade          #+#    #+#             */
+/*   Updated: 2025/01/03 17:33:30 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_lstsize(t_list *lst)
+void	ft_lstadd_first(t_list **lst, t_list *new)
 {
-	int	i;
-
-	i = 0;
-	while (lst != NULL)
+	if (lst && new)
 	{
-		lst = lst->next;
-		++i;
+		new->previous = NULL;
+		if (*lst)
+		{
+			new->next = *lst;
+			(*lst)->previous = new;
+		}
+		else
+			new->next = NULL;
+		*lst = new;
 	}
-	return (i);
 }
 
 /*
 ----- Parameters -----
 
-	lst: The beginning of the list.
+	lst: The address of a pointer to the first link of a list.
+	new: The address of a pointer to the node to be added to the list.
 
 ----- Return Value -----
 
-	The length of the list.
+	None.
 
 ----- External functs -----
 
@@ -40,6 +44,6 @@ int	ft_lstsize(t_list *lst)
 
 ----- Description -----
 
-	Counts the number of nodes in a list.
+	Adds the node ’new’ at the beginning of the list.
 
 */
