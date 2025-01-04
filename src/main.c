@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2024/12/19 16:31:19 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/04 13:01:55 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,37 +71,38 @@ int main(void)
 
 int main(int argc, char *argv[],char *envp[])
 {
-    t_builtins	builtins;
-    t_prompt_info	prompt_info;
-
-    (void)argv;
-    if (argc != 1)
-	    return (1);
-    welcome();
-    init_variables_builtins(&builtins);
-    ft_memset(&prompt_info, 0, sizeof(t_prompt_info));
-    prompt_info.env = copy_envp(envp);
-    if(!prompt_info.env)
-	    return (1);
-    while (1)
-    {
-        prompt_info.prompt = readline("Minishell> ");
-        if(!prompt_info.prompt)
-        {
-            free_double_array(prompt_info.env);
-            break;
-        }
-	ft_parsing(&prompt_info);
-        if(ft_strncmp(prompt_info.prompt,"env",3) == 0)
-            ft_print_double_array(prompt_info.env);
-        else if(ft_strncmp(prompt_info.prompt,"pwd",3) == 0)
-            pwd_builtin();
-        else if(ft_strncmp(prompt_info.prompt,"cd",2) == 0)
-            cd_builtin(prompt_info.prompt);
-        free(prompt_info.prompt);
-    }
-    free_double_array(prompt_info.env);
-    return 0;
+	t_builtins	builtins;
+	t_prompt_info	prompt_info;
+	
+	(void)argv;
+	if (argc != 1)
+	        return (1);
+	welcome();
+	init_variables_builtins(&builtins);
+	ft_memset(&prompt_info, 0, sizeof(t_prompt_info));
+	prompt_info.env = copy_envp(envp);
+	if(!prompt_info.env)
+	        return (1);
+	while (1)
+	{
+		prompt_info.prompt = readline("Minishell> ");
+		if(!prompt_info.prompt)
+		{
+			free_double_array(prompt_info.env);
+			break;
+		}
+		if (prompt_info.prompt[0] != '\0')
+			ft_parsing(&prompt_info);
+/*		if(ft_strncmp(prompt_info.prompt,"env",3) == 0)
+		    ft_print_double_array(prompt_info.env);
+		else if(ft_strncmp(prompt_info.prompt,"pwd",3) == 0)
+		    pwd_builtin();
+		else if(ft_strncmp(prompt_info.prompt,"cd",2) == 0)
+		    cd_builtin(prompt_info.prompt);
+*/		free(prompt_info.prompt);
+	}
+	free_double_array(prompt_info.env);
+	return 0;
 }
 
 

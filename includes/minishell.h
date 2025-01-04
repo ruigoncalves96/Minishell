@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/03 17:20:17 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/04 17:22:54 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 #include <readline/history.h>
 #include <limits.h>
 #include <stdbool.h>
+
+#define OPERATOR 'o'
+#define SPACE 's'
+#define QUOTE 'q'
+#define WORD 'a'
 
 #define EXECUTER 1
 #define REDIRECT 2
@@ -36,6 +41,13 @@ typedef struct	s_prompt_info
 	char	**env;
 }		t_prompt_info;
 
+typedef struct	s_branch
+{
+	int	type;
+	void	*left;
+	void	*right;
+}		t_branch;
+
 typedef struct	s_executer
 {
 	int	type;
@@ -47,7 +59,7 @@ typedef struct	s_redirect
 	int	type;
 	int	fd;
 	char	*filename;
-	void	*command;
+	void	**command;
 }		t_redirect;
 
 typedef struct	s_pipe
@@ -62,7 +74,8 @@ void free_double_array(char *array[]);
 void	ft_print_double_array(char **array);
 int array_size(char **array);
 
-        //Bultins
+//_____________	Builtins ______________
+
 //env
 char **copy_envp(char *envp[]);
 
@@ -79,7 +92,16 @@ void pwd_builtin(void);
 void echo(char **arr, bool echo_flag);
 void handle_echo(int argc, char *argv[]);
 
-	//Parsing
+//_____________	Parsing	______________
+
+//Parsing
 void	ft_parsing(t_prompt_info *prompt_info);
+
+//get_tokens
+t_list	*ft_get_tokens(char *prompt);
+
+//parsing_utils
+void	ft_skip_spaces(char **prompt);
+void	ft_free_list(t_list *list);
 
 #endif
