@@ -19,6 +19,32 @@ static void init_variables_builtins(t_builtins *builtins, char *envp[])
     builtins->minishell_env = copy_envp(envp);
     builtins->export_env = copy_envp(envp);
 }
+/// @brief Function will free all the memory allocated initializing the variables
+/// @param builtins 
+void free_variables_builtins(t_builtins *vars)
+{
+        free_double_array(vars->minishell_env);
+        free_double_array(vars->export_env);
+}
+/*
+    [] Fazer o unset
+
+    []Criar funcao que de print no env e que trate da memoria
+*/
+
+int main(int argc,char *argv[],char *envp[])
+{
+    (void)argc;
+    (void)argv;
+    t_builtins vars;
+    init_variables_builtins(&vars, envp);   
+
+    ft_print_double_array(vars.minishell_env);
+    free_variables_builtins(&vars);
+}
+
+
+/*
 int main(int argc,char *argv[],char *envp[])
 {
     (void)argc;
@@ -49,14 +75,13 @@ int main(int argc,char *argv[],char *envp[])
     if (!found)
      {
         printf("Eu não existo\n");
-        //[]Proximo passo introduzir a variavel dentro dentro do ENV
         vars.minishell_env[i] = ft_strdup("LEGAL=\"fisfk\"");
     }
         ft_print_double_array(vars.minishell_env);
     return 0;
     
 }
-/* 
+
 // Mensagem de boas-vindas
 static void welcome(void)
 {
