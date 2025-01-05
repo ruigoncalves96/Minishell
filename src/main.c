@@ -26,22 +26,28 @@ void free_variables_builtins(t_builtins *vars)
         free_double_array(vars->minishell_env);
         free_double_array(vars->export_env);
 }
+
+int main(int argc, char *argv[], char *envp[])
+{
+    (void)argc;
+    (void)argv;
+    t_builtins vars;
+    init_variables_builtins(&vars, envp);
+
+    // Exemplo de uso da função
+    if (export_variable(&vars, "Cbum", "Cbum=\"\""))
+        ft_print_double_array(vars.minishell_env);
+
+
+    return 0;
+}
 /*
     [] Fazer o unset
 
     []Criar funcao que de print no env e que trate da memoria
 */
 
-int main(int argc,char *argv[],char *envp[])
-{
-    (void)argc;
-    (void)argv;
-    t_builtins vars;
-    init_variables_builtins(&vars, envp);   
 
-    ft_print_double_array(vars.minishell_env);
-    free_variables_builtins(&vars);
-}
 
 
 /*
@@ -81,7 +87,16 @@ int main(int argc,char *argv[],char *envp[])
     return 0;
     
 }
+int main(int argc,char *argv[],char *envp[])
+{
+    (void)argc;
+    (void)argv;
+    t_builtins vars;
+    init_variables_builtins(&vars, envp);   
 
+    ft_print_double_array(vars.minishell_env);
+    free_variables_builtins(&vars);
+}
 // Mensagem de boas-vindas
 static void welcome(void)
 {

@@ -58,6 +58,6 @@ char *get_key(char *env);
 void sort_env_ascii_order(char **env);
 void print_x_declaration(char **env);
 void handle_export(char **export_env);
-
+int export_variable(t_builtins *vars, char *key_to_find, char *new_value);
 //
 #endif
