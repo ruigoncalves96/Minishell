@@ -12,21 +12,6 @@
 
 #include "../includes/minishell.h"
 
-static void init_variables_builtins(t_builtins *builtins, char *envp[])
-{
-    builtins->exit_status = 0;
-    builtins->echo_flag = true;
-    builtins->minishell_env = copy_envp(envp);
-    builtins->export_env = copy_envp(envp);
-}
-/// @brief Function will free all the memory allocated initializing the variables
-/// @param builtins 
-void free_variables_builtins(t_builtins *vars)
-{
-        free_double_array(vars->minishell_env);
-        free_double_array(vars->export_env);
-}
-
 int main(int argc, char *argv[], char *envp[])
 {
     (void)argc;
@@ -34,20 +19,21 @@ int main(int argc, char *argv[], char *envp[])
     t_builtins vars;
     init_variables_builtins(&vars, envp);
 
-    // Exemplo de uso da função
-    if (export_variable(&vars, "Cbum", "Cbum=\"\""))
-        ft_print_double_array(vars.minishell_env);
+   export_variable(&vars, "Cbum", "Cbum=\"boina\"");
+       print_env(vars.minishell_env,false);
+     
+      unset_variable(&vars, "rui");
+        print_env(vars.minishell_env,false);
 
+    free_variables_builtins(&vars);
 
     return 0;
 }
 /*
     [] Fazer o unset
 
-    []Criar funcao que de print no env e que trate da memoria
+    [X]Criar funcao que de print no env e que trate da memoria
 */
-
-
 
 
 /*

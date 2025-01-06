@@ -7,41 +7,90 @@
  * @param new_value New complete value in "key=value" format
  * @return 1 on success, 0 on error
  */
-int export_variable(t_builtins *vars, char *key_to_find, char *new_value)
+char **create_new_env(char **old_env, int size)
 {
-    if (!vars || !vars->minishell_env || !key_to_find || !new_value)
-        return 0;
+    char **new_env;
+    int i;
 
-    int i = 0;
-    char *key;
-    bool found = false;
+    new_env = malloc(sizeof(char *) * (size + 2));
+    if (!new_env)
+        return (NULL);
+    i = 0;
+    while (i < size)
+    {
+        new_env[i] = old_env[i];
+        i++;
+    }
+    new_env[size + 1] = NULL;
+    return (new_env);
+}
 
+int add_new_variable(t_builtins *vars, char *new_value, int size)
+{
+    char **new_env;
+
+    new_env = create_new_env(vars->minishell_env, size);
+    if (!new_env)
+        return (0);
+    new_env[size] = ft_strdup(new_value);
+    if (!new_env[size])
+    {
+        free(new_env);
+        return (0);
+    }
+    free(vars->minishell_env);
+    vars->minishell_env = new_env;
+    return (1);
+}
+
+int update_existing_var(t_builtins *vars, char *key_to_find, 
+    char *new_value, char *key)
+{
+    int i;
+
+    i = 0;
     while (vars->minishell_env[i])
     {
-        key = get_key(vars->minishell_env[i]);
-        if (!key)
-            return 0;
-        if (ft_strcmp(key, key_to_find) == 0) {
+        if (ft_strcmp(key, key_to_find) == 0)
+        {
             free(vars->minishell_env[i]);
             vars->minishell_env[i] = ft_strdup(new_value);
             if (!vars->minishell_env[i])
-            {
-                free(key);
-                return 0;
-            }
-            found = true;
+                return (0);
+            return (1);
         }
-        free(key);
-        if (found)
-            break;
         i++;
     }
+    return (0);
+}
 
-    if (!found)
+int export_variable(t_builtins *vars, char *key_to_find, char *new_value)
+{
+    int i;
+    int size;
+    char *key;
+    bool found;
+    int update_status;
+
+    if (!vars || !vars->minishell_env || !key_to_find || !new_value)
+        return (0);
+    size = 0;
+    while (vars->minishell_env[size])
+        size++;
+    i = 0;
+    found = false;
+    while (vars->minishell_env[i] && !found)
     {
-        vars->minishell_env[i] = ft_strdup(new_value);
-        if (!vars->minishell_env[i])
-            return 0;
+        key = get_key(vars->minishell_env[i]);
+        if (!key)
+            return (0);
+        update_status = update_existing_var(vars, key_to_find, new_value, key);
+        if (update_status == 1)
+            found = true;
+        free(key);
+        i++;
     }
-    return 1;
+    if (!found)
+        return (add_new_variable(vars, new_value, size));
+    return (1);
 }

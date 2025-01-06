@@ -32,7 +32,7 @@ OBJ_DIR      = $(SRC_DIR)/obj
 LIBFT     = $(LIBFT_DIR)/libft.a
 
 SRC_FILES = main.c \
-	    $(addprefix builtins/, exit.c env.c pwd.c echo.c cd.c export.c export_variables.c) \
+	    $(addprefix builtins/, exit.c env.c pwd.c echo.c cd.c export.c export_variables.c init_builtins.c unset.c) \
 	    $(addprefix utils/, general_functions.c)
 #	    $(addprefix executer/, executer.c) \
 	    $(addprefix parsing/, parsing.c) \
@@ -66,7 +66,7 @@ $(NAME): $(LIBFT) $(OBJS)
 
 valgrind: $(NAME)
 	@echo "$(YELLOW)Running with Valgrind... 🧠$(RESET)"
-	@valgrind --leak-check=full --show-leak-kinds=all ./$(NAME)
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME)
 
 clean:
 	@echo "$(RED)Cleaning object files...$(RESET)"

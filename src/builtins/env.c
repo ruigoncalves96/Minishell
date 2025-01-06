@@ -6,22 +6,17 @@ char **copy_envp(char *envp[])
     int i;
     char **minishell_envp;
 
-    //Estou a contar o numero de variaveis de ambiente
     i = 0;
     while (envp[i])
         i++;
-    
-    //Ja tenho o tamanho vou alocar a memoria
     minishell_envp = malloc((i + 1) * sizeof(char *));
-    if(minishell_envp == NULL)
+    if (minishell_envp == NULL)
         return NULL;
-    
-    //Vou copiar ennv
     i = 0;
     while (envp[i])
     {
         minishell_envp[i] = ft_strdup(envp[i]);
-        if(!minishell_envp)
+        if (minishell_envp[i] == NULL)
         {
             free_double_array(minishell_envp);
             return NULL;
@@ -29,14 +24,18 @@ char **copy_envp(char *envp[])
         i++;
     }
     minishell_envp[i] = NULL;
-    return (minishell_envp);
+    return minishell_envp;
 }
 
 void flag_env()
 {
     char *pwd;
-    char *flag_env[4];
+    char **flag_env;
 
+
+    flag_env = malloc(sizeof(char *) * 4);
+    if (!flag_env)
+        return;
     pwd = getcwd(NULL, 0); 
     if(pwd == NULL)
     {
@@ -49,36 +48,18 @@ void flag_env()
     flag_env[2] = ft_strdup("_=/usr/bin/env");
     flag_env[3] = NULL;
     ft_print_double_array(flag_env);
+    free_double_array(flag_env);
 }
 
-//Vou dar return em um double point char com o env -i ja colocado la
-/*
-    Ao fazer o env -i este e o que deve la estar
-    PWD=/home/redgtxt
-    SHLVL=1
-    _=/usr/bin/env
-*/
-/*
-void  builtin_env(char *envp[],char *argv[])
+/// @brief Function will print env
+/// @param builtins Builtins Struct
+///@param flag True will print env with flag(-i),False will print normal env
+void print_env(char *env[],bool flag)
 {
-   char **minishell_envp;
-   
-    if(ft_strncmp(argv[0],"env",3) == 0)
+    if(flag == true)
     {
-        if(ft_strncmp(argv[1],"-i",2) == 0)
-        {   
-            minishell_envp = malloc(sizeof(char *));
-            if(!minishell_envp)
-                return NULL;
-            minishell_envp[0] == NULL;
-            ft_print_double_array(minishell_envp);
-            free(minishell_envp);
-        }else{
-            //env
-             minishell_envp = copy_envp(envp);
-             ft_print_double_array(minishell_envp);
-             free_double_array(minishell_envp);
-        }
+        flag_env();
     }
+    else
+        ft_print_double_array(env);
 }
-*/
