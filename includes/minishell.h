@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/06 16:22:34 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/06 17:02:44 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #define QUOTE 'q'
 #define WORD 'a'
 
-#define EXECUTER 1
+#define COMMAND 1
 #define REDIRECT 2
 #define PIPE 3
 
@@ -41,11 +41,11 @@ typedef struct	s_prompt_info
 	char	**env;
 }		t_prompt_info;
 
-typedef struct	s_executer
+typedef struct	s_command
 {
 	int	type;
 	char	**command;
-}		t_executer;
+}		t_command;
 
 typedef struct	s_redirect
 {
@@ -65,7 +65,7 @@ typedef struct	s_pipe
 typedef struct	s_tree_node
 {
 	int	type;
-	t_executer	executer;
+	t_command	command;
 	t_redirect	redirect;
 	t_pipe		pipe;
 	struct s_tree_node	*left;
