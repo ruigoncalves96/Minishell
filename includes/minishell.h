@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/04 17:22:54 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/06 16:22:34 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,6 @@ typedef struct	s_prompt_info
 	char	**env;
 }		t_prompt_info;
 
-typedef struct	s_branch
-{
-	int	type;
-	void	*left;
-	void	*right;
-}		t_branch;
-
 typedef struct	s_executer
 {
 	int	type;
@@ -68,6 +61,16 @@ typedef struct	s_pipe
 	void	*left;
 	void	*right;
 }		t_pipe;
+
+typedef struct	s_tree_node
+{
+	int	type;
+	t_executer	executer;
+	t_redirect	redirect;
+	t_pipe		pipe;
+	struct s_tree_node	*left;
+	struct s_tree_node	*right;
+}		t_node_tree;
 
 //General functions
 void free_double_array(char *array[]);
@@ -101,7 +104,13 @@ void	ft_parsing(t_prompt_info *prompt_info);
 t_list	*ft_get_tokens(char *prompt);
 
 //parsing_utils
+void	ft_define_token(t_list *token);
+void	ft_quote_mode_switch(char s, bool *active_quote, char *quote);
+char	ft_check_token(char c);
 void	ft_skip_spaces(char **prompt);
 void	ft_free_list(t_list *list);
+
+//split_token
+char	**ft_split_token(char *s, size_t token_len, int token_type);
 
 #endif

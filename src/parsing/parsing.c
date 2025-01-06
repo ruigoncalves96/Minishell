@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/04 17:15:37 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/06 15:21:14 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,25 @@
 
 static void	ft_print_linked_list(t_list *list)
 {
-	while (list)
+	t_list	*temp;
+	int	i;
+
+	temp = list;
+	while (temp)
 	{
-		ft_printf("token = %s\n", list->str);
-		list = list->next;
+		i = 0;
+		while (temp->str[i])
+		{
+			ft_printf("token[%d] = %s\n", i, temp->str[i]);
+			i++;
+		}
+		if (temp->type == 1)
+			ft_printf("      = type = EXECUTER\n");
+		else if (temp->type == 2)
+			ft_printf("      = type = REDIRECT\n");
+		else if (temp->type == 3)
+			ft_printf("      = type = PIPE\n");
+		temp = temp->next;
 	}
 }
 
@@ -28,5 +43,5 @@ void	ft_parsing(t_prompt_info *prompt_info)
 	tokens = ft_get_tokens(prompt_info->prompt);
 	ft_print_linked_list(tokens);
 	// BUILD TREE
-	ft_free_list(tokens);	
+	ft_free_list(tokens);
 }

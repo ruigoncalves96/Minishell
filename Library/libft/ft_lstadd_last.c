@@ -6,7 +6,7 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:58 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/04 15:02:57 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/06 13:09:22 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ft_lstadd_last(t_list **lst, t_list *new)
 {
 	t_list	*last;
 
-	if (lst == NULL)
+	if (lst == NULL || new == NULL)
 		return ;
 	if (*lst)
 	{

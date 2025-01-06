@@ -6,7 +6,7 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:34:25 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/03 17:49:26 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/06 12:23:37 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 
 typedef struct s_list
 {
-	char			*str;
-	bool			operator;
+	char			**str;
+	int			type;
 	struct s_list		*previous;
 	struct s_list		*next;
 }				t_list;
@@ -75,10 +75,10 @@ void				ft_lstadd_first(t_list **lst, t_list *new);
 void				ft_lstadd_last(t_list **lst, t_list *new);
 void				ft_lstdelone(t_list *lst);
 void				ft_lstclear(t_list **lst);
-void				ft_lstiter(t_list *lst, char *(*f)(char *));
-t_list				*ft_lstnew(char *content);
+void				ft_lstiter(t_list *lst, char **(*f)(char **));
+t_list				*ft_lstnew(char **content, int token_type);
 t_list				*ft_lstlast(t_list *lst);
-t_list				*ft_lstmap(t_list *lst, char *(*f)(char *));
+t_list				*ft_lstmap(t_list *lst, char **(*f)(char **));
 
 // Added Functions
 //	v
@@ -86,5 +86,6 @@ t_list				*ft_lstmap(t_list *lst, char *(*f)(char *));
 size_t				ft_nbrlen(int nbr);
 char				*ft_strsjoin(char *s1, char const *s2);
 char				*ft_itoa(int nbr);
+void				ft_free_double_array(char **ptr);
 
 #endif
