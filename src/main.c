@@ -12,6 +12,26 @@
 
 #include "../includes/minishell.h"
 
+
+int main(int argc, char *argv[], char *envp[])
+{
+    (void)argc;
+    (void)argv;
+
+   // t_env *env = init_env(envp);
+    t_env *export_env = init_env(envp);
+    if (!export_env)
+    {
+        printf("Error initializing environment\n");
+        return (1);
+    }
+
+    print_env_list(export_env);
+    free_env(export_env);
+    return (0);
+}
+
+/*
 int main(int argc, char *argv[], char *envp[])
 {
     (void)argc;
@@ -19,70 +39,28 @@ int main(int argc, char *argv[], char *envp[])
     t_builtins vars;
     init_variables_builtins(&vars, envp);
 
-   export_variable(&vars, "Cbum", "Cbum=\"boina\"");
-       print_env(vars.minishell_env,false);
+    export_variable(&vars, "SHLVL", "SHLVL=2");
+    print_env(vars.minishell_env,false);
      
-      unset_variable(&vars, "rui");
-        print_env(vars.minishell_env,false);
+   // unset_variable(&vars, "rui");
+    //print_env(vars.minishell_env,true);
 
     free_variables_builtins(&vars);
 
     return 0;
 }
+*/
+
+
 /*
-    [] Fazer o unset
+    [X] Fazer o unset
 
     [X]Criar funcao que de print no env e que trate da memoria
 */
 
 
 /*
-int main(int argc,char *argv[],char *envp[])
-{
-    (void)argc;
-    (void)argv;
-    t_builtins vars;
-    init_variables_builtins(&vars, envp);
 
-    int i = 0;
-    char *key;
-    bool found = false;
-   // char *str = "Rui=\"futebol\"";
-    while (vars.minishell_env[i])
-    {
-        key = get_key(vars.minishell_env[i]);
-
-        if (ft_strcmp(key, "corrida") == 0) {
-            printf("Eu existo\n");
-            found = true;
-            vars.minishell_env[i] = ft_strdup("corrida=\"legal\"");
-        }
-        free(key);
-        // OK BOA a chave existe vou parar de procurar por ela
-        if (found)
-            break;
-        i++;
-    }
-
-    if (!found)
-     {
-        printf("Eu não existo\n");
-        vars.minishell_env[i] = ft_strdup("LEGAL=\"fisfk\"");
-    }
-        ft_print_double_array(vars.minishell_env);
-    return 0;
-    
-}
-int main(int argc,char *argv[],char *envp[])
-{
-    (void)argc;
-    (void)argv;
-    t_builtins vars;
-    init_variables_builtins(&vars, envp);   
-
-    ft_print_double_array(vars.minishell_env);
-    free_variables_builtins(&vars);
-}
 // Mensagem de boas-vindas
 static void welcome(void)
 {
@@ -92,34 +70,6 @@ static void welcome(void)
     printf("  | |  | | | | | | \\__ \\ | | |  __/ | |\n");
     printf("  |_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
 }
-
-// Inicializa a estrutura t_builtins
-
-Int main para testar ENV -I || EXPORT
-int main(int argc, char *argv[], char *env[])
-{
-    (void)argc;
-    (void)argv;
-
-    flag_env();
-    welcome();
-
-    // Inicializa a estrutura
-    t_builtins vars;
-    init_variables_builtins(&vars, env);
-
-    // Lida com o comando individual export
-    handle_export(vars.export_env);
-
-    // Libera memória alocada
-    free_double_array(vars.minishell_env);
-    free_double_array(vars.export_env);
-
-    return 0;
-}
-
-*/
-/*
 
 int main(int argc,char *argv[])
 {

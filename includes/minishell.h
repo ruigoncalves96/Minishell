@@ -29,11 +29,36 @@ typedef struct	s_builtins
     bool echo_flag;
 }t_builtins;
 
+typedef struct s_env_var {
+    char *key;           // Store just the key (e.g., "SHLVL")
+    char *value;         // Store just the value (e.g., "1")
+    struct s_env_var *next;
+} t_env_var;
+
+/**
+ * @brief Main environment management structure
+ */
+typedef struct s_env {
+    t_env_var *vars;     // Linked list of variables
+    int var_count;       // Count of variables
+    char **env_array;    // Traditional env array format
+    char **env_export;
+} t_env;
+
+//New env functions
+t_env *init_env(char **envp);
+t_env_var *create_env_node(char *env_str);
+void free_env(t_env *env);
+void print_env_list(t_env *env);
+
+
+
 //General functions
 void free_double_array(char *array[]);
 void	ft_print_double_array(char **array);
 int array_size(char **array);
 int	ft_strcmp(const char *s1, const char *s2);
+char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 
         //Bultins
 
