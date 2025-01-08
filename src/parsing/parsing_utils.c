@@ -6,48 +6,64 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/06 15:04:46 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 12:15:34 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ft_define_token(t_list *token)
+void	ft_quote_mode_switch(char *c, bool *active_quote, char *quote)
 {
-	if (token->type == WORD || token->type == QUOTE)
-		token->type = EXECUTER;
-	else if (token->type == OPERATOR)
-	{
-		if (token->str[0][0] == '|')
-			token->type = PIPE;
-		else if (token->str[0][0] == '>' || token->str[0][0] == '<')
-			token->type = REDIRECT;
-	}
-}
-
-void	ft_quote_mode_switch(char s, bool *active_quote, char *quote)
-{
-	if (s == '"' || s == 39)
+	if ((*c == '"' || *c == 39) && (*c == *quote || *active_quote == false))
 	{
 		if (*active_quote == false)
-			*quote = s;
-		if (s == *quote)
 		{
-			*active_quote ^= 1;
-			if (*active_quote == false)
-				*quote = 0;
+			if (ft_strchr(c + 1, *c) == NULL)
+				return ;
+			else
+				*quote = *c;
 		}
+		else
+			*quote = 0;
+		*active_quote ^= 1;
 	}
 }
 
-char	ft_check_token(char c)
+void	ft_define_token_type(t_list *token)
 {
-	if (c == '|' || c == '>' || c == '<')
+	int	subtype;
+	int	type;
+
+	subtype = ft_check_token_subtype(token->str[0][0]);
+	type = ft_check_token_type(token->str[0][0]);
+	token->type = type;
+	token->subtype = subtype;
+}
+
+int	ft_check_token_type(char c)
+{
+	int	subtype;
+
+	subtype = ft_check_token_subtype(c);
+	if (subtype == WORD || subtype == QUOTE || subtype == DOLLAR)
+		return (COMMAND);
+	else if (subtype == PIPE || subtype == REDIRECT)
 		return (OPERATOR);
-	else if (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v')
+	return (0);
+}
+
+int	ft_check_token_subtype(char c)
+{
+	if (ft_strchr(SPACE_TOKENS, c) != NULL)
 		return (SPACE);
 	else if (c == '"' || c == 39)
 		return (QUOTE);
+	else if (c == '|')
+		return (PIPE);
+	else if (c == '<' || c == '>')
+		return (REDIRECT);
+	else if (c == DOLLAR)
+		return (DOLLAR);
 	else
 		return (WORD);
 }
@@ -56,13 +72,13 @@ void	ft_skip_spaces(char **prompt)
 {
 	while (**prompt)
 	{
-		if (**prompt != ' ' && **prompt != '\t' && **prompt != '\r' &&
-				**prompt != '\n' && **prompt != '\v')
+		if (ft_strchr(SPACE_TOKENS, **prompt) == NULL)
 			break ;
 		(*prompt)++;
 	}
 }
 
+//	ADD THIS FUNCTION TO UTILS DIRECTORY
 void	ft_free_list(t_list *list)
 {
 	t_list	*temp;

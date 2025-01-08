@@ -34,7 +34,8 @@ LIBFT     = $(LIBFT_DIR)/libft.a
 SRC_FILES = main.c \
 	    $(addprefix builtins/, exit.c env.c pwd.c echo.c cd.c) \
 	    $(addprefix utils/, general_functions.c) \
-	    $(addprefix parsing/, parsing.c get_tokens.c parsing_utils.c split_shell.c)
+	    $(addprefix parsing/, parsing.c get_tokens.c parsing_utils.c split_token.c \
+	   parse_syntax.c error_handling.c expand_tokens.c)
 #	    $(addprefix executer/, executer.c) \
 
 SRC  = $(addprefix $(SRC_DIR)/, $(SRC_FILES))

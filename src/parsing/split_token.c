@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   split_shell.c                                      :+:      :+:    :+:   */
+/*   split_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 00:30:48 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/06 16:22:19 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/07 18:56:09 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,25 @@ static int	ft_count_words(char *s, size_t token_len)
 	i = 0;
 	while (s[i] && i < token_len)
 	{
-		ft_quote_mode_switch(s[i], &active_quote, &quote);
+		ft_quote_mode_switch(&s[i], &active_quote, &quote);
 		if (active_quote == false)
 		{
-			if (ft_check_token(s[i]) != SPACE &&
-				(ft_check_token(s[i + 1]) == SPACE || i + 1 == token_len))
+			if (ft_check_token_subtype(s[i]) != SPACE
+				&& (ft_check_token_subtype(s[i + 1]) == SPACE
+					|| i + 1 == token_len))
 				count++;
 		}
 		i++;
 	}
+	if (count == 0)
+		count = 1;
 	return (count);
 }
 
 static int	ft_wordlen(char *s)
 {
 	size_t	i;
-	char	c;
+	char	token_subtype;
 	char	quote;
 	bool	active_quote;
 
@@ -49,20 +52,22 @@ static int	ft_wordlen(char *s)
 	i = 0;
 	while (s[i])
 	{
-		c = ft_check_token(s[i]);
-		ft_quote_mode_switch(s[i], &active_quote, &quote);
-		if (active_quote == false && (c == OPERATOR || c == SPACE))
+		token_subtype = ft_check_token_subtype(s[i]);
+		ft_quote_mode_switch(&s[i], &active_quote, &quote);
+		if (active_quote == false && (token_subtype == OPERATOR
+				|| token_subtype == SPACE))
 			break ;
 		i++;
 	}
 	return (i);
 }
 
-static char	*ft_alloc_word(char *ptr, char **s, size_t token_len, int token_type)
+static char	*ft_alloc_word(char *ptr, char **s, size_t token_len,
+		int token_type)
 {
 	size_t	word_len;
 
-	if (token_type == WORD || token_type == QUOTE)
+	if (token_type == COMMAND)
 		word_len = ft_wordlen(*s);
 	else
 		word_len = token_len;
@@ -77,10 +82,10 @@ static char	*ft_alloc_word(char *ptr, char **s, size_t token_len, int token_type
 char	**ft_split_token(char *s, size_t token_len, int token_type)
 {
 	char	**ptr;
-	size_t		count_words;
-	size_t		i;
+	size_t	count_words;
+	size_t	i;
 
-	if (token_type == WORD || token_type == QUOTE)
+	if (token_type == COMMAND)
 		count_words = ft_count_words(s, token_len);
 	else
 		count_words = 1;

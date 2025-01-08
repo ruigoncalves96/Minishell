@@ -6,13 +6,13 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:24:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/05 15:58:39 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/07 15:53:33 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstnew(char **content, int token_type)
+t_list	*ft_lstnew(char **content)
 {
 	t_list	*lst;
 
@@ -20,7 +20,8 @@ t_list	*ft_lstnew(char **content, int token_type)
 	if (lst == NULL)
 		return (NULL);
 	lst->str = content;
-	lst->type = token_type;
+	lst->type = 0;
+	lst->subtype = 0;
 	lst->previous = NULL;
 	lst->next = NULL;
 	return (lst);

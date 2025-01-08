@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/06 17:02:44 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 14:34:04 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,26 @@
 #include <limits.h>
 #include <stdbool.h>
 
-#define OPERATOR 'o'
-#define SPACE 's'
-#define QUOTE 'q'
-#define WORD 'a'
+//	ERRORS
+#define SYNTAX_ERROR "syntax error near unexpected token"
 
+//	TOKEN_TYPE
 #define COMMAND 1
-#define REDIRECT 2
-#define PIPE 3
+#define OPERATOR 2
+
+//	TOKEN_SUBTYPE
+#define WORD 'w'
+#define QUOTE 'q'
+#define DOLLAR '$'
+#define SPACE 's'
+#define PIPE '|'
+#define REDIRECT '>'
+
+//	TOKENS_SUBTYPE_CHARS
+#define OPERATOR_TOKENS	"|<>"
+#define SPACE_TOKENS " \t\r\n\v"
+
+
 
 typedef struct	s_builtins
 {
@@ -40,7 +52,7 @@ typedef struct	s_prompt_info
 	char	*prompt;
 	char	**env;
 }		t_prompt_info;
-
+/*
 typedef struct	s_command
 {
 	int	type;
@@ -65,13 +77,14 @@ typedef struct	s_pipe
 typedef struct	s_tree_node
 {
 	int	type;
+	int	subtype;
 	t_command	command;
 	t_redirect	redirect;
 	t_pipe		pipe;
 	struct s_tree_node	*left;
 	struct s_tree_node	*right;
 }		t_node_tree;
-
+*/
 //General functions
 void free_double_array(char *array[]);
 void	ft_print_double_array(char **array);
@@ -98,19 +111,29 @@ void handle_echo(int argc, char *argv[]);
 //_____________	Parsing	______________
 
 //Parsing
-void	ft_parsing(t_prompt_info *prompt_info);
+bool	ft_parsing(t_prompt_info *prompt_info);
 
 //get_tokens
-t_list	*ft_get_tokens(char *prompt);
-
-//parsing_utils
-void	ft_define_token(t_list *token);
-void	ft_quote_mode_switch(char s, bool *active_quote, char *quote);
-char	ft_check_token(char c);
-void	ft_skip_spaces(char **prompt);
-void	ft_free_list(t_list *list);
+t_list	*ft_build_tokens_list(char *prompt);
 
 //split_token
 char	**ft_split_token(char *s, size_t token_len, int token_type);
+
+//parse_syntax
+bool	ft_parse_syntax(t_list *token_list);
+
+//expand_tokens
+void	ft_expand_tokens(t_list *token_list);
+
+//parsing_utils
+void	ft_quote_mode_switch(char *s, bool *active_quote, char *quote);
+void	ft_define_token_type(t_list *token);
+int	ft_check_token_type(char c);
+int	ft_check_token_subtype(char c);
+void	ft_skip_spaces(char **prompt);
+void	ft_free_list(t_list *list); //		CHANGE DIRECTORY TO UTILS
+
+//error_handling
+void	ft_syntax_error(t_list *token_list, t_list *token);
 
 #endif
