@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 00:30:48 by randrade          #+#    #+#             */
-/*   Updated: 2024/05/01 14:33:43 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/06 12:26:50 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,6 @@ static char	*ft_wrdcpy(char const *s, char c, char **ptr)
 	return ((char *)s);
 }
 
-static void	ft_free_alloc(char **ptr)
-{
-	int	i;
-
-	i = 0;
-	while (ptr[i])
-	{
-		free(ptr[i]);
-		i++;
-	}
-	free(ptr);
-}
-
 char	**ft_split(char const *s, char c)
 {
 	char	**ptr;
@@ -86,7 +73,7 @@ char	**ft_split(char const *s, char c)
 		ptr[i] = (char *) ft_calloc(wrd_len + 1, sizeof(char));
 		if (ptr[i] == NULL)
 		{
-			ft_free_alloc(ptr);
+			ft_free_double_array(ptr);
 			return (NULL);
 		}
 		s = ft_wrdcpy(s, c, &ptr[i]);

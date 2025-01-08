@@ -6,7 +6,7 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:34:25 by randrade          #+#    #+#             */
-/*   Updated: 2024/10/22 14:33:31 by ruigoncalve      ###   ########.fr       */
+/*   Updated: 2025/01/07 21:31:02 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,15 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+# include <stdbool.h>
 
 typedef struct s_list
 {
-	void			*content;
-	struct s_list	*next;
+	char			**str;
+	int			type;
+	int			subtype;
+	struct s_list		*previous;
+	struct s_list		*next;
 }				t_list;
 
 // Functions PART 1
@@ -68,15 +72,14 @@ void				ft_putnbr_fd(int n, int fd);
 //      v
 
 int					ft_lstsize(t_list *lst);
-void				ft_lstadd_front(t_list **lst, t_list *new);
-void				ft_lstadd_back(t_list **lst, t_list *new);
-void				ft_lstdelone(t_list *lst, void (*del)(void *));
-void				ft_lstclear(t_list **lst, void (*del)(void *));
-void				ft_lstiter(t_list *lst, void (*f)(void *));
-t_list				*ft_lstnew(void *content);
+void				ft_lstadd_first(t_list **lst, t_list *new);
+void				ft_lstadd_last(t_list **lst, t_list *new);
+void				ft_lstdelone(t_list *lst);
+void				ft_lstclear(t_list **lst);
+void				ft_lstiter(t_list *lst, char **(*f)(char **));
+t_list				*ft_lstnew(char **content);
 t_list				*ft_lstlast(t_list *lst);
-t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
-						void (*del)(void *));
+t_list				*ft_lstmap(t_list *lst, char **(*f)(char **));
 
 // Added Functions
 //	v
@@ -84,5 +87,6 @@ t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 size_t				ft_nbrlen(int nbr);
 char				*ft_strsjoin(char *s1, char const *s2);
 char				*ft_itoa(int nbr);
+void				ft_free_double_array(char **ptr);
 
 #endif
