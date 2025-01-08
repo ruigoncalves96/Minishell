@@ -6,7 +6,7 @@ char *get_key(char *env)
     int len = 0;
     while (env[len] && env[len] != '=')
         len++;
-    char *key = malloc(len + 1);
+    char *key = ft_calloc(len + 1,1);
     if (!key)
         return NULL;
     ft_strlcpy(key, env, len + 1);

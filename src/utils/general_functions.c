@@ -50,7 +50,7 @@ char *ft_strjoin3(const char *s1, const char *s2, const char *s3)
     char *result;
     size_t len = ft_strlen(s1) + ft_strlen(s2) + ft_strlen(s3) + 1;
 
-    result = malloc(len);
+    result = ft_calloc(len,1);
     if (!result)
         return NULL;
 

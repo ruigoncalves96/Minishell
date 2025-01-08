@@ -1,5 +1,6 @@
 #include "../../includes/minishell.h"
 
+/*
 
 char **copy_envp(char *envp[])
 {
@@ -63,3 +64,4 @@ void print_env(char *env[],bool flag)
     else
         ft_print_double_array(env);
 }
+*/

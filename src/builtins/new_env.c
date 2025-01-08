@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-static void append_env_var(t_env_var **head, t_env_var *new_var)
+void append_env_var(t_env_var **head, t_env_var *new_var)
 {
     if (!*head)
     {
@@ -26,7 +26,7 @@ t_env *init_env(char **envp)
     t_env *env;
     int i;
 
-    env = malloc(sizeof(t_env));
+    env = ft_calloc(1,sizeof(t_env));
     if (!env)
         return NULL;
 
@@ -55,7 +55,7 @@ t_env *init_env(char **envp)
  * @param env_str String in format "KEY=VALUE"
  * @return Value string or NULL if error
  */
-static char *get_value(char *env_str)
+char *get_value(char *env_str)
 {
     char *equals = ft_strchr(env_str, '=');
     if (!equals)
@@ -70,7 +70,7 @@ static char *get_value(char *env_str)
  */
 t_env_var *create_env_node(char *env_str)
 {
-    t_env_var *var = malloc(sizeof(t_env_var));
+    t_env_var *var = ft_calloc(1,sizeof(t_env_var));
     if (!var)
         return NULL;
 
@@ -120,6 +120,7 @@ void print_env_list(t_env *env)
     current = env->vars;
     while (current)
     {
+
         printf("%s=%s\n", current->key, current->value);
         current = current->next;
     }

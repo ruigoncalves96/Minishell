@@ -41,7 +41,7 @@ typedef struct s_env_var {
 typedef struct s_env {
     t_env_var *vars;     // Linked list of variables
     int var_count;       // Count of variables
-    char **env_array;    // Traditional env array format
+    char **env_array;    
     char **env_export;
 } t_env;
 
@@ -51,8 +51,11 @@ t_env_var *create_env_node(char *env_str);
 void free_env(t_env *env);
 void print_env_list(t_env *env);
 
-
-
+//new export functions
+int export_env_var(t_env *env, const char *key, const char *value);
+int env_to_array(t_env *env);
+void append_env_var(t_env_var **head, t_env_var *new_var);
+char *get_value(char *env_str);
 //General functions
 void free_double_array(char *array[]);
 void	ft_print_double_array(char **array);
@@ -63,12 +66,12 @@ char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
         //Bultins
 
 //Init Builtins
-void init_variables_builtins(t_builtins *builtins, char *env[]);
-void free_variables_builtins(t_builtins *vars);
+void init_variables_builtins(t_builtins *builtins);
+//void free_variables_builtins(t_builtins *vars);
 //env
-char **copy_envp(char *envp[]);
-void flag_env();
-void print_env(char *env[],bool flag);
+//char **copy_envp(char *envp[]);
+//void flag_env();
+//void print_env(char *env[],bool flag);
 //Exit
 void  create_exit_code(t_builtins *builtins,char *arr[]);
 
