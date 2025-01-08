@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 15:49:11 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:50:22 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	ft_print_linked_list(t_list *list)
 			ft_printf("      = subtype = SPACE\n");
 		else if (temp->subtype == T_PIPE)
 			ft_printf("      = subtype = PIPE\n");
-		else if (temp->subtype == REDIRECT)
+		else if (temp->subtype == T_REDIRECT)
 			ft_printf("      = subtype = REDIRECT\n");
 		temp = temp->next;
 	}

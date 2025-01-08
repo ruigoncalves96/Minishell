@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 15:46:09 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:51:11 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	ft_check_token_type(char c)
 	subtype = ft_check_token_subtype(c);
 	if (subtype == T_WORD || subtype == T_QUOTE || subtype == T_DOLLAR)
 		return (COMMAND);
-	else if (subtype == T_PIPE || subtype == REDIRECT)
+	else if (subtype == T_PIPE || subtype == T_REDIRECT)
 		return (OPERATOR);
 	return (0);
 }
@@ -61,7 +61,7 @@ int	ft_check_token_subtype(char c)
 	else if (c == '|')
 		return (T_PIPE);
 	else if (c == '<' || c == '>')
-		return (REDIRECT);
+		return (T_REDIRECT);
 	else if (c == T_DOLLAR)
 		return (T_DOLLAR);
 	else
