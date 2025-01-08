@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 19:10:54 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/07 20:32:09 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:46:59 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static bool	ft_parse_redirect(t_list *token)
 
 static bool	ft_parse_operator(t_list *token)
 {
-	if (token->subtype == PIPE)
+	if (token->subtype == T_PIPE)
 	{
 		if (ft_parse_pipe(token) == false)
 			return (false);

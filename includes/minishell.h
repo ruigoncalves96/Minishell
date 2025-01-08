@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 15:27:18 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:44:40 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@
 #define OPERATOR 2
 
 //	TOKEN_SUBTYPE
-#define WORD 'w'
-#define QUOTE 'q'
-#define DOLLAR '$'
-#define SPACE 's'
-#define PIPE '|'
-#define REDIRECT '>'
+#define T_WORD 'w'
+#define T_QUOTE 'q'
+#define T_DOLLAR '$'
+#define T_SPACE 's'
+#define T_PIPE '|'
+#define T_REDIRECT '>'
 
 //	TOKENS_SUBTYPE_CHARS
 #define OPERATOR_TOKENS	"|<>"

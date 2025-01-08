@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 12:15:34 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:46:09 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ int	ft_check_token_type(char c)
 	int	subtype;
 
 	subtype = ft_check_token_subtype(c);
-	if (subtype == WORD || subtype == QUOTE || subtype == DOLLAR)
+	if (subtype == T_WORD || subtype == T_QUOTE || subtype == T_DOLLAR)
 		return (COMMAND);
-	else if (subtype == PIPE || subtype == REDIRECT)
+	else if (subtype == T_PIPE || subtype == REDIRECT)
 		return (OPERATOR);
 	return (0);
 }
@@ -55,17 +55,17 @@ int	ft_check_token_type(char c)
 int	ft_check_token_subtype(char c)
 {
 	if (ft_strchr(SPACE_TOKENS, c) != NULL)
-		return (SPACE);
+		return (T_SPACE);
 	else if (c == '"' || c == 39)
-		return (QUOTE);
+		return (T_QUOTE);
 	else if (c == '|')
-		return (PIPE);
+		return (T_PIPE);
 	else if (c == '<' || c == '>')
 		return (REDIRECT);
-	else if (c == DOLLAR)
-		return (DOLLAR);
+	else if (c == T_DOLLAR)
+		return (T_DOLLAR);
 	else
-		return (WORD);
+		return (T_WORD);
 }
 
 void	ft_skip_spaces(char **prompt)

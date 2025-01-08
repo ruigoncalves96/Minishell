@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 00:30:48 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/07 18:56:09 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:47:20 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ static int	ft_count_words(char *s, size_t token_len)
 		ft_quote_mode_switch(&s[i], &active_quote, &quote);
 		if (active_quote == false)
 		{
-			if (ft_check_token_subtype(s[i]) != SPACE
-				&& (ft_check_token_subtype(s[i + 1]) == SPACE
+			if (ft_check_token_subtype(s[i]) != T_SPACE
+				&& (ft_check_token_subtype(s[i + 1]) == T_SPACE
 					|| i + 1 == token_len))
 				count++;
 		}
@@ -55,7 +55,7 @@ static int	ft_wordlen(char *s)
 		token_subtype = ft_check_token_subtype(s[i]);
 		ft_quote_mode_switch(&s[i], &active_quote, &quote);
 		if (active_quote == false && (token_subtype == OPERATOR
-				|| token_subtype == SPACE))
+				|| token_subtype == T_SPACE))
 			break ;
 		i++;
 	}
