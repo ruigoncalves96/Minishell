@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 15:15:29 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:27:18 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ char *get_value(char *env_str);
 //_____________	Parsing	______________
 
 //Parsing
-bool	ft_parsing(t_prompt_info *prompt_info);
+t_list	*ft_parsing(t_prompt_info *prompt_info);
 
 //get_tokens
 t_list	*ft_build_tokens_list(char *prompt);
