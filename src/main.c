@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 15:37:35 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 16:14:59 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,15 @@ int main(int argc, char *argv[],char *envp[])
 		if (prompt_info.prompt[0] != '\0')
 			tokens = ft_parsing(&prompt_info);
 		if(ft_strcmp(*tokens->str,"env") == 0)
-		{ 
 			print_env_list(prompt_info.env);
-		}
-/*		else if(ft_strncmp(prompt_info.prompt,"pwd",3) == 0)
-		    pwd_builtin();
-		else if(ft_strncmp(prompt_info.prompt,"cd",2) == 0)
-		    cd_builtin(prompt_info.prompt);
-*/		free(prompt_info.prompt);
+		else if(ft_strcmp(*tokens->str,"pwd") == 0)
+		    	pwd_builtin();
+		else if(ft_strcmp(*tokens->str,"cd") == 0)
+		    cd_builtin(NULL);
+		else if(ft_strcmp(*tokens->str,"export") == 0)
+			export_env_var(prompt_info.env, tokens->str[1], tokens->str[2]);
+		free(prompt_info.prompt);
+		ft_free_list(tokens);
 	}
 	free_env(prompt_info.env);
 	return 0;

@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 15:44:40 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/08 16:00:43 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,6 @@ void cd_builtin(char *path);
 void pwd_builtin(void);
 
 //Echo
-void echo(char **arr, bool echo_flag);
 void handle_echo(int argc, char *argv[]);
 
 //Export

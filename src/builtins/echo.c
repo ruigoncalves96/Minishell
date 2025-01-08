@@ -1,7 +1,7 @@
 #include "../../includes/minishell.h"
 #include <string.h>
 
-void echo(char **arr, bool echo_flag)
+static void echo(char **arr, bool echo_flag)
 {   
    int i;
 
