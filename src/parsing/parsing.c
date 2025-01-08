@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
+/*
 static void	ft_print_linked_list(t_list *list)
 {
 	t_list	*temp;
@@ -46,6 +46,7 @@ static void	ft_print_linked_list(t_list *list)
 	}
 }
 
+*/
 t_list	*ft_parsing(t_prompt_info *prompt_info)
 {
 	t_list	*tokens;
