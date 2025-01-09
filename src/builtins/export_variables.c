@@ -94,3 +94,16 @@ int export_variable(t_builtins *vars, char *key_to_find, char *new_value)
         return (add_new_variable(vars, new_value, size));
     return (1);
 }
+
+// Extrai nome da variável de uma string no formato VAR=VALUE
+char *get_key(char *env)
+{
+    int len = 0;
+    while (env[len] && env[len] != '=')
+        len++;
+    char *key = ft_calloc(len + 1,1);
+    if (!key)
+        return NULL;
+    ft_strlcpy(key, env, len + 1);
+    return key;
+}
