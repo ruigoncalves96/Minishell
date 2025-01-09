@@ -51,6 +51,7 @@ typedef struct s_env_var {
     char *key;           // Store just the key (e.g., "SHLVL")
     char *value;         // Store just the value (e.g., "1")
     struct s_env_var *next;
+    struct s_env_var *prev;
 } t_env_var;
 
 /**
@@ -110,22 +111,14 @@ char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 
 //_____________	Builtins ______________
 
-//env
-char **copy_envp(char *envp[]);
-
 //Init Builtins
 void init_variables_builtins(t_builtins *builtins);
-//void free_variables_builtins(t_builtins *vars);
-//env
-//char **copy_envp(char *envp[]);
-//void flag_env();
-//void print_env(char *env[],bool flag);
+
 //Exit
 void  create_exit_code(t_builtins *builtins,char *arr[]);
 
 //cd
-void cd_builtin(char *path);
-
+void cd_builtin(char *path,t_env *env);
 //PWD
 void pwd_builtin(void);
 
@@ -134,27 +127,26 @@ void handle_echo(int argc, char *argv[]);
 
 //Export
 char *get_key(char *env);
-void sort_env_ascii_order(char **env);
-void print_x_declaration(char **env);
-void handle_export(char **export_env);
+void handle_export(t_env *env);
+
     //Exporting variables
 char **create_new_env(char **old_env, int size);
 int add_new_variable(t_builtins *vars, char *new_value, int size);
 int update_existing_var(t_builtins *vars, char *key_to_find, 
     char *new_value, char *key);
 int export_variable(t_builtins *vars, char *key_to_find, char *new_value);
-    //Unset
-int unset_variable(t_builtins *vars, char *key_to_remove);
 
-//New env functions
+
+//ENV FUNCTIONS
 t_env *init_env(char **envp);
 t_env_var *create_env_node(char *env_str);
 void free_env(t_env *env);
 void print_env_list(t_env *env);
 
-//new export functions
+//UNSET FUNCTIONS
+int unset_env_var(t_env *env,char *key_to_unset);
+//EXPORT FUNCTIONS
 int export_env_var(t_env *env, const char *key, const char *value);
-int env_to_array(t_env *env);
 void append_env_var(t_env_var **head, t_env_var *new_var);
 char *get_value(char *env_str);
 

@@ -20,7 +20,13 @@ static void welcome(void)
     printf("  | |  | | | | | | \\__ \\ | | |  __/ | |\n");
     printf("  |_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
 }
+/*
+	[X] pwd muda ao fazer cd
+	[]  Mudar variavel ShellLVL
 
+	[X] Unset
+	[] export
+*/
 int main(int argc, char *argv[],char *envp[])
 {
 	t_builtins	builtins;
@@ -51,9 +57,13 @@ int main(int argc, char *argv[],char *envp[])
 		else if(ft_strcmp(*tokens->str,"pwd") == 0)
 		    	pwd_builtin();
 		else if(ft_strcmp(*tokens->str,"cd") == 0)
-		    cd_builtin(NULL);
+		    cd_builtin(NULL,prompt_info.env);
+		else if(ft_strcmp(*tokens->str,"arr") == 0)
+			handle_export(prompt_info.env);
 		else if(ft_strcmp(*tokens->str,"export") == 0)
 			export_env_var(prompt_info.env, tokens->str[1], tokens->str[2]);
+		else if(ft_strcmp(*tokens->str,"unset") == 0)
+			unset_env_var(prompt_info.env, tokens->str[1]);
 		free(prompt_info.prompt);
 		ft_free_list(tokens);
 	}

@@ -5,6 +5,7 @@ void append_env_var(t_env_var **head, t_env_var *new_var)
     if (!*head)
     {
         *head = new_var;
+        new_var->prev = NULL;
         return;
     }
 
@@ -14,6 +15,8 @@ void append_env_var(t_env_var **head, t_env_var *new_var)
         current = current->next;
     }
     current->next = new_var;
+    new_var->prev =  current;
+    new_var->next = NULL;
 }
 
 /**
@@ -85,6 +88,7 @@ t_env_var *create_env_node(char *env_str)
         return NULL;
     }
     
+    var->prev = NULL;
     var->next = NULL;
     return var;
 }

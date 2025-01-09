@@ -12,6 +12,7 @@ char *get_key(char *env)
     ft_strlcpy(key, env, len + 1);
     return key;
 }
+/*
 
 // Ordena as variáveis de ambiente em ordem alfabetica (ASCII)
 void sort_env_ascii_order(char **env)
@@ -67,3 +68,4 @@ void handle_export(char **export_env)
 }
 
 
+*/
