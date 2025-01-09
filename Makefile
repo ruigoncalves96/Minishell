@@ -32,8 +32,8 @@ OBJ_DIR      = $(SRC_DIR)/obj
 LIBFT     = $(LIBFT_DIR)/libft.a
 
 SRC_FILES = main.c \
-	    $(addprefix builtins/, exit.c env.c pwd.c echo.c cd.c  \
-	   export_variables.c init_builtins.c unset.c new_env.c new_export_variables.c new_unset.c new_export.c) \
+	    $(addprefix builtins/, exit.c  pwd.c echo.c cd.c  \
+	    init_builtins.c  new_env.c new_export_variables.c new_unset.c new_export.c) \
 	    $(addprefix utils/, general_functions.c) \
 	    $(addprefix parsing/, parsing.c get_tokens.c parsing_utils.c split_token.c \
 	   parse_syntax.c error_handling.c expand_tokens.c)

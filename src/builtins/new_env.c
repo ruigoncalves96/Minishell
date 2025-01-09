@@ -1,5 +1,17 @@
 #include "../../includes/minishell.h"
 
+char *get_key(char *env)
+{
+    int len = 0;
+    while (env[len] && env[len] != '=')
+        len++;
+    char *key = ft_calloc(len + 1,1);
+    if (!key)
+        return NULL;
+    ft_strlcpy(key, env, len + 1);
+    return key;
+}
+
 void append_env_var(t_env_var **head, t_env_var *new_var)
 {
     if (!*head)
@@ -129,3 +141,29 @@ void print_env_list(t_env *env)
         current = current->next;
     }
 }
+/*
+
+void flag_env()
+{
+    char *pwd;
+    char **flag_env;
+
+
+    flag_env = malloc(sizeof(char *) * 4);
+    if (!flag_env)
+        return;
+    pwd = getcwd(NULL, 0); 
+    if(pwd == NULL)
+    {
+        printf("Deu erro dentro da funcao flag_env guardar o pwd");
+        return;
+    }
+    flag_env[0] = ft_strdup(pwd);
+    free(pwd);
+    flag_env[1] = ft_strdup("SHLVL=1");
+    flag_env[2] = ft_strdup("_=/usr/bin/env");
+    flag_env[3] = NULL;
+    ft_print_double_array(flag_env);
+    free_double_array(flag_env);
+}
+*/
