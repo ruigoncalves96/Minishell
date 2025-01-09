@@ -13,23 +13,29 @@ static void echo(char **arr, bool echo_flag)
             printf(" ");
         i++;
    }
-   if(echo_flag == true)
+   if(echo_flag == false)
     printf("\n");
 }
 
-void handle_echo(int argc, char *argv[])
+void handle_echo(char *argv[])
 {
     t_builtins vars;
-    int start = 2;
+    int start = 1;
 
     // Inicializa as variáveis do comando
-    vars.echo_flag = true;
+    vars.echo_flag = false;
 
-    if (argc > 2 && strcmp(argv[2], "-n") == 0)
+    if(argv[1])
     {
-        vars.echo_flag = false;
-        start = 3; // Ignora o argumento "-n"
+        while (ft_strcmp(argv[start], "-n") == 0)
+        {
+            vars.echo_flag = true;
+            start++; // Ignora o argumento "-n"
+            if (!argv[start])
+                break;
+        }
     }
+
 
     echo(&argv[start], vars.echo_flag);
 }

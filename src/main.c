@@ -50,22 +50,27 @@ int main(int argc, char *argv[],char *envp[])
 			free_env(prompt_info.env);
 			break;
 		}
-		if (prompt_info.prompt[0] != '\0')
+		else
 			tokens = ft_parsing(&prompt_info);
-		if(ft_strcmp(*tokens->str,"env") == 0)
-			print_env_list(prompt_info.env);
-		else if(ft_strcmp(*tokens->str,"pwd") == 0)
+		if(tokens)
+		{
+			if(ft_strcmp(*tokens->str,"env") == 0)
+				print_env_list(prompt_info.env);
+			else if(ft_strcmp(*tokens->str,"pwd") == 0)
 		    	pwd_builtin();
-		else if(ft_strcmp(*tokens->str,"cd") == 0)
-		    cd_builtin(NULL,prompt_info.env);
-		else if(ft_strcmp(*tokens->str,"arr") == 0)
-			handle_export(prompt_info.env);
+			else if(ft_strcmp(*tokens->str,"cd") == 0)
+		   	 	cd_builtin(NULL,prompt_info.env);
+		else if(ft_strcmp(*tokens->str,"arr") == 0)//export sem argumentos
+				handle_export(prompt_info.env);
 		else if(ft_strcmp(*tokens->str,"export") == 0)
-			export_env_var(prompt_info.env, tokens->str[1], tokens->str[2]);
+				export_env_var(prompt_info.env, tokens->str[1], tokens->str[2]);
 		else if(ft_strcmp(*tokens->str,"unset") == 0)
-			unset_env_var(prompt_info.env, tokens->str[1]);
+				unset_env_var(prompt_info.env, tokens->str[1]);
+		else if(ft_strcmp(*tokens->str,"echo") == 0)
+				handle_echo(tokens->str);
 		free(prompt_info.prompt);
 		ft_free_list(tokens);
+		}
 	}
 	free_env(prompt_info.env);
 	return 0;

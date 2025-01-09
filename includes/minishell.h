@@ -123,8 +123,7 @@ void cd_builtin(char *path,t_env *env);
 void pwd_builtin(void);
 
 //Echo
-void handle_echo(int argc, char *argv[]);
-
+void handle_echo(char *argv[]);
 //Export
 char *get_key(char *env);
 void handle_export(t_env *env);
