@@ -4,24 +4,50 @@
     ao fazer cd sem argumentos vou para a home
 */
 
-void cd_builtin(char *path,t_env *env)
+int cd_builtin(char *path,t_env *env)
 {
-    //Nao tenho PATH VOU PARA A Home
+    char *pwd;
+    char *old_pwd;
+    old_pwd = getcwd(NULL,0);
+    if(!old_pwd)
+    {
+        perror("cd: getcwd error");
+        return -1;
+    }
+
+     if(ft_strcmp(env->vars->key,"OLDPWD") == 0)
+        export_env_var(env,"OLDPWD",old_pwd);
+
+    //cd sem argumentos
     if(path ==  NULL)
     {
         path = getenv("HOME"); 
         if(!path)
+        {
             ft_putstr_fd("Fodeu apagaram o HOME",2);
+            free(old_pwd);
+            return -1;
+        }
     }
-    char *pwd;
-    
+        //Vou mudar para o diretorio passado
+    if(chdir(path) == -1)
+    {
+        perror("cd");
+        free(old_pwd);
+        return -1;
+    }
+
     pwd = getcwd(NULL,0);
-    if(pwd == NULL)
-        return;
+    if(!pwd)
+    {
+        perror("cd: getcwd error");
+        free(old_pwd);
+        return -1;
+    }
+
     if(ft_strcmp(env->vars->key,"PWD") == 0)
         export_env_var(env,"PWD",pwd);
-    //Vou mudar para o diretorio passado
-    if(chdir(path) == -1)
-        perror("cd");
-    
+    free(old_pwd);
+    free(pwd);
+    return 0;
 }

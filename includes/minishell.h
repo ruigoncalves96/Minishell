@@ -128,13 +128,11 @@ void handle_echo(char *argv[]);
 char *get_key(char *env);
 void handle_export(t_env *env);
 
-    //Exporting variables
-char **create_new_env(char **old_env, int size);
-int add_new_variable(t_builtins *vars, char *new_value, int size);
-int update_existing_var(t_builtins *vars, char *key_to_find, 
-    char *new_value, char *key);
-int export_variable(t_builtins *vars, char *key_to_find, char *new_value);
 
+//EXPORT FUNCTIONS
+int export_env_var(t_env *env, const char *key, const char *value);
+void append_env_var(t_env_var **head, t_env_var *new_var);
+char *get_value(char *env_str);
 
 //ENV FUNCTIONS
 t_env *init_env(char **envp);
@@ -144,10 +142,6 @@ void print_env_list(t_env *env);
 
 //UNSET FUNCTIONS
 int unset_env_var(t_env *env,char *key_to_unset);
-//EXPORT FUNCTIONS
-int export_env_var(t_env *env, const char *key, const char *value);
-void append_env_var(t_env_var **head, t_env_var *new_var);
-char *get_value(char *env_str);
 
 //_____________	Parsing	______________
 
