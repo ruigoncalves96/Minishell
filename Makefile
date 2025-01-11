@@ -35,8 +35,8 @@ SRC_FILES = main.c \
 	    $(addprefix builtins/, exit.c env.c pwd.c echo.c cd.c export.c \
 	   export_variables.c init_builtins.c unset.c new_env.c new_export_variables.c) \
 	    $(addprefix utils/, general_functions.c) \
-	    $(addprefix parsing/, parsing.c expand_tokens.c get_tokens.c parse_syntax.c \
-	   parsing_utils.c error_handling.c )
+	    $(addprefix parsing/, parsing.c expand_vars.c get_tokens.c parse_syntax.c \
+	   convert_quotes.c build_tree.c parsing_utils.c error_handling.c )
 #	    $(addprefix executer/, executer.c) \
 
 SRC  = $(addprefix $(SRC_DIR)/, $(SRC_FILES))

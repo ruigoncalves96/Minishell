@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/11 01:37:24 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/11 15:37:13 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,11 @@ typedef struct	s_prompt_info
 /*
 typedef struct	s_command
 {
-	int	type;
 	char	**command;
 }		t_command;
 
 typedef struct	s_redirect
 {
-	int	type;
 	int	fd;
 	char	*filename;
 	void	**command;
@@ -86,7 +84,6 @@ typedef struct	s_redirect
 
 typedef struct	s_pipe
 {
-	int	type;
 	void	*left;
 	void	*right;
 }		t_pipe;
@@ -164,14 +161,20 @@ char *get_value(char *env_str);
 //Parsing
 t_list	*ft_parsing(t_prompt_info *prompt_info);
 
+//expand_vars_
+void	ft_expand_vars(t_prompt_info *prompt_info);
+
 //get_tokens
 t_list	*ft_build_tokens_list(char *prompt);
 
 //parse_syntax
 bool	ft_parse_syntax(t_list *token_list);
 
-//expand_tokens
-void	ft_expand_vars(t_prompt_info *prompt_info);
+//convert_quotes
+t_list	*ft_convert_quotes(t_list *tokens_list);
+
+//build_tree
+void	ft_build_tree();
 
 //parsing_utils
 size_t	ft_quote_len(char *str);

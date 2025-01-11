@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/11 02:04:35 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/11 17:07:45 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ t_list	*ft_parsing(t_prompt_info *prompt_info)
 		return (NULL);
 	if (ft_parse_syntax(tokens) == false)
 		return (NULL);
-	//	CONVERT QUOTES
+	if (ft_convert_quotes(tokens) == NULL)
+		return (NULL);
 	//	BUILD TREE
 	ft_print_linked_list(tokens);
 	return (tokens);
