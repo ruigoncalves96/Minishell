@@ -47,7 +47,6 @@ t_env *init_env(char **envp)
 
     env->vars = NULL;
     env->var_count = 0; // vai ser bom no futuro para funções como o shell LVL
-    env->env_array = NULL;
 
     i = 0;
     while (envp[i])
@@ -91,6 +90,7 @@ t_env_var *create_env_node(char *env_str)
 
     var->key = get_key(env_str);
     var->value = get_value(env_str);
+    var->is_export_only = 0;
     
     if (!var->key || !var->value)
     {
@@ -136,8 +136,8 @@ void print_env_list(t_env *env)
     current = env->vars;
     while (current)
     {
-
-        printf("%s=%s\n", current->key, current->value);
+        if (!current->is_export_only)  // Só mostra se não for export-only
+            printf("%s=%s\n", current->key, current->value);
         current = current->next;
     }
 }

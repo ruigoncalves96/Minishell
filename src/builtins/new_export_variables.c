@@ -18,15 +18,22 @@ static t_env_var *find_env_var(t_env *env, const char *key)
     }
     return NULL;
 }
+void set_export_only(t_env *env, const char *key, int is_export_only)
+{
+    t_env_var *var = find_env_var(env, key);
+    if (var)
+        var->is_export_only = is_export_only;
+}
 
 /**
  * @brief Export a variable to the environment
  * @param env Environment structure
  * @param key Variable key
  * @param value Variable value
+ * @param is_export_only flag that says if the variable will show on env and export or only in export
  * @return 0 on success, -1 on error
  */
-int export_env_var(t_env *env, const char *key, const char *value)
+int export_env_var(t_env *env, const char *key, const char *value,int is_export_only)
 {
     if (!env || !key || !value)
         return -1;
@@ -42,6 +49,7 @@ int export_env_var(t_env *env, const char *key, const char *value)
             
         free(existing->value);
         existing->value = new_value;
+        existing->is_export_only = is_export_only;
     }
     else
     {

@@ -42,14 +42,13 @@
 typedef struct	s_builtins
 {
     long exit_status;
-    char **minishell_env;
-    char **export_env;
     bool echo_flag;
 }		t_builtins;
 
 typedef struct s_env_var {
     char *key;           // Store just the key (e.g., "SHLVL")
     char *value;         // Store just the value (e.g., "1")
+	int is_export_only; //1 so aparece no export, 0 aparece no env e no export
     struct s_env_var *next;
     struct s_env_var *prev;
 } t_env_var;
@@ -60,8 +59,6 @@ typedef struct s_env_var {
 typedef struct s_env {
     t_env_var *vars;     // Linked list of variables
     int var_count;       // Count of variables
-    char **env_array;    
-    char **env_export;
 } 		t_env;
 
 typedef struct	s_prompt_info
@@ -118,7 +115,7 @@ void init_variables_builtins(t_builtins *builtins);
 void  create_exit_code(t_builtins *builtins,char *arr[]);
 
 //cd
-void cd_builtin(char *path,t_env *env);
+int cd_builtin(char *path,t_env *env);
 //PWD
 void pwd_builtin(void);
 
@@ -130,10 +127,10 @@ void handle_export(t_env *env);
 
 
 //EXPORT FUNCTIONS
-int export_env_var(t_env *env, const char *key, const char *value);
+int export_env_var(t_env *env, const char *key, const char *value,int is_export_only);
 void append_env_var(t_env_var **head, t_env_var *new_var);
 char *get_value(char *env_str);
-
+void set_export_only(t_env *env, const char *key, int is_export_only);
 //ENV FUNCTIONS
 t_env *init_env(char **envp);
 t_env_var *create_env_node(char *env_str);

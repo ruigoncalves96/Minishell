@@ -9,15 +9,15 @@ static t_env_var *copy_env_list(t_env_var *list)
     {
         t_env_var *new_node = ft_calloc(1, sizeof(t_env_var));
         if (!new_node)
-            return NULL; // Erro de alocação
+            return NULL;
 
         new_node->key = ft_strdup(current->key);
+        new_node->is_export_only = current->is_export_only;
         if (current->value)
             new_node->value = ft_strdup(current->value);
         else
             new_node->value = NULL;
 
-        // Insere no final da cópia
         if (!copy)
         {
             copy = new_node;
@@ -35,6 +35,31 @@ static t_env_var *copy_env_list(t_env_var *list)
     }
     return copy;
 }
+static void print_x_declaration_list(t_env_var *vars)
+{
+    t_env_var *current = vars;
+    while (current)
+    {
+        if (current->is_export_only)
+        {
+            // Variáveis que são export-only
+            printf("declare -x %s", current->key);
+            if (current->value)
+                printf("=\"%s\"", current->value); // Corrigido: adicionado o argumento current->value
+            printf("\n");
+        }
+        else
+        {
+            // Variáveis normais
+            printf("declare -x %s", current->key);
+            if (current->value)
+                printf("=\"%s\"", current->value);
+            printf("\n");
+        }
+        current = current->next;
+    }
+}
+
 static void sort_env_list(t_env_var *head)
 {
     if (!head)
@@ -54,15 +79,17 @@ static void sort_env_list(t_env_var *head)
             next_node = current->next;
             if (ft_strcmp(current->key, next_node->key) > 0)
             {
-                // Troca as chaves
                 char *temp_key = current->key;
                 char *temp_value = current->value;
+                int temp_flag = current->is_export_only;
 
                 current->key = next_node->key;
                 current->value = next_node->value;
+                current->is_export_only = next_node->is_export_only;
 
                 next_node->key = temp_key;
                 next_node->value = temp_value;
+                next_node->is_export_only = temp_flag;
 
                 sorted = 0;
             }
@@ -70,18 +97,8 @@ static void sort_env_list(t_env_var *head)
         }
     }
 }
-static void print_x_declaration_list(t_env_var *vars)
-{
-    t_env_var *current = vars;
-    while (current)
-    {
-        printf("declare -x %s", current->key);
-        if (current->value)
-            printf("=\"%s\"", current->value);
-        printf("\n");
-        current = current->next;
-    }
-}
+
+
 
 static void free_env_copy(t_env_var *list)
 {
