@@ -72,7 +72,7 @@ int main(int argc, char *argv[],char *envp[])
 			else if(ft_strcmp(*tokens->str,"export") == 0)
 				export_manager(tokens->str,prompt_info.env);
 			else if(ft_strcmp(*tokens->str,"unset") == 0)
-				unset_env_var(prompt_info.env, tokens->str[1]);
+				manager_unset(tokens->str,prompt_info.env);
 			else if(ft_strcmp(*tokens->str,"echo") == 0)
 				handle_echo(tokens->str);
 		free(prompt_info.prompt);

@@ -141,7 +141,7 @@ void print_env_list(t_env *env);
 
 //UNSET FUNCTIONS
 int unset_env_var(t_env *env,char *key_to_unset);
-
+int manager_unset(char **str, t_env *env);
 //_____________	Parsing	______________
 
 //Parsing
