@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_tokens.c                                       :+:      :+:    :+:   */
+/*   build_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/11 13:32:02 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:01:13 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static size_t	ft_command_len_def(t_list *token, char *str)
 		token_subtype = ft_check_token_subtype(str[i]);
 		if (token_subtype == T_QUOTE)
 		{
-			quote_len += ft_quote_len(&str[i]);
+			quote_len = ft_quote_len(&str[i]);
 			if (quote_len == 0)
 				return (0);
 			i += quote_len;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: randrade <randrade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/11 17:09:55 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:01:16 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ size_t	ft_quote_len(char *str)
 
 	i = 1;
 	quote = *str;
-	if (str[i + 1] == '\0')
-		return (0);
 	while (str[i])
 	{
 		if (str[i] == quote)
