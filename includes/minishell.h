@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 16:00:43 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/11 01:37:24 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <stdbool.h>
 
 //	ERRORS
+#define QUOTE_ERROR "syntax error unclosed quote"
 #define SYNTAX_ERROR "syntax error near unexpected token"
 
 //	TOKEN_TYPE
@@ -166,17 +167,14 @@ t_list	*ft_parsing(t_prompt_info *prompt_info);
 //get_tokens
 t_list	*ft_build_tokens_list(char *prompt);
 
-//split_token
-char	**ft_split_token(char *s, size_t token_len, int token_type);
-
 //parse_syntax
 bool	ft_parse_syntax(t_list *token_list);
 
 //expand_tokens
-void	ft_expand_tokens(t_list *token_list);
+void	ft_expand_vars(t_prompt_info *prompt_info);
 
 //parsing_utils
-void	ft_quote_mode_switch(char *s, bool *active_quote, char *quote);
+size_t	ft_quote_len(char *str);
 void	ft_define_token_type(t_list *token);
 int	ft_check_token_type(char c);
 int	ft_check_token_subtype(char c);
@@ -184,6 +182,7 @@ void	ft_skip_spaces(char **prompt);
 void	ft_free_list(t_list *list); //		CHANGE DIRECTORY TO UTILS
 
 //error_handling
+void	ft_quote_error();
 void	ft_syntax_error(t_list *token_list, t_list *token);
 
 #endif

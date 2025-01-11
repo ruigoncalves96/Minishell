@@ -6,27 +6,26 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 15:51:11 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/11 02:00:09 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ft_quote_mode_switch(char *c, bool *active_quote, char *quote)
+size_t	ft_quote_len(char *str)
 {
-	if ((*c == '"' || *c == 39) && (*c == *quote || *active_quote == false))
+	char	quote;
+	size_t	i;
+
+	i = 1;
+	quote = *str;
+	while (str[i])
 	{
-		if (*active_quote == false)
-		{
-			if (ft_strchr(c + 1, *c) == NULL)
-				return ;
-			else
-				*quote = *c;
-		}
-		else
-			*quote = 0;
-		*active_quote ^= 1;
+		if (str[i] == quote)
+			return (i);
+		i++;
 	}
+	return (0);
 }
 
 void	ft_define_token_type(t_list *token)
@@ -34,8 +33,8 @@ void	ft_define_token_type(t_list *token)
 	int	subtype;
 	int	type;
 
-	subtype = ft_check_token_subtype(token->str[0][0]);
-	type = ft_check_token_type(token->str[0][0]);
+	subtype = ft_check_token_subtype(*token->str);
+	type = ft_check_token_type(*token->str);
 	token->type = type;
 	token->subtype = subtype;
 }
@@ -87,7 +86,7 @@ void	ft_free_list(t_list *list)
 	{
 		temp = list;
 		list = list->next;
-		ft_free_double_array(temp->str);
+		free(temp->str);
 		free(temp);
 	}
 }

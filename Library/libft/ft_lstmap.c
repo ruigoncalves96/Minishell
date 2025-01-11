@@ -6,13 +6,13 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 01:03:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/07 15:53:49 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/10 18:57:18 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstmap(t_list *lst, char **(*f)(char **))
+t_list	*ft_lstmap(t_list *lst, char *(*f)(char *))
 {
 	t_list	*map;
 	t_list	*new_node;

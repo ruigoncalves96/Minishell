@@ -6,76 +6,88 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/07 18:59:12 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/11 01:54:04 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static unsigned int	ft_token_len(char *prompt)
+static size_t	ft_token_len_def(t_list *token, char *str)
 {
 	size_t	i;
+	size_t	quote_len;
 	char	token_type;
-	char	quote;
-	bool	active_quote;
+	char	token_subtype;
 
-	quote = 0;
-	active_quote = false;
-	i = 0;
-	while (prompt[i])
+	if (ft_strchr(OPERATOR_TOKENS, *str) != NULL)
 	{
-		token_type = ft_check_token_type(prompt[i]);
-		ft_quote_mode_switch(&prompt[i], &active_quote, &quote);
-		if (active_quote == false && token_type == OPERATOR)
+		token->subtype = ft_check_token_subtype(*str);
+		token->type = OPERATOR;
+		if ((str[0] == '>' && str[1] == '>') || (str[0] == '<' && str[1] == '<'))
+			return (2);
+		return (1);
+	}
+	quote_len = 0;
+	i = 0;
+	while (str[i])
+	{
+		token_type = ft_check_token_type(str[i]);
+		token_subtype = ft_check_token_subtype(str[i]);
+		if (token_subtype == T_QUOTE)
+		{
+			quote_len += ft_quote_len(&str[i]);
+			if (quote_len == 0)
+				return (ft_quote_error(), 0);
+			i += quote_len;
+			token->subtype = T_QUOTE;
+		}
+		if (token_type == OPERATOR || token_subtype == T_SPACE)
 			break ;
 		i++;
 	}
-	if (i == 0)
-	{
-		if ((prompt[0] == '>' && prompt[1] == '>')
-			|| (prompt[0] == '<' && prompt[1] == '<'))
-			i = 2;
-		else
-			i = 1;
-	}
+	token->type = COMMAND;
+	if (!token->subtype)
+		token->subtype = T_WORD;
 	return (i);
 }
 
 static t_list	*ft_create_token(char **prompt)
 {
-	char	**token;
-	size_t	token_len;
-	int		token_type;
+	t_list	*token;
+	char	*str;
+	size_t	len;
 
-	token_len = ft_token_len(*prompt);
-	token_type = ft_check_token_type(**prompt);
-	token = ft_split_token(*prompt, token_len, token_type);
-	if (token == NULL)
+	token = ft_lstnew(NULL);
+	if (!token)
 		return (NULL);
-	*prompt += token_len;
-	return (ft_lstnew(token));
+	len = ft_token_len_def(token, *prompt);
+	if (len == 0)
+		return (free(token), NULL);
+	str = ft_calloc(len + 1, sizeof(char));
+	if (!str)
+		return (free(token), NULL);
+	ft_strlcpy(str, *prompt, len + 1);
+	token->str = str;
+	*prompt += len;
+	return (token);
 }
 
 t_list	*ft_build_tokens_list(char *prompt)
 {
-	t_list	*tokens;
-	t_list	*node;
+	t_list	*command;
+	t_list	*token;
 
-	tokens = NULL;
+	command = NULL;
 	while (*prompt)
 	{
 		ft_skip_spaces(&prompt);
 		if (*prompt)
 		{
-			node = ft_create_token(&prompt);
-			if (!node)
-			{
-				ft_free_list(tokens);
-				return (NULL);
-			}
-			ft_lstadd_last(&tokens, node);
-			ft_define_token_type(node);
+			token = ft_create_token(&prompt);
+			if (!token)
+				return (ft_free_list(command), NULL);
+			ft_lstadd_last(&command, token);
 		}
 	}
-	return (tokens);
+	return (command);
 }

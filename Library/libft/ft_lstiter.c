@@ -6,13 +6,13 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 00:51:30 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/05 16:03:04 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/10 18:56:46 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstiter(t_list *lst, char **(*f)(char **))
+void	ft_lstiter(t_list *lst, char *(*f)(char *))
 {
 	if (!lst || !f)
 		return ;

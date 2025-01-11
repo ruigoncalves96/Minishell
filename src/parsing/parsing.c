@@ -6,26 +6,20 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 16:32:44 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/11 02:04:35 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	ft_print_linked_list(t_list *list)
+/*static */void	ft_print_linked_list(t_list *list)
 {
 	t_list	*temp;
-	int	i;
 
 	temp = list;
 	while (temp)
 	{
-		i = 0;
-		while (temp->str[i])
-		{
-			ft_printf("token[%d] = %s\n", i, temp->str[i]);
-			i++;
-		}
+		ft_printf("token = %s\n", temp->str);
 		if (temp->type == COMMAND)
 			ft_printf("      = type = COMMAND\n");
 		else if (temp->type == OPERATOR)
@@ -50,13 +44,14 @@ t_list	*ft_parsing(t_prompt_info *prompt_info)
 {
 	t_list	*tokens;
 	
+//	ft_expand_vars(prompt_info);
 	tokens = ft_build_tokens_list(prompt_info->prompt);
+	if (!tokens)
+		return (NULL);
 	if (ft_parse_syntax(tokens) == false)
 		return (NULL);
-	//	CONVERT QUOTES && EXPAND DOLLAR
-//	ft_expand_tokens(tokens);
+	//	CONVERT QUOTES
 	//	BUILD TREE
 	ft_print_linked_list(tokens);
-//	ft_free_list(tokens);
 	return (tokens);
 }

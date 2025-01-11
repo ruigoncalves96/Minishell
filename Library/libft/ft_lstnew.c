@@ -6,18 +6,18 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 17:24:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/07 15:53:33 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/10 19:41:29 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstnew(char **content)
+t_list	*ft_lstnew(char *content)
 {
 	t_list	*lst;
 
-	lst = (t_list *) ft_calloc(1, sizeof(t_list));
-	if (lst == NULL)
+	lst = ft_calloc(1, sizeof(t_list));
+	if (!lst)
 		return (NULL);
 	lst->str = content;
 	lst->type = 0;
