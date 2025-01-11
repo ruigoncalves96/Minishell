@@ -28,10 +28,14 @@ static void welcome(void)
 	[X] export
 
 	[] pwd nao esta a mudar no env
-	[] se colocarem export e um valor a frente ele nao aparece no env mas aparece no export ex(export cbum)
-	[] dar merge nas duas funçoes de export
-	[] fazer com que seja possivel dar export em mais que uma variavel seguida 
+	[X] se colocarem export e um valor a frente ele nao aparece no env mas aparece no export ex(export cbum)
+	[X] dar merge nas duas funçoes de export
+	[X] fazer com que seja possivel dar export em mais que uma variavel seguida 
+
+	[] deixar a pessoa dar usent a mais que uma variavel
 */
+
+
 int main(int argc, char *argv[],char *envp[])
 {
 	t_builtins	builtins;
@@ -64,14 +68,12 @@ int main(int argc, char *argv[],char *envp[])
 			else if(ft_strcmp(*tokens->str,"pwd") == 0)
 		    	pwd_builtin();
 			else if(ft_strcmp(*tokens->str,"cd") == 0)
-		   	 	cd_builtin(NULL,prompt_info.env);
-		else if(ft_strcmp(*tokens->str,"arr") == 0)//export sem argumentos
-				handle_export(prompt_info.env);
-		else if(ft_strcmp(*tokens->str,"export") == 0)
-				export_env_var(prompt_info.env, tokens->str[1], tokens->str[2],0);
-		else if(ft_strcmp(*tokens->str,"unset") == 0)
+		   	 	cd_builtin(NULL,prompt_info.env); 
+			else if(ft_strcmp(*tokens->str,"export") == 0)
+				export_manager(tokens->str,prompt_info.env);
+			else if(ft_strcmp(*tokens->str,"unset") == 0)
 				unset_env_var(prompt_info.env, tokens->str[1]);
-		else if(ft_strcmp(*tokens->str,"echo") == 0)
+			else if(ft_strcmp(*tokens->str,"echo") == 0)
 				handle_echo(tokens->str);
 		free(prompt_info.prompt);
 		ft_free_list(tokens);

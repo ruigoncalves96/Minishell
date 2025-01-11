@@ -45,7 +45,7 @@ static void print_x_declaration_list(t_env_var *vars)
             // Variáveis que são export-only
             printf("declare -x %s", current->key);
             if (current->value)
-                printf("=\"%s\"", current->value); // Corrigido: adicionado o argumento current->value
+                printf("=\"%s\"", current->value);
             printf("\n");
         }
         else

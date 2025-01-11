@@ -48,7 +48,7 @@ typedef struct	s_builtins
 typedef struct s_env_var {
     char *key;           // Store just the key (e.g., "SHLVL")
     char *value;         // Store just the value (e.g., "1")
-	int is_export_only; //1 so aparece no export, 0 aparece no env e no export
+	int is_export_only; //  1 so aparece no export, 0 aparece no env e no export
     struct s_env_var *next;
     struct s_env_var *prev;
 } t_env_var;
@@ -131,6 +131,8 @@ int export_env_var(t_env *env, const char *key, const char *value,int is_export_
 void append_env_var(t_env_var **head, t_env_var *new_var);
 char *get_value(char *env_str);
 void set_export_only(t_env *env, const char *key, int is_export_only);
+
+int export_manager(char **str,t_env *env);
 //ENV FUNCTIONS
 t_env *init_env(char **envp);
 t_env_var *create_env_node(char *env_str);
