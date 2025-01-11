@@ -13,7 +13,7 @@ char *get_key(char *env)
 }
 
 void append_env_var(t_env_var **head, t_env_var *new_var)
-{
+{ 
     if (!*head)
     {
         *head = new_var;
