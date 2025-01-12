@@ -97,33 +97,39 @@ static int check_digit(const char *str)
 }
 
 //Create exit code
-void create_exit_code(t_builtins *builtins, char *arr[])
+void exit_manager(char **args)
 {
-    long num = 0;
+    long num;
 
-    if (!arr[1]) 
+    
+    printf("exit\n");
+    
+    if (array_size(args) == 1)
+        exit(0);
+    
+    if (!check_digit(args[1]))  // Se não for número
     {
-        builtins->exit_status = 0;
-        return;
+        printf("bash: exit: %s: numeric argument required\n", args[1]);
+        exit(2);
     }
-    if (!check_digit(arr[1])) // Caso não seja um número válido
+    
+    if (array_size(args) > 2)  // Muitos argumentos
     {
-        printf("bash: exit: %s: numeric argument required\n", arr[1]);
-        builtins->exit_status = 2;
-        return;
+        printf("bash: exit: too many arguments\n");
+        return;  // Não sai se houver múltiplos argumentos
     }
-    if (!ft_atol(arr[1], &num)) // Detecta overflow
+    
+    if (!ft_atol(args[1], &num))  // Verifica overflow
     {
-        printf("bash: exit: %s: numeric argument required\n", arr[1]);
-        builtins->exit_status = 2;
-        return;
+        printf("bash: exit: %s: numeric argument required\n", args[1]);
+        exit(2);
     }
-    if (num > 255 || num < 0) // Normaliza valores fora de 0-255
-    {
-        num = num % 256;
-        if (num < 0)
-            num += 256;
-    }
-    builtins->exit_status = num;
+    
+    // Normaliza o número para 0-255
+    num = num % 256;
+    if (num < 0)
+        num += 256;
+        
+    exit((int)num);
 }
 

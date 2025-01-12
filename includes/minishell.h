@@ -112,10 +112,10 @@ char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 void init_variables_builtins(t_builtins *builtins);
 
 //Exit
-void  create_exit_code(t_builtins *builtins,char *arr[]);
+void exit_manager(char **args);
 
 //cd
-int cd_builtin(char *path,t_env *env);
+int cd_manager(char **str, t_env *env);
 //PWD
 void pwd_builtin(void);
 

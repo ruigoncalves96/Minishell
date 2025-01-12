@@ -27,15 +27,53 @@ static void welcome(void)
 	[X] Unset
 	[X] export
 
-	[] pwd nao esta a mudar no env
+	[X] pwd nao esta a mudar no env
 	[X] se colocarem export e um valor a frente ele nao aparece no env mas aparece no export ex(export cbum)
 	[X] dar merge nas duas funçoes de export
 	[X] fazer com que seja possivel dar export em mais que uma variavel seguida 
 
-	[] deixar a pessoa dar usent a mais que uma variavel
+	[X] deixar a pessoa dar usent a mais que uma variavel
+	[X] criar funcao que diga se e um builtin
 */
 
+static int is_builtin(char *cmd)
+{
+    const char *builtins[] = {"pwd", "echo", "env", "cd", "export", "unset", "exit", NULL};
+    int i;
 
+    i = 0;
+    while (builtins[i])
+    {
+        if (ft_strcmp(cmd, builtins[i]) == 0)
+            return (1);
+        i++;
+    }
+    return (0);
+}
+static int execute_builtin(t_list *tokens, t_prompt_info prompt_info)
+{
+    if (!tokens || !tokens->str || !*tokens->str)
+        return (0);
+
+    if (!is_builtin(*tokens->str))
+        return (0);
+
+    if (ft_strcmp(*tokens->str, "env") == 0)
+        print_env_list(prompt_info.env);
+    else if (ft_strcmp(*tokens->str, "pwd") == 0)
+        pwd_builtin();
+    else if (ft_strcmp(*tokens->str, "cd") == 0)
+        cd_manager(tokens->str, prompt_info.env);
+    else if (ft_strcmp(*tokens->str, "export") == 0)
+        export_manager(tokens->str, prompt_info.env);
+    else if (ft_strcmp(*tokens->str, "unset") == 0)
+        manager_unset(tokens->str, prompt_info.env);
+    else if (ft_strcmp(*tokens->str, "echo") == 0)
+        handle_echo(tokens->str);
+	else if (ft_strcmp(*tokens->str, "exit") == 0)
+		exit_manager(tokens->str);
+    return (1);
+}
 int main(int argc, char *argv[],char *envp[])
 {
 	t_builtins	builtins;
@@ -63,18 +101,7 @@ int main(int argc, char *argv[],char *envp[])
 			tokens = ft_parsing(&prompt_info);
 		if(tokens)
 		{
-			if(ft_strcmp(*tokens->str,"env") == 0)
-				print_env_list(prompt_info.env);
-			else if(ft_strcmp(*tokens->str,"pwd") == 0)
-		    	pwd_builtin();
-			else if(ft_strcmp(*tokens->str,"cd") == 0)
-		   	 	cd_builtin(NULL,prompt_info.env); 
-			else if(ft_strcmp(*tokens->str,"export") == 0)
-				export_manager(tokens->str,prompt_info.env);
-			else if(ft_strcmp(*tokens->str,"unset") == 0)
-				manager_unset(tokens->str,prompt_info.env);
-			else if(ft_strcmp(*tokens->str,"echo") == 0)
-				handle_echo(tokens->str);
+		execute_builtin(tokens,prompt_info);
 		free(prompt_info.prompt);
 		ft_free_list(tokens);
 		}

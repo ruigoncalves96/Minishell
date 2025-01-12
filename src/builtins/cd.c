@@ -1,59 +1,83 @@
 #include "../../includes/minishell.h"
 
 /*
-    ao fazer cd sem argumentos vou para a home
+    [X] cd sem argumentos deve ir para a home
+    [X] se o argumento do cd existir deve ir para a pasta
+    [X] se ele navegar para o diretorio tenho de alterar as variaveis dentro do env (PWD OLDPWD)
+    []  Falta so fazer proteçoes para as variaveis (PWD e OLDPWD)
 */
+
 static int create_pwd(char **pwd)
 {
-    *pwd = getcwd(NULL,0);
-    if(!pwd)
+    *pwd = getcwd(NULL, 0);
+    if (!pwd)
     {
         perror("cd: getcwd error");
-        return -1;
+        return (-1);
     }
-    return 0;
+    return (0);
 }
 
-static int handle_cd_alone(char **path)
+static int validate_arguments(char **str)
 {
-    if(*path == NULL)
+    if (array_size(str) > 3)
     {
-        *path = getenv("HOME");
-        if(!*path)
+        ft_putstr_fd("cd: too many arguments", 2);
+        return (-1);
+    }
+    return (0);
+}
+
+static char *get_target_path(char *path)
+{
+    if (path == NULL)
+    {
+        path = getenv("HOME");
+        if (!path)
         {
-            ft_putstr_fd("Fodeu apagaram o HOME", 2);
-            return -1;
+            ft_putstr_fd("cd: HOME not set", 2);
+            return (NULL);
         }
     }
-    return 0;
+    return (path);
 }
-int cd_builtin(char *path,t_env *env)
+
+static int update_pwd_vars(t_env *env, char *old_pwd)
 {
-    char *pwd;
+    char *new_pwd;
+
+    if (create_pwd(&new_pwd) == -1)
+        return (-1);
+
+    export_env_var(env, "OLDPWD", old_pwd, 0);
+    export_env_var(env, "PWD", new_pwd, 0);
+    free(new_pwd);
+    return (0);
+}
+
+int cd_manager(char **str, t_env *env)
+{
     char *old_pwd;
+    char *path;
 
-    if(create_pwd(&old_pwd) == -1)
-        return -1;
+    if (validate_arguments(str) == -1)
+        return (-1);
+    if (create_pwd(&old_pwd) == -1)
+        return (-1);
 
-    if(ft_strcmp(env->vars->key,"OLDPWD") == 0) // Proteçao caso apagem o OLDPWD ele ja nao vai voltar a ser crido
-        export_env_var(env,"OLDPWD",old_pwd,0);
+    path = get_target_path(str[1]);
+    if (!path)
+        return (free(old_pwd), -1);
 
-    if(handle_cd_alone(&path) == -1)
-        return(free(old_pwd),-1);
-
-    if(chdir(path) == -1)
+    if (chdir(path) == -1)
     {
         perror("cd");
-        return (free(old_pwd),-1);
+        return (free(old_pwd), -1);
     }
 
-    if(create_pwd(&pwd) == -1)
-          return (free(old_pwd), -1);
-
-    if(ft_strcmp(env->vars->key,"PWD") == 0)
-        export_env_var(env,"PWD",pwd,0);
+    if (update_pwd_vars(env, old_pwd) == -1)
+        return (free(old_pwd), -1);
 
     free(old_pwd);
-    free(pwd);
-    return 0;
+    return (0);
 }
