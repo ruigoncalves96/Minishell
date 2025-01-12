@@ -34,22 +34,11 @@ static void welcome(void)
 
 	[X] deixar a pessoa dar usent a mais que uma variavel
 	[X] criar funcao que diga se e um builtin
+
+	[] criar funcao que veja se o comando passado e um comando 
 */
 
-static int is_builtin(char *cmd)
-{
-    const char *builtins[] = {"pwd", "echo", "env", "cd", "export", "unset", "exit", NULL};
-    int i;
 
-    i = 0;
-    while (builtins[i])
-    {
-        if (ft_strcmp(cmd, builtins[i]) == 0)
-            return (1);
-        i++;
-    }
-    return (0);
-}
 static int execute_builtin(t_list *tokens, t_prompt_info prompt_info)
 {
     if (!tokens || !tokens->str || !*tokens->str)
@@ -79,7 +68,7 @@ int main(int argc, char *argv[],char *envp[])
 	t_builtins	builtins;
 	t_prompt_info	prompt_info;
 	t_list		*tokens;
-	
+
 	(void)argv;
 	if (argc != 1)
 	        return (1);
@@ -101,7 +90,14 @@ int main(int argc, char *argv[],char *envp[])
 			tokens = ft_parsing(&prompt_info);
 		if(tokens)
 		{
-		execute_builtin(tokens,prompt_info);
+		if(execute_builtin(tokens,prompt_info) == 0)//Comando externo
+		{
+			if(validate_command_path(*tokens->str,prompt_info.env) == 0)
+			{
+				printf("Comando existe yupii\n");
+			}
+		
+		}
 		free(prompt_info.prompt);
 		ft_free_list(tokens);
 		}

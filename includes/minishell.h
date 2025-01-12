@@ -41,7 +41,6 @@
 
 typedef struct	s_builtins
 {
-    long exit_status;
     bool echo_flag;
 }		t_builtins;
 
@@ -110,7 +109,7 @@ char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 
 //Init Builtins
 void init_variables_builtins(t_builtins *builtins);
-
+int is_builtin(char *cmd);
 //Exit
 void exit_manager(char **args);
 
@@ -142,6 +141,15 @@ void print_env_list(t_env *env);
 //UNSET FUNCTIONS
 int unset_env_var(t_env *env,char *key_to_unset);
 int manager_unset(char **str, t_env *env);
+
+
+//_____________	Executing______________
+char *get_env_value(t_env *env,const char *key);
+char *get_command_path(char *command, t_env *env);
+int validate_command_path(char *command, t_env *env);
+
+
+
 //_____________	Parsing	______________
 
 //Parsing
