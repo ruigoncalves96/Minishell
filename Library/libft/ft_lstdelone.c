@@ -6,7 +6,7 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 19:31:52 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/03 17:43:21 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/13 16:35:32 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ void	ft_lstdelone(t_list *lst)
 		return ;
 	if (lst->str)
 		free(lst->str);
-	previous->next = next;
-	next->previous = previous;
+	if (previous)
+		previous->next = next;
+	if (next)
+		next->previous = previous;
 	free(lst);
 	lst = NULL;
 }

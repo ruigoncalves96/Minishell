@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/11 15:37:13 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/13 15:48:36 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct s_env_var {
     char *key;           // Store just the key (e.g., "SHLVL")
     char *value;         // Store just the value (e.g., "1")
     struct s_env_var *next;
-} t_env_var;
+} 		t_env_var;
 
 /**
  * @brief Main environment management structure
@@ -69,36 +69,6 @@ typedef struct	s_prompt_info
 	char	*prompt;
 	t_env	*env;
 }		t_prompt_info;
-/*
-typedef struct	s_command
-{
-	char	**command;
-}		t_command;
-
-typedef struct	s_redirect
-{
-	int	fd;
-	char	*filename;
-	void	**command;
-}		t_redirect;
-
-typedef struct	s_pipe
-{
-	void	*left;
-	void	*right;
-}		t_pipe;
-
-typedef struct	s_tree_node
-{
-	int	type;
-	int	subtype;
-	t_command	command;
-	t_redirect	redirect;
-	t_pipe		pipe;
-	struct s_tree_node	*left;
-	struct s_tree_node	*right;
-}		t_node_tree;
-*/
 
 //General functions
 void	ft_print_double_array(char **array);
@@ -159,10 +129,8 @@ char *get_value(char *env_str);
 //_____________	Parsing	______________
 
 //Parsing
+void	ft_print_linked_list(t_list *list);
 t_list	*ft_parsing(t_prompt_info *prompt_info);
-
-//expand_vars_
-void	ft_expand_vars(t_prompt_info *prompt_info);
 
 //get_tokens
 t_list	*ft_build_tokens_list(char *prompt);
@@ -173,14 +141,23 @@ bool	ft_parse_syntax(t_list *token_list);
 //convert_quotes
 t_list	*ft_convert_quotes(t_list *tokens_list);
 
+//expand_vars
+void	ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list);
+
 //build_tree
 void	ft_build_tree();
 
+//find_var_value
+size_t	ft_var_key_len(char *str);
+char	*ft_find_var_value(t_env_var *env, char *str);
+
 //parsing_utils
 size_t	ft_quote_len(char *str);
+char	*ft_find_var(char *str);
 void	ft_define_token_type(t_list *token);
 int	ft_check_token_type(char c);
 int	ft_check_token_subtype(char c);
+size_t	ft_strlen_until_spaces(char *str);
 void	ft_skip_spaces(char **prompt);
 void	ft_free_list(t_list *list); //		CHANGE DIRECTORY TO UTILS
 

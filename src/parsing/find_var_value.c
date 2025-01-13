@@ -1,0 +1,79 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   find_var_value.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/12 14:17:06 by randrade          #+#    #+#             */
+/*   Updated: 2025/01/13 17:36:00 by randrade         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/minishell.h"
+
+size_t	ft_var_key_len(char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (ft_isalpha(str[i]) || ft_isdigit(str[i]) || str[i] == '_')
+			i++;
+		else
+			break ;
+	}
+	return (i);
+}
+
+static char	*ft_get_var_key(char *prompt)
+{
+	char	*key;
+	size_t	key_len;
+
+	prompt++;
+	key_len = ft_var_key_len(prompt);
+	if (key_len == 0)
+		return (NULL);
+	key = ft_calloc(key_len + 1, sizeof(char));
+	if (!key)
+		return (NULL);
+	ft_strlcpy(key, prompt, key_len + 1);
+	prompt += key_len;
+	return (key);
+}
+
+static char	*ft_get_var_value(t_env_var *env, char *key)
+{
+	t_env_var	*var;
+	char	*var_value;
+
+	var_value = NULL;
+	var = env;
+	while (var)
+	{
+		if (ft_strncmp(var->key, key, ft_strlen(key)) == 0)
+		{
+			var_value = var->value;
+			break ;
+		}
+		var = var->next;
+	}
+	return (var_value);
+}
+
+char	*ft_find_var_value(t_env_var *env, char *str)
+{
+	char	*var_key;
+	char	*var_value;
+
+	var_key = ft_get_var_key(str);
+	if (!var_key)
+		return (NULL);
+	var_value = ft_get_var_value(env, var_key);
+	free(var_key);
+	if (!var_value)
+		return (NULL);
+	return (var_value);
+}

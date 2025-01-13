@@ -6,7 +6,7 @@
 /*   By: randrade <randrade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/11 18:01:16 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/13 15:07:35 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,29 @@ size_t	ft_quote_len(char *str)
 		i++;
 	}
 	return (0);
+}
+
+char	*ft_find_var(char *str)
+{
+	size_t	quote_len;
+	bool	double_quote;
+
+	quote_len = 0;
+	double_quote = false;
+	while (*str)
+	{
+		if (*str == '"')
+			double_quote ^= 1;
+		else if (double_quote == false && *str == '\'')
+		{
+			quote_len += ft_quote_len(str);
+			str += quote_len;
+		}
+		if (*str == '$')
+			return (str);
+		str++;
+	}
+	return (NULL);
 }
 
 void	ft_define_token_type(t_list *token)
@@ -65,6 +88,20 @@ int	ft_check_token_subtype(char c)
 		return (T_DOLLAR);
 	else
 		return (T_WORD);
+}
+
+size_t	ft_strlen_until_spaces(char *str)
+{
+	size_t	i;
+	
+	i = 0;
+	while (str[i])
+	{
+		if (ft_check_token_subtype(str[i]) == T_SPACE)
+			return (i);
+		i++;
+	}
+	return (i);
 }
 
 void	ft_skip_spaces(char **prompt)
