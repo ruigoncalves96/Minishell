@@ -33,8 +33,9 @@ LIBFT     = $(LIBFT_DIR)/libft.a
 
 SRC_FILES = main.c \
 	    $(addprefix builtins/, exit.c  pwd.c echo.c cd.c  \
-	    init_builtins.c  new_env.c new_export_variables.c new_unset.c new_export.c manager_export.c manager_unset.c prepare_path.c) \
-	    $(addprefix utils/, general_functions.c) \
+	    init_builtins.c  new_env.c new_export_variables.c new_unset.c new_export.c manager_export.c manager_unset.c) \
+	    $(addprefix executer/, prepare_path.c redirections.c) \
+		$(addprefix utils/, general_functions.c) \
 	    $(addprefix parsing/, parsing.c get_tokens.c parsing_utils.c split_token.c \
 	   parse_syntax.c error_handling.c expand_tokens.c)
 #	    $(addprefix executer/, executer.c) \
@@ -68,7 +69,7 @@ $(NAME): $(LIBFT) $(OBJS)
 
 valgrind: $(NAME)
 	@echo "$(YELLOW)Running with Valgrind... 🧠$(RESET)"
-	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME)
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./$(NAME)
 
 clean:
 	@echo "$(RED)Cleaning object files...$(RESET)"

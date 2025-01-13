@@ -4,7 +4,6 @@
     [X] cd sem argumentos deve ir para a home
     [X] se o argumento do cd existir deve ir para a pasta
     [X] se ele navegar para o diretorio tenho de alterar as variaveis dentro do env (PWD OLDPWD)
-    []  Falta so fazer proteçoes para as variaveis (PWD e OLDPWD)
 */
 
 static int create_pwd(char **pwd)

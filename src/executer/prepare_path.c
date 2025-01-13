@@ -1,10 +1,10 @@
 #include "../../includes/minishell.h"
 
 /*
-   [] Conseguir o path dentro da minha linked list e returnar o value dele
-   [] Separar o conteudo do PATH(com :)
-   [] juntar o caminho dado para formar caminho absoluto /bin/ + /ls
-   [] usar funcao access para verificara se o comando e executavel
+   [X] Conseguir o path dentro da minha linked list e returnar o value dele
+   [X] Separar o conteudo do PATH(com :)
+   [X] juntar o caminho dado para formar caminho absoluto /bin/ + /ls
+   [X] usar funcao access para verificar se o comando e executavel
 */
 
 ///@return funcao vai returnar value de uma variavel existente no sistema

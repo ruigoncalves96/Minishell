@@ -19,6 +19,8 @@
 #include <readline/history.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <sys/wait.h>
+
 
 //	ERRORS
 #define SYNTAX_ERROR "syntax error near unexpected token"
