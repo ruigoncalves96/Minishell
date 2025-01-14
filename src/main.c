@@ -152,7 +152,7 @@ int main(int argc, char *argv[],char *envp[])
 				path = get_command_path(*tokens->str,prompt_info.env);
                                 env_array = convert_env_to_array(prompt_info.env);
 				printf("Este e o path do mando que passaste: %s\n",path);
-				 printf("%d\n",FOPEN_MAX);
+				
 				if(child == 0)
                                  {
 					//[X]PATH da variavel
