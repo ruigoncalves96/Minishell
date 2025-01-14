@@ -6,7 +6,7 @@
 /*   By: randrade <randrade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/13 15:07:35 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/14 17:37:23 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*ft_find_var(char *str)
 			quote_len += ft_quote_len(str);
 			str += quote_len;
 		}
-		if (*str == '$')
+		if (*str == '$' && ft_var_key_len(str + 1))
 			return (str);
 		str++;
 	}
@@ -112,6 +112,25 @@ void	ft_skip_spaces(char **prompt)
 			break ;
 		(*prompt)++;
 	}
+}
+
+void	ft_insert_list(t_list **tokens_list, t_list *token, t_list *new_list)
+{
+	t_list	*temp;
+
+	temp = new_list;
+	new_list->previous = token->previous;
+	if (token->previous)
+		token->previous->next = new_list;
+	else
+		*tokens_list = new_list;
+	temp = ft_lstlast(temp);
+	temp->next = token->next;
+	if (token->next)
+		token->next->previous = temp;
+	free(token->str);
+	free(token);
+	token = NULL;
 }
 
 //	ADD THIS FUNCTION TO UTILS DIRECTORY

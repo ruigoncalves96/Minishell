@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 11:32:42 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/11 12:54:44 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/14 14:22:04 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,12 @@ static char	*ft_convert(t_list *token)
 		{
 			if (ft_ignore_quote(token->str[j], &quote) == true)
 				j++;
-			new_str[i++] = token->str[j++];
+			else 
+				new_str[i++] = token->str[j++];
 		}
 	}
 	new_str[i] = '\0';
-	free(token->str);
-	return (new_str);
+	return (free(token->str), new_str);
 }
 
 t_list	*ft_convert_quotes(t_list *tokens_list)

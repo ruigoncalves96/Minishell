@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 20:43:28 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/13 17:44:21 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/14 17:37:42 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,61 +58,51 @@ static char	*ft_expand(t_env_var *env, t_list *token)
 	return (token->str);
 }
 
-static void	ft_insert_list(t_list **tokens_list, t_list *token, t_list *new_list)
+static t_list	*ft_build_list(t_list **new_list, t_list *token)
 {
-	t_list	*temp;
-
-	temp = new_list;
-	new_list->previous = token->previous;
-	if (token->previous)
-		token->previous->next = new_list;
-	else
-		*tokens_list = new_list;
-	while (temp->next != NULL)
-		temp = temp->next;
-	temp->next = token->next;
-	if (token->next)
-		token->next->previous = temp;
-	ft_lstdelone(token);
-}
-
-static t_list	*ft_split_and_link(t_list **tokens_list, t_list *token)
-{
-	t_list	*new_list;
 	t_list	*new_token;
 	char	*token_str;
 	char	*new_str;
 	size_t	wordlen;
 
-	new_list = NULL;
-	new_token = NULL;
 	token_str = token->str;
-	new_str = NULL;
-	if (ft_strlen(token_str) != ft_strlen_until_spaces(token_str))
+	while (*token_str)
 	{
-		while (*token_str)
-		{
-			wordlen = ft_strlen_until_spaces(token_str);
-			new_str = ft_calloc(wordlen + 1, sizeof(char));
-			if (!new_str)
-				return (NULL);
-			ft_strlcpy(new_str, token_str, wordlen + 1);
-			new_token = ft_lstnew(new_str);
-			if (!new_token)
-				return (free(new_str), NULL);
-			ft_lstadd_last(&new_list, new_token);
-			new_token->type = COMMAND;
-			new_token->subtype = T_WORD;
-			token_str += wordlen;
-			ft_skip_spaces(&token_str);
-		}
-		ft_insert_list(tokens_list, token, new_list);
-		return (new_list);
+		wordlen = ft_strlen_until_spaces(token_str);
+		new_str = ft_calloc(wordlen + 1, sizeof(char));
+		if (!new_str)
+			return (NULL);
+		ft_strlcpy(new_str, token_str, wordlen + 1);
+		new_token = ft_lstnew(new_str);
+		if (!new_token)
+			return (free(new_str), NULL);
+		ft_lstadd_last(new_list, new_token);
+		new_token->type = COMMAND;
+		new_token->subtype = T_WORD;
+		token_str += wordlen;
+		ft_skip_spaces(&token_str);
 	}
-	return (NULL);
+	return (*new_list);
 }
 
-void	ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
+
+static t_list	*ft_split_and_link(t_list **tokens_list, t_list **token)
+{
+	t_list	*new_list;
+
+	new_list = NULL;
+	if (ft_strlen((*token)->str) != ft_strlen_until_spaces((*token)->str))
+	{
+		ft_build_list(&new_list, *token);
+		if (!new_list)
+			return (NULL);
+		ft_insert_list(tokens_list, *token, new_list);
+		*token = new_list;
+	}
+	return (*tokens_list);
+}
+
+t_list	*ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
 {
 	t_list	*token;
 
@@ -122,9 +112,10 @@ void	ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
 		if (ft_find_var(token->str))
 		{
 			ft_expand(prompt_info->env->vars, token);
-			ft_split_and_link(tokens_list, token);
-			// 	RETURN ERROR;
+			if (ft_split_and_link(tokens_list, &token) == NULL)
+				return (ft_free_list(*tokens_list), NULL);
 		}
 		token = token->next;
 	}
+	return (*tokens_list);
 }

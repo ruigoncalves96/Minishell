@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/13 17:23:23 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/14 17:37:57 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 	while (temp)
 	{
 		ft_printf("token = %s\n", temp->str);
+//		if (temp->previous)
+//			ft_printf("token->previous = %s\n", temp->previous->str);
+//		else
+//			ft_printf("token->previous = NULL\n");
 		if (temp->type == COMMAND)
 			ft_printf("      = type = COMMAND\n");
 		else if (temp->type == OPERATOR)
@@ -49,7 +53,8 @@ t_list	*ft_parsing(t_prompt_info *prompt_info)
 		return (NULL);
 	if (ft_parse_syntax(tokens_list) == false)
 		return (NULL);
-	ft_expand_vars(prompt_info, &tokens_list);
+	if (ft_expand_vars(prompt_info, &tokens_list) == NULL)
+		return (NULL);
 	if (ft_convert_quotes(tokens_list) == NULL)
 		return (NULL);
 	//	FINISH TOKENS;

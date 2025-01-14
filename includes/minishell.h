@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/13 15:48:36 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/14 17:05:36 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ bool	ft_parse_syntax(t_list *token_list);
 t_list	*ft_convert_quotes(t_list *tokens_list);
 
 //expand_vars
-void	ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list);
+t_list	*ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list);
 
 //build_tree
 void	ft_build_tree();
@@ -159,6 +159,7 @@ int	ft_check_token_type(char c);
 int	ft_check_token_subtype(char c);
 size_t	ft_strlen_until_spaces(char *str);
 void	ft_skip_spaces(char **prompt);
+void	ft_insert_list(t_list **tokens_list, t_list *token, t_list *new_list);
 void	ft_free_list(t_list *list); //		CHANGE DIRECTORY TO UTILS
 
 //error_handling
