@@ -17,6 +17,23 @@ static void echo(char **arr, bool echo_flag)
     printf("\n");
 }
 
+static bool is_valid_n_flag(const char *str)
+{
+    int i;
+
+    if (!str || str[0] != '-')
+        return false;
+    
+    i = 1;
+    while (str[i])
+    {
+        if (str[i] != 'n')
+            return false;
+        i++;
+    }
+    //Vou checar se existe um mais que um n depois do traço
+    return (i > 1);
+}
 void handle_echo(char *argv[])
 {
     t_builtins vars;
@@ -27,7 +44,7 @@ void handle_echo(char *argv[])
 
     if(argv[1])
     {
-        while (ft_strcmp(argv[start], "-n") == 0)
+        while (argv[start] && is_valid_n_flag(argv[start]))
         {
             vars.echo_flag = true;
             start++; // Ignora o argumento "-n"

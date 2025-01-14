@@ -146,12 +146,14 @@ int manager_unset(char **str, t_env *env);
 
 
 //_____________	Executing______________
+char **convert_env_to_array(t_env *env);
 char *get_env_value(t_env *env,const char *key);
 char *get_command_path(char *command, t_env *env);
 int validate_command_path(char *command, t_env *env);
 
+void loop_executer(t_list *token,t_env *env);
 
-
+int executer_manager( char **str,t_env *env);
 //_____________	Parsing	______________
 
 //Parsing

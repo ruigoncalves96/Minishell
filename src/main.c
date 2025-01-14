@@ -63,13 +63,11 @@ static int execute_builtin(t_list *tokens, t_prompt_info prompt_info)
 		exit_manager(tokens->str);
     return (1);
 }
-#include <stdlib.h>
-#include <string.h>
 
 /// @brief Converte uma linked list de ambiente (t_env) para um array de strings no formato "KEY=VALUE".
 /// @param env Estrutura de ambiente.
 /// @return Um array de strings ou NULL em caso de falha.
-static char **convert_env_to_array(t_env *env)
+char **convert_env_to_array(t_env *env)
 {
 	char **envp;
 	t_env_var *current;
@@ -78,7 +76,6 @@ static char **convert_env_to_array(t_env *env)
 	if (!env || env->var_count <= 0)
 		return (NULL);
 
-	// Alocar memória para o array de strings (+1 para o NULL no final)
 	envp = malloc((env->var_count + 1) * sizeof(char *));
 	if (!envp)
 		return (NULL);
@@ -87,22 +84,18 @@ static char **convert_env_to_array(t_env *env)
 	i = 0;
 	while (current)
 	{
-		// Ignorar variáveis marcadas como "export-only"
 		if (current->is_export_only == 0)
 		{
-			// Criar a string "KEY=VALUE"
 			size_t key_len = strlen(current->key);
 			size_t value_len = strlen(current->value);
 			envp[i] = malloc(key_len + value_len + 2); // +2 para '=' e '\0'
 			if (!envp[i])
 			{
-				// Liberação de memória em caso de falha
 				while (i-- > 0)
 					free(envp[i]);
 				free(envp);
 				return (NULL);
 			}
-			sprintf(envp[i], "%s=%s", current->key, current->value);
 			i++;
 		}
 		current = current->next;
@@ -140,6 +133,8 @@ int main(int argc, char *argv[],char *envp[])
 		{
 		if(execute_builtin(tokens,prompt_info) == 0)//Comando externo
 		{
+			loop_executer(tokens,prompt_info.env);
+			/*
 			if(validate_command_path(*tokens->str,prompt_info.env) == 0)
 			{
 
@@ -148,26 +143,22 @@ int main(int argc, char *argv[],char *envp[])
 				char **env_array;
 				int child;
 
-                                child = fork();
+                 child = fork();
 				path = get_command_path(*tokens->str,prompt_info.env);
-                                env_array = convert_env_to_array(prompt_info.env);
-				printf("Este e o path do mando que passaste: %s\n",path);
-				
+                env_array = convert_env_to_array(prompt_info.env);
+				//printf("Este e o path do mando que passaste: %s\n",path);
 				if(child == 0)
-                                 {
+                {
 					//[X]PATH da variavel
 					//[X]Comando vai ser o input passado
 					//[X]Env do sistema
-					if(execve(path,tokens->str,env_array) == -1)
-                    {
-                    	ft_free_double_array(env_array);
-                    	free(path);
-    				}
+					if(executer_manager(tokens->str,path,env_array) == -1)
+						printf("Erro encontrado na funcao executer_manager\n");
                     }else
                     	wait(NULL);
-
 			}
 		
+			*/
 		}
 		free(prompt_info.prompt);
 		ft_free_list(tokens);
