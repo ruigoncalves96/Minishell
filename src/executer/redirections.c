@@ -16,7 +16,6 @@ void loop_executer(t_list *token,t_env *env)
             //EPA CONSEGUI ENTRAR, DEIXA LA VER SE ES MESMO UM COMANDO SEU MAROTO
             if(validate_command_path(*token->str,env)== 0)
             {
-                printf("WOW estou proximo de ser amado\n");
                 executer_manager(token->str,env);
             }
         }else if(token->subtype == T_REDIRECT)
@@ -38,6 +37,7 @@ int executer_manager( char **str,t_env *env)
         env_array = convert_env_to_array(env);
 		path = get_command_path(*str,env);
 
+       
         if(child == 0)
         {
             if(execve(path,str,env_array) == -1)
@@ -49,6 +49,8 @@ int executer_manager( char **str,t_env *env)
         }else
         {
             wait(NULL);
+            free(path);
+            ft_free_double_array(env_array);
         }
       
     return 0;

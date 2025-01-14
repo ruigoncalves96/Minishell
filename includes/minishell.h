@@ -154,6 +154,8 @@ int validate_command_path(char *command, t_env *env);
 void loop_executer(t_list *token,t_env *env);
 
 int executer_manager( char **str,t_env *env);
+
+
 //_____________	Parsing	______________
 
 //Parsing
