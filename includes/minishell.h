@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/15 16:56:38 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/15 17:05:52 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <readline/history.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <sys/wait.h>
+
 
 //	ERRORS
 #define QUOTE_ERROR "syntax error unclosed quote"
@@ -48,17 +50,16 @@
 
 typedef struct	s_builtins
 {
-    long exit_status;
-    char **minishell_env;
-    char **export_env;
     bool echo_flag;
 }		t_builtins;
 
 typedef struct s_env_var {
     char *key;           // Store just the key (e.g., "SHLVL")
     char *value;         // Store just the value (e.g., "1")
+	int is_export_only; //  1 so aparece no export, 0 aparece no env e no export
     struct s_env_var *next;
-} 		t_env_var;
+    struct s_env_var *prev;
+} t_env_var;
 
 /**
  * @brief Main environment management structure
@@ -66,8 +67,6 @@ typedef struct s_env_var {
 typedef struct s_env {
     t_env_var *vars;     // Linked list of variables
     int var_count;       // Count of variables
-    char **env_array;    
-    char **env_export;
 } 		t_env;
 
 typedef struct	s_prompt_info
@@ -131,53 +130,54 @@ void	ft_free_token_list(t_token *tokens_list);
 
 //_____________	Builtins ______________
 
-//env
-char **copy_envp(char *envp[]);
-
 //Init Builtins
 void init_variables_builtins(t_builtins *builtins);
-//void free_variables_builtins(t_builtins *vars);
-//env
-//char **copy_envp(char *envp[]);
-//void flag_env();
-//void print_env(char *env[],bool flag);
+int is_builtin(char *cmd);
+int execute_builtin(t_list *tokens, t_prompt_info prompt_info);
+void update_shlvl(t_env *env);
 //Exit
-void  create_exit_code(t_builtins *builtins,char *arr[]);
-
+void exit_manager(char **args,t_prompt_info	prompt_info,t_list		*tokens);
+void cleanup_all(t_prompt_info *prompt_info, t_list *tokens);
 //cd
-void cd_builtin(char *path);
-
+int cd_manager(char **str, t_env *env);
 //PWD
 void pwd_builtin(void);
 
 //Echo
-void handle_echo(int argc, char *argv[]);
-
+void handle_echo(char *argv[]);
 //Export
 char *get_key(char *env);
-void sort_env_ascii_order(char **env);
-void print_x_declaration(char **env);
-void handle_export(char **export_env);
-    //Exporting variables
-char **create_new_env(char **old_env, int size);
-int add_new_variable(t_builtins *vars, char *new_value, int size);
-int update_existing_var(t_builtins *vars, char *key_to_find, 
-    char *new_value, char *key);
-int export_variable(t_builtins *vars, char *key_to_find, char *new_value);
-    //Unset
-int unset_variable(t_builtins *vars, char *key_to_remove);
+void handle_export(t_env *env);
 
-//New env functions
+
+//EXPORT FUNCTIONS
+int export_env_var(t_env *env, const char *key, const char *value,int is_export_only);
+void append_env_var(t_env_var **head, t_env_var *new_var);
+char *get_value(char *env_str);
+void set_export_only(t_env *env, const char *key, int is_export_only);
+
+int export_manager(char **str,t_env *env);
+//ENV FUNCTIONS
 t_env *init_env(char **envp);
 t_env_var *create_env_node(char *env_str);
 void free_env(t_env *env);
 void print_env_list(t_env *env);
 
-//new export functions
-int export_env_var(t_env *env, const char *key, const char *value);
-int env_to_array(t_env *env);
-void append_env_var(t_env_var **head, t_env_var *new_var);
-char *get_value(char *env_str);
+//UNSET FUNCTIONS
+int unset_env_var(t_env *env,char *key_to_unset);
+int manager_unset(char **str, t_env *env);
+
+
+//_____________	Executing______________
+char **convert_env_to_array(t_env *env);
+char *get_env_value(t_env *env,const char *key);
+char *get_command_path(char *command, t_env *env);
+int validate_command_path(char *command, t_env *env);
+
+void loop_executer(t_list *token,t_env *env);
+
+int executer_manager( char **str,t_env *env);
+
 
 //_____________	Parsing	______________
 

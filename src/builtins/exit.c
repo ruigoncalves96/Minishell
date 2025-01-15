@@ -95,35 +95,61 @@ static int check_digit(const char *str)
     }
     return (1);
 }
-
-//Create exit code
-void create_exit_code(t_builtins *builtins, char *arr[])
+void cleanup_all(t_prompt_info *prompt_info, t_list *tokens)
 {
-    long num = 0;
+    rl_clear_history();
 
-    if (!arr[1]) 
+    if (prompt_info->prompt)
     {
-        builtins->exit_status = 0;
-        return;
+        free(prompt_info->prompt);
+        prompt_info->prompt = NULL;
     }
-    if (!check_digit(arr[1])) // Caso não seja um número válido
+
+    if (tokens)
+        ft_free_list(tokens);
+
+    if (prompt_info->env)
     {
-        printf("bash: exit: %s: numeric argument required\n", arr[1]);
-        builtins->exit_status = 2;
-        return;
+        free_env(prompt_info->env);
+         prompt_info->env = NULL;
     }
-    if (!ft_atol(arr[1], &num)) // Detecta overflow
+}
+//Create exit code
+void exit_manager(char **args,t_prompt_info	prompt_info,t_list		*tokens)
+{
+    long num;
+
+    
+    printf("exit\n");
+    
+    if (array_size(args) == 1)
+        exit(0);
+    
+    if (!check_digit(args[1]))  // Se não for número
     {
-        printf("bash: exit: %s: numeric argument required\n", arr[1]);
-        builtins->exit_status = 2;
-        return;
+        printf("bash: exit: %s: numeric argument required\n", args[1]);
+        exit(2);
     }
-    if (num > 255 || num < 0) // Normaliza valores fora de 0-255
+    
+    if (array_size(args) > 2)  // Muitos argumentos
     {
-        num = num % 256;
-        if (num < 0)
-            num += 256;
+        printf("bash: exit: too many arguments\n");
+        return;  // Não sai se houver múltiplos argumentos
     }
-    builtins->exit_status = num;
+    
+    if (!ft_atol(args[1], &num))  // Verifica overflow
+    {
+        printf("bash: exit: %s: numeric argument required\n", args[1]);
+        cleanup_all(&prompt_info,tokens);
+        exit(2);
+    }
+    
+    // Normaliza o número para 0-255
+    num = num % 256;
+    if (num < 0)
+        num += 256;
+    
+    cleanup_all(&prompt_info,tokens);
+    exit((int)num);
 }
 

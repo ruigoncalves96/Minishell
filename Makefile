@@ -32,13 +32,13 @@ OBJ_DIR      = $(SRC_DIR)/obj
 LIBFT     = $(LIBFT_DIR)/libft.a
 
 SRC_FILES = main.c \
-	    $(addprefix builtins/, exit.c env.c pwd.c echo.c cd.c export.c \
-	   export_variables.c init_builtins.c unset.c new_env.c new_export_variables.c) \
 	    $(addprefix utils/, general_functions.c list_struct_functions.c \
 	   token_struct_functions.c free_structs.c) \
 	    $(addprefix parsing/, parsing.c build_tokens.c parse_syntax.c convert_quotes.c \
 	   expand_vars.c define_tokens.c find_var_value.c parsing_utils.c error_handling.c )
-#	    $(addprefix executer/, executer.c) \
+	    $(addprefix builtins/, exit.c  pwd.c echo.c cd.c  \
+	    init_builtins.c  new_env.c new_export_variables.c new_unset.c new_export.c manager_export.c manager_unset.c) \
+	    $(addprefix executer/, prepare_path.c redirections.c) \
 
 SRC  = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.c=.o))
@@ -69,7 +69,7 @@ $(NAME): $(LIBFT) $(OBJS)
 
 valgrind: $(NAME)
 	@echo "$(YELLOW)Running with Valgrind... 🧠$(RESET)"
-	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME)
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./$(NAME)
 
 clean:
 	@echo "$(RED)Cleaning object files...$(RESET)"

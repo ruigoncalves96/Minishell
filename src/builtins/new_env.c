@@ -1,10 +1,23 @@
 #include "../../includes/minishell.h"
 
-void append_env_var(t_env_var **head, t_env_var *new_var)
+char *get_key(char *env)
 {
+    int len = 0;
+    while (env[len] && env[len] != '=')
+        len++;
+    char *key = ft_calloc(len + 1,1);
+    if (!key)
+        return NULL;
+    ft_strlcpy(key, env, len + 1);
+    return key;
+}
+
+void append_env_var(t_env_var **head, t_env_var *new_var)
+{ 
     if (!*head)
     {
         *head = new_var;
+        new_var->prev = NULL;
         return;
     }
 
@@ -14,6 +27,8 @@ void append_env_var(t_env_var **head, t_env_var *new_var)
         current = current->next;
     }
     current->next = new_var;
+    new_var->prev =  current;
+    new_var->next = NULL;
 }
 
 /**
@@ -32,7 +47,6 @@ t_env *init_env(char **envp)
 
     env->vars = NULL;
     env->var_count = 0; // vai ser bom no futuro para funções como o shell LVL
-    env->env_array = NULL;
 
     i = 0;
     while (envp[i])
@@ -76,6 +90,7 @@ t_env_var *create_env_node(char *env_str)
 
     var->key = get_key(env_str);
     var->value = get_value(env_str);
+    var->is_export_only = 0;
     
     if (!var->key || !var->value)
     {
@@ -85,6 +100,7 @@ t_env_var *create_env_node(char *env_str)
         return NULL;
     }
     
+    var->prev = NULL;
     var->next = NULL;
     return var;
 }
@@ -120,8 +136,61 @@ void print_env_list(t_env *env)
     current = env->vars;
     while (current)
     {
-
-        printf("%s=%s\n", current->key, current->value);
+        if (!current->is_export_only)  // Só mostra se não for export-only
+            printf("%s=%s\n", current->key, current->value);
         current = current->next;
     }
 }
+
+void update_shlvl(t_env *env)
+{
+
+	// [X] Vou perceber qual e o meu shlvl
+	char *shlvl_value;
+	int shlvl_number;
+	char *new_shlvl;
+
+	shlvl_value = get_env_value(env,"SHLVL");
+	if(!shlvl_value)
+	{
+		shlvl_number = 1;
+	}else{
+		shlvl_number = ft_atoi(shlvl_value);
+		shlvl_number++;
+	}
+
+	new_shlvl = ft_itoa(shlvl_number);
+	if(!new_shlvl)
+	{
+		ft_putstr_fd("Error Inicializing SHLVL\n",2);
+		return ;
+	}
+	export_env_var(env,"SHLVL",new_shlvl,0);
+	free(new_shlvl);
+}
+/*
+
+void flag_env()
+{
+    char *pwd;
+    char **flag_env;
+
+
+    flag_env = malloc(sizeof(char *) * 4);
+    if (!flag_env)
+        return;
+    pwd = getcwd(NULL, 0); 
+    if(pwd == NULL)
+    {
+        printf("Deu erro dentro da funcao flag_env guardar o pwd");
+        return;
+    }
+    flag_env[0] = ft_strdup(pwd);
+    free(pwd);
+    flag_env[1] = ft_strdup("SHLVL=1");
+    flag_env[2] = ft_strdup("_=/usr/bin/env");
+    flag_env[3] = NULL;
+    ft_print_double_array(flag_env);
+    free_double_array(flag_env);
+}
+*/
