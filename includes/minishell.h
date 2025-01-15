@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/15 17:05:52 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/15 17:25:36 by ruigoncalve      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ typedef struct s_token
 void	ft_print_double_array(char **array);
 int array_size(char **array);
 int	ft_strcmp(const char *s1, const char *s2);
-char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 
 //List_struct_functions
 t_list	*ft_lstlast(t_list *lst);
@@ -133,11 +132,11 @@ void	ft_free_token_list(t_token *tokens_list);
 //Init Builtins
 void init_variables_builtins(t_builtins *builtins);
 int is_builtin(char *cmd);
-int execute_builtin(t_list *tokens, t_prompt_info prompt_info);
+int execute_builtin(t_token *tokens, t_prompt_info prompt_info);
 void update_shlvl(t_env *env);
 //Exit
-void exit_manager(char **args,t_prompt_info	prompt_info,t_list		*tokens);
-void cleanup_all(t_prompt_info *prompt_info, t_list *tokens);
+void exit_manager(char **args,t_prompt_info	prompt_info,t_token		*tokens);
+void cleanup_all(t_prompt_info *prompt_info, t_token *tokens);
 //cd
 int cd_manager(char **str, t_env *env);
 //PWD
@@ -174,7 +173,7 @@ char *get_env_value(t_env *env,const char *key);
 char *get_command_path(char *command, t_env *env);
 int validate_command_path(char *command, t_env *env);
 
-void loop_executer(t_list *token,t_env *env);
+void loop_executer(t_token *token,t_env *env);
 
 int executer_manager( char **str,t_env *env);
 
@@ -184,7 +183,7 @@ int executer_manager( char **str,t_env *env);
 //Parsing
 void	ft_print_linked_list(t_list *list);
 void	ft_print_linked_tokens(t_token *list);
-t_list	*ft_parsing(t_prompt_info *prompt_info);
+t_token	*ft_parsing(t_prompt_info *prompt_info);
 
 //get_tokens
 t_list	*ft_build_tokens_list(char *prompt);

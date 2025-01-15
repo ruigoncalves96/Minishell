@@ -95,7 +95,7 @@ static int check_digit(const char *str)
     }
     return (1);
 }
-void cleanup_all(t_prompt_info *prompt_info, t_list *tokens)
+void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
 {
     rl_clear_history();
 
@@ -106,7 +106,7 @@ void cleanup_all(t_prompt_info *prompt_info, t_list *tokens)
     }
 
     if (tokens)
-        ft_free_list(tokens);
+        ft_free_token_list(tokens);
 
     if (prompt_info->env)
     {
@@ -115,7 +115,7 @@ void cleanup_all(t_prompt_info *prompt_info, t_list *tokens)
     }
 }
 //Create exit code
-void exit_manager(char **args,t_prompt_info	prompt_info,t_list		*tokens)
+void exit_manager(char **args,t_prompt_info	prompt_info,t_token		*tokens)
 {
     long num;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/15 17:06:40 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/15 18:09:19 by ruigoncalve      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[],char *envp[])
 			tokens = ft_parsing(&prompt_info);
 
 		 if (prompt_info.prompt[0] != '\0')
-            add_history(prompt_info.prompt);
+	       		   add_history(prompt_info.prompt);
 		if(tokens)
 		{
 		if(execute_builtin(tokens,prompt_info) == 0)//Comando externo
@@ -57,7 +57,7 @@ int main(int argc, char *argv[],char *envp[])
 			loop_executer(tokens,prompt_info.env);
 		}
 		free(prompt_info.prompt);
-		ft_free_list(tokens);
+		ft_free_token_list(tokens);
 		}
 	}
 	free_env(prompt_info.env);

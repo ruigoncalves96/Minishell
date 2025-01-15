@@ -38,43 +38,44 @@ static int env_manager(char **str,t_env *env)
 }
 */
 
-int execute_builtin(t_list *tokens, t_prompt_info prompt_info)
+int execute_builtin(t_token *tokens, t_prompt_info prompt_info)
 {
-    if (!tokens || !tokens->str || !*tokens->str)
+    if (!tokens || !tokens->token || !*tokens->token)
         return (0);
 
-    if (!is_builtin(*tokens->str))
+    if (!is_builtin(*tokens->token))
         return (0);
 
-    if (ft_strcmp(*tokens->str, "env") == 0)
+    if (ft_strcmp(*tokens->token, "env") == 0)
          print_env_list(prompt_info.env);
-    else if (ft_strcmp(*tokens->str, "pwd") == 0)
+    else if (ft_strcmp(*tokens->token, "pwd") == 0)
         pwd_builtin();
-    else if (ft_strcmp(*tokens->str, "cd") == 0)
-        cd_manager(tokens->str, prompt_info.env);
-    else if (ft_strcmp(*tokens->str, "export") == 0)
-        export_manager(tokens->str, prompt_info.env);
-    else if (ft_strcmp(*tokens->str, "unset") == 0)
-        manager_unset(tokens->str, prompt_info.env);
-    else if (ft_strcmp(*tokens->str, "echo") == 0)
-        handle_echo(tokens->str);
-	else if (ft_strcmp(*tokens->str, "exit") == 0)
-		exit_manager(tokens->str,prompt_info,tokens);
+    else if (ft_strcmp(*tokens->token, "cd") == 0)
+        cd_manager(tokens->token, prompt_info.env);
+    else if (ft_strcmp(*tokens->token, "export") == 0)
+        export_manager(tokens->token, prompt_info.env);
+    else if (ft_strcmp(*tokens->token, "unset") == 0)
+        manager_unset(tokens->token, prompt_info.env);
+    else if (ft_strcmp(*tokens->token, "echo") == 0)
+        handle_echo(tokens->token);
+	else if (ft_strcmp(*tokens->token, "exit") == 0)
+		exit_manager(tokens->token,prompt_info,tokens);
     return (1);
 }
 
 // Aloca e constrói uma string no formato "KEY=VALUE"
 static char *create_env_string(const char *key, const char *value)
 {
-    size_t key_len = strlen(key);
-    size_t value_len = strlen(value);
-    char *env_str = malloc(key_len + value_len + 2);
-    
+    size_t key_len = ft_strlen(key);
+    size_t value_len = ft_strlen(value);
+    char *env_str = ft_calloc(key_len + value_len + 2, 1);
     if (!env_str)
         return (NULL);
-    strcpy(env_str, key);
-    strcat(env_str, "=");
-    strcat(env_str, value);
+    ft_strlcpy(env_str, key, key_len + 1);
+    env_str[key_len] = '=';
+    env_str[key_len + 1] = '\0';
+   // ft_strlcat(env_str, "=", 2);
+    ft_strlcat(env_str, value, value_len + 1);
     return (env_str);
 }
 

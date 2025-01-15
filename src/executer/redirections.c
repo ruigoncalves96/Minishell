@@ -7,15 +7,15 @@
     [X] Executar um comando se for tipo Comando
 */
 
-void loop_executer(t_list *token,t_env *env)
+void loop_executer(t_token *token,t_env *env)
 {
     while (token)
     {
         if(token->type == COMMAND)
         {
-            if(validate_command_path(*token->str,env)== 0)
+            if(validate_command_path(*token->token,env)== 0)
             {
-                executer_manager(token->str,env);
+                executer_manager(token->token,env);
             }
         }else if(token->subtype == T_REDIRECT)
         {
