@@ -71,11 +71,9 @@ static char *create_env_string(const char *key, const char *value)
     char *env_str = ft_calloc(key_len + value_len + 2, 1);
     if (!env_str)
         return (NULL);
-    ft_strlcpy(env_str, key, key_len + 1);
-    env_str[key_len] = '=';
-    env_str[key_len + 1] = '\0';
-   // ft_strlcat(env_str, "=", 2);
-    ft_strlcat(env_str, value, value_len + 1);
+    ft_strlcpy(env_str, key,key_len + 1);
+    ft_strlcat(env_str, "=",key_len + 2);
+    ft_strlcat(env_str, value,key_len + value_len + 2);
     return (env_str);
 }
 
