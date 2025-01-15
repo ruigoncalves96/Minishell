@@ -105,7 +105,7 @@ int validate_command_path(char *command, t_env *env)
         printf("Command not found: %s\n", command);
         return (-1);
     }
-    printf("Command found: %s\n", command_path);
+    //printf("Command found: %s\n", command_path);
     free(command_path);
     return (0);
 }
