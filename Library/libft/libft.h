@@ -6,7 +6,7 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:34:25 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/14 14:30:03 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/15 12:45:54 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdbool.h>
-
-typedef struct s_list
-{
-	char			*str;
-	int			type;
-	int			subtype;
-	struct s_list		*previous;
-	struct s_list		*next;
-}				t_list;
 
 // Functions PART 1
 //	v
@@ -67,19 +58,6 @@ void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(char *s, int fd);
 void				ft_putendl_fd(char *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
-
-// Functions BONUS
-//      v
-
-int					ft_lstsize(t_list *lst);
-void				ft_lstadd_first(t_list **lst, t_list *new);
-void				ft_lstadd_last(t_list **lst, t_list *new);
-void				ft_lstdelone(t_list *lst);
-void				ft_lstclear(t_list **lst);
-void				ft_lstiter(t_list *lst, char *(*f)(char *));
-t_list				*ft_lstnew(char *content);
-t_list				*ft_lstlast(t_list *lst);
-t_list				*ft_lstmap(t_list *lst, char *(*f)(char *));
 
 // Added Functions
 //	v

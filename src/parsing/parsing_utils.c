@@ -6,7 +6,7 @@
 /*   By: randrade <randrade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/14 17:37:23 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:40:20 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,24 @@ int	ft_check_token_subtype(char c)
 		return (T_WORD);
 }
 
+int	ft_check_redirect_type(char *redirect)
+{
+	int	type;
+	size_t	len;
+
+	type = 0;
+	len = ft_strlen(redirect);
+	if (ft_strncmp(redirect, "<", len) ==  0)
+		type = IN;
+	else if (ft_strncmp(redirect, ">", len) ==  0)
+		type = OUT;
+	else if (ft_strncmp(redirect, ">>", len) ==  0)
+		type = A_OUT;
+	else if (ft_strncmp(redirect, "<<", len) ==  0)
+		type = HEREDOC;
+	return (type);
+}
+
 size_t	ft_strlen_until_spaces(char *str)
 {
 	size_t	i;
@@ -133,16 +151,16 @@ void	ft_insert_list(t_list **tokens_list, t_list *token, t_list *new_list)
 	token = NULL;
 }
 
-//	ADD THIS FUNCTION TO UTILS DIRECTORY
-void	ft_free_list(t_list *list)
+size_t	ft_command_array_len(t_list *node)
 {
-	t_list	*temp;
+	size_t	nbr_commands;
 
-	while (list)
+	nbr_commands = 0;
+	while (node && node->type == COMMAND)
 	{
-		temp = list;
-		list = list->next;
-		free(temp->str);
-		free(temp);
+		nbr_commands++;
+		node = node->next;
 	}
+	return (nbr_commands);
 }
+

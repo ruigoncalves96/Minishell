@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 19:10:54 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/08 15:50:50 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:52:53 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 static bool	ft_parse_pipe(t_list *token)
 {
 	if ((token->previous && token->previous->type == COMMAND)
-		&& (token->next && token->next->type == COMMAND))
+		&& ((token->next && token->next->type == COMMAND)
+		|| (token->next && token->next->subtype == T_REDIRECT)))
 		return (true);
 	return (false);
 }

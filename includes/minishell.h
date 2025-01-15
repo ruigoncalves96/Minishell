@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/14 17:05:36 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:56:38 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,12 @@
 #define OPERATOR_TOKENS	"|<>"
 #define SPACE_TOKENS " \t\r\n\v"
 
+//	REDIRECT_TYPES
+#define	IN 1
+#define	OUT 2
+#define A_OUT 3
+#define	HEREDOC 4
+
 typedef struct	s_builtins
 {
     long exit_status;
@@ -70,11 +76,58 @@ typedef struct	s_prompt_info
 	t_env	*env;
 }		t_prompt_info;
 
+typedef struct s_list
+{
+	char			*str;
+	int			type;
+	int			subtype;
+	struct s_list		*previous;
+	struct s_list		*next;
+}				t_list;
+
+typedef struct s_redirect
+{
+	int	fd;
+	char	**filename;
+	int	type;
+}		t_redirect;
+
+typedef struct s_token
+{
+	char			**token;
+	int			type;
+	int			subtype;
+	t_redirect		*red;
+	struct s_token		*previous;
+	struct s_token		*next;
+}				t_token;
+
+//_____________	Utils ______________
+
 //General functions
 void	ft_print_double_array(char **array);
 int array_size(char **array);
 int	ft_strcmp(const char *s1, const char *s2);
 char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
+
+//List_struct_functions
+t_list	*ft_lstlast(t_list *lst);
+void	ft_lstdelone(t_list *lst);
+void	ft_lstadd_last(t_list **lst, t_list *new);
+void	ft_lstadd_first(t_list **lst, t_list *new);
+t_list	*ft_lstnew(char *content);
+
+//Token_struct_functions
+t_token	*ft_token_last(t_token *token);
+void	ft_token_delone(t_token *token);
+void	ft_token_add_last(t_token **token, t_token *new);
+void	ft_token_add_first(t_token **token, t_token *new);
+t_token	*ft_token_new(char **content, int type, char subtype);
+
+//Free_structs
+void	ft_free_list(t_list *list);
+void	ft_free_token_list(t_token *tokens_list);
+
 
 //_____________	Builtins ______________
 
@@ -130,6 +183,7 @@ char *get_value(char *env_str);
 
 //Parsing
 void	ft_print_linked_list(t_list *list);
+void	ft_print_linked_tokens(t_token *list);
 t_list	*ft_parsing(t_prompt_info *prompt_info);
 
 //get_tokens
@@ -144,8 +198,8 @@ t_list	*ft_convert_quotes(t_list *tokens_list);
 //expand_vars
 t_list	*ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list);
 
-//build_tree
-void	ft_build_tree();
+//define_tokens
+t_token	*ft_define_tokens(t_list *prompt_list);
 
 //find_var_value
 size_t	ft_var_key_len(char *str);
@@ -157,10 +211,11 @@ char	*ft_find_var(char *str);
 void	ft_define_token_type(t_list *token);
 int	ft_check_token_type(char c);
 int	ft_check_token_subtype(char c);
+int	ft_check_redirect_type(char *redirect);
 size_t	ft_strlen_until_spaces(char *str);
 void	ft_skip_spaces(char **prompt);
 void	ft_insert_list(t_list **tokens_list, t_list *token, t_list *new_list);
-void	ft_free_list(t_list *list); //		CHANGE DIRECTORY TO UTILS
+size_t	ft_command_array_len(t_list *node);
 
 //error_handling
 void	ft_quote_error();
