@@ -18,6 +18,7 @@ int is_builtin(char *cmd)
     }
     return (0);
 }
+/*
 static int env_manager(char **str,t_env *env)
 {
     if (str == NULL || *str == NULL)
@@ -35,6 +36,7 @@ static int env_manager(char **str,t_env *env)
     
     return 1;
 }
+*/
 
 int execute_builtin(t_list *tokens, t_prompt_info prompt_info)
 {
@@ -45,7 +47,7 @@ int execute_builtin(t_list *tokens, t_prompt_info prompt_info)
         return (0);
 
     if (ft_strcmp(*tokens->str, "env") == 0)
-        env_manager(tokens->str,prompt_info.env);
+         print_env_list(prompt_info.env);
     else if (ft_strcmp(*tokens->str, "pwd") == 0)
         pwd_builtin();
     else if (ft_strcmp(*tokens->str, "cd") == 0)
