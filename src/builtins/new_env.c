@@ -141,6 +141,33 @@ void print_env_list(t_env *env)
         current = current->next;
     }
 }
+
+void update_shlvl(t_env *env)
+{
+
+	// [X] Vou perceber qual e o meu shlvl
+	char *shlvl_value;
+	int shlvl_number;
+	char *new_shlvl;
+
+	shlvl_value = get_env_value(env,"SHLVL");
+	if(!shlvl_value)
+	{
+		shlvl_number = 1;
+	}else{
+		shlvl_number = ft_atoi(shlvl_value);
+		shlvl_number++;
+	}
+
+	new_shlvl = ft_itoa(shlvl_number);
+	if(!new_shlvl)
+	{
+		ft_putstr_fd("Error Inicializing SHLVL\n",2);
+		return ;
+	}
+	export_env_var(env,"SHLVL",new_shlvl,0);
+	free(new_shlvl);
+}
 /*
 
 void flag_env()

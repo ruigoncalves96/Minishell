@@ -18,6 +18,48 @@ int is_builtin(char *cmd)
     }
     return (0);
 }
+static int env_manager(char **str,t_env *env)
+{
+    if (str == NULL || *str == NULL)
+        return 1;
+    if(array_size(str) == 1)
+    {
+        print_env_list(env);
+        return 0;
+    }
+    
+    if(array_size(str) == 2 && ft_strcmp(str[1]," -i"))
+        return 0;
+    else
+           ft_putstr_fd("Too many arguments in env\n",2);
+    
+    return 1;
+}
+
+int execute_builtin(t_list *tokens, t_prompt_info prompt_info)
+{
+    if (!tokens || !tokens->str || !*tokens->str)
+        return (0);
+
+    if (!is_builtin(*tokens->str))
+        return (0);
+
+    if (ft_strcmp(*tokens->str, "env") == 0)
+        env_manager(tokens->str,prompt_info.env);
+    else if (ft_strcmp(*tokens->str, "pwd") == 0)
+        pwd_builtin();
+    else if (ft_strcmp(*tokens->str, "cd") == 0)
+        cd_manager(tokens->str, prompt_info.env);
+    else if (ft_strcmp(*tokens->str, "export") == 0)
+        export_manager(tokens->str, prompt_info.env);
+    else if (ft_strcmp(*tokens->str, "unset") == 0)
+        manager_unset(tokens->str, prompt_info.env);
+    else if (ft_strcmp(*tokens->str, "echo") == 0)
+        handle_echo(tokens->str);
+	else if (ft_strcmp(*tokens->str, "exit") == 0)
+		exit_manager(tokens->str,prompt_info,tokens);
+    return (1);
+}
 
 // Aloca e constrói uma string no formato "KEY=VALUE"
 static char *create_env_string(const char *key, const char *value)

@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static void	ft_print_linked_list(t_list *list)
+void	ft_print_linked_list(t_list *list)
 {
 	t_list	*temp;
 	int	i;

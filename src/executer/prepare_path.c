@@ -75,7 +75,12 @@ char *get_command_path(char *command, t_env *env)
     char *path;
     char **split_path;
     char *command_path;
-
+    if (command[0] == '/' || (command[0] == '.' && command[1] == '/'))
+    {
+        if (access(command, X_OK) == 0)
+            return (ft_strdup(command)); 
+        return (NULL); 
+    }
     path = get_env_value(env, "PATH");
     if (!path)
         return (NULL);

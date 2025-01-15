@@ -95,9 +95,27 @@ static int check_digit(const char *str)
     }
     return (1);
 }
+void cleanup_all(t_prompt_info *prompt_info, t_list *tokens)
+{
+    rl_clear_history();
 
+    if (prompt_info->prompt)
+    {
+        free(prompt_info->prompt);
+        prompt_info->prompt = NULL;
+    }
+
+    if (tokens)
+        ft_free_list(tokens);
+
+    if (prompt_info->env)
+    {
+        free_env(prompt_info->env);
+         prompt_info->env = NULL;
+    }
+}
 //Create exit code
-void exit_manager(char **args)
+void exit_manager(char **args,t_prompt_info	prompt_info,t_list		*tokens)
 {
     long num;
 
@@ -122,6 +140,7 @@ void exit_manager(char **args)
     if (!ft_atol(args[1], &num))  // Verifica overflow
     {
         printf("bash: exit: %s: numeric argument required\n", args[1]);
+        cleanup_all(&prompt_info,tokens);
         exit(2);
     }
     
@@ -129,7 +148,8 @@ void exit_manager(char **args)
     num = num % 256;
     if (num < 0)
         num += 256;
-        
+    
+    cleanup_all(&prompt_info,tokens);
     exit((int)num);
 }
 

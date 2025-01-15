@@ -112,9 +112,11 @@ char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 //Init Builtins
 void init_variables_builtins(t_builtins *builtins);
 int is_builtin(char *cmd);
+int execute_builtin(t_list *tokens, t_prompt_info prompt_info);
+void update_shlvl(t_env *env);
 //Exit
-void exit_manager(char **args);
-
+void exit_manager(char **args,t_prompt_info	prompt_info,t_list		*tokens);
+void cleanup_all(t_prompt_info *prompt_info, t_list *tokens);
 //cd
 int cd_manager(char **str, t_env *env);
 //PWD
@@ -159,6 +161,7 @@ int executer_manager( char **str,t_env *env);
 //_____________	Parsing	______________
 
 //Parsing
+void	ft_print_linked_list(t_list *list);
 t_list	*ft_parsing(t_prompt_info *prompt_info);
 
 //get_tokens
