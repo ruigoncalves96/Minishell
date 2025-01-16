@@ -6,56 +6,61 @@
     [] Percorrer a linha e abrir todos os fds que forem precisos
     [X] Executar um comando se for tipo Comando
 */
+//[]Funcao que vai criar uma list t_redirect
 
+static int handle_redirect(t_token *token)
+{
+    //[X]Vou criar a lista se nao existir
+
+    //[X] abrir o arquivo
+    printf("Redirect filename: %s\n", token->red->filename[0]);
+    if(token->red->type == OUT)
+        token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    else if(token->red->type == A_OUT)
+        token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_APPEND, 0644);
+    else if(token->red->type == IN)
+        token->red->fd = open(token->red->filename[0], O_WRONLY);
+    if(token->red->fd == -1)
+    {
+        //Talvez tenha de dar free no red e na str
+        return 1;
+    }
+    return 0;
+} 
+//
+
+static void loop_and_open_fd(t_token *token)
+{
+    while (token)
+    {
+        if(token->next && token->next->subtype == T_REDIRECT)
+        {
+              if(handle_redirect(token->next) == 1)
+                    printf("Aconteceu alguma coisa de errado equanto processo de escrever o namefile\n");
+        }
+        token = token->next;
+    }
+    
+}
+//[X]Primeiro loop para abrir as coisas
+//[] Loop para verificar comandos
 void loop_executer(t_token *token,t_env *env)
 {
+    loop_and_open_fd(token);
     while (token)
     {
         if(token->type == COMMAND)
         {
-            if(validate_command_path(*token->token,env)== 0)//Comando valido 
+            if(validate_command_path(*token->token,env) == 0)//Comando valido 
             {
-                //executer_manager(token->token,env);
-                
-                //Tenho sempre de verificar a proxima node para verificar se ela e nula
-                //Vejo se a mina proxima node e uma redireçao
-                if(token->next && token->next->subtype == T_REDIRECT)
-                { 
-                    //Vou começar  a preencher as minhas variaveis
-                    //[]guardar o nome do arquivo
-                    //[]criar o arquivo
-                    //Verifico se a terceira node existe e entro nela
-                    if(token->next->next && token->next->next->token)
-                    {
-                        if(!token->red)
-                        {
-                            //[X]Dar memoria a estrutura
-                            token->red = calloc(1, sizeof(t_redirect));
-                            if(!token->red)
-                                perror("Error alocating memory in t_redirect\n");
-                        }
-                        
-                        //[X]Alocar memoria ao filename se necessario
-                        if(!token->red->filename)
-                        {
-                            token->red->filename = calloc(2, sizeof(char *));
-                            if(!token->red->filename)
-                                perror("Error alocating memory in double array filename\n");
-                        }
-                        
-                        //[] Vou copiar o filename
-                        token->red->filename[0] = ft_strdup(token->next->next->token[0]);
-                        if(!token->red->filename[0])
-                            perror("Error creating filename");
-                        token->red->filename[1] = NULL;
-                        printf("Redirect filename: %s\n", token->red->filename[0]);
-                }
-            }        
+                //printf("Comando valido\n");
+                executer_manager(token->token,env);          
+            }                  
         }
-    }
         token = token->next;
     }
-}
+    }
+
 
 
 
