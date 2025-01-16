@@ -52,10 +52,9 @@ int main(int argc, char *argv[],char *envp[])
 	       		   add_history(prompt_info.prompt);
 		if(tokens)
 		{
-		if(execute_builtin(tokens,prompt_info) == 0)//Comando externo
-		{
-			loop_executer(tokens,prompt_info.env);
-		}
+
+			loop_executer(tokens,prompt_info.env,prompt_info);
+		
 		free(prompt_info.prompt);
 		ft_free_token_list(tokens);
 		}
