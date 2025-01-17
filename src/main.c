@@ -6,7 +6,7 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/16 13:30:41 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:31:29 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,10 @@ int main(int argc, char *argv[],char *envp[])
 	       		   add_history(prompt_info.prompt);
 		if(tokens)
 		{
-			if(execute_builtin(tokens,prompt_info) == 0)//Comando externo
-			{
-				loop_executer(tokens,prompt_info.env);
-			}
-			free(prompt_info.prompt);
-			ft_free_token_list(tokens);
+			loop_executer(tokens,prompt_info.env,prompt_info);
 		}
+		free(prompt_info.prompt);
+		ft_free_token_list(tokens);
 	}
 	free_env(prompt_info.env);
 	/*rl_*/clear_history();
