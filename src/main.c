@@ -6,7 +6,7 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/15 18:09:19 by ruigoncalve      ###   ########.fr       */
+/*   Updated: 2025/01/16 13:30:41 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,20 +47,19 @@ int main(int argc, char *argv[],char *envp[])
 		}
 		else
 			tokens = ft_parsing(&prompt_info);
-
-		 if (prompt_info.prompt[0] != '\0')
+		if (prompt_info.prompt[0] != '\0')
 	       		   add_history(prompt_info.prompt);
 		if(tokens)
 		{
-		if(execute_builtin(tokens,prompt_info) == 0)//Comando externo
-		{
-			loop_executer(tokens,prompt_info.env);
-		}
-		free(prompt_info.prompt);
-		ft_free_token_list(tokens);
+			if(execute_builtin(tokens,prompt_info) == 0)//Comando externo
+			{
+				loop_executer(tokens,prompt_info.env);
+			}
+			free(prompt_info.prompt);
+			ft_free_token_list(tokens);
 		}
 	}
 	free_env(prompt_info.env);
-	rl_clear_history();
+	/*rl_*/clear_history();
 	return 0;
 }

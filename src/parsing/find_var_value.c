@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 14:17:06 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/13 17:36:00 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/17 14:55:01 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ size_t	ft_var_key_len(char *str)
 {
 	size_t	i;
 
+	if (str[0] == '"' || str[0] == '\'')
+		return (1);
 	i = 0;
 	while (str[i])
 	{

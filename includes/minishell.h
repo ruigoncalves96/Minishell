@@ -6,7 +6,7 @@
 /*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/15 17:25:36 by ruigoncalve      ###   ########.fr       */
+/*   Updated: 2025/01/16 14:14:35 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,8 +206,7 @@ char	*ft_find_var_value(t_env_var *env, char *str);
 
 //parsing_utils
 size_t	ft_quote_len(char *str);
-char	*ft_find_var(char *str);
-void	ft_define_token_type(t_list *token);
+char	*ft_find_var(char *str, bool *double_quotes);
 int	ft_check_token_type(char c);
 int	ft_check_token_subtype(char c);
 int	ft_check_redirect_type(char *redirect);

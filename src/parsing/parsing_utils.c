@@ -6,7 +6,7 @@
 /*   By: randrade <randrade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/15 16:40:20 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:13:23 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,16 @@ size_t	ft_quote_len(char *str)
 	return (0);
 }
 
-char	*ft_find_var(char *str)
+char	*ft_find_var(char *str, bool *double_quote)
 {
 	size_t	quote_len;
-	bool	double_quote;
 
 	quote_len = 0;
-	double_quote = false;
 	while (*str)
 	{
 		if (*str == '"')
-			double_quote ^= 1;
-		else if (double_quote == false && *str == '\'')
+			*double_quote ^= 1;
+		else if (*double_quote == false && *str == '\'')
 		{
 			quote_len += ft_quote_len(str);
 			str += quote_len;
@@ -49,17 +47,6 @@ char	*ft_find_var(char *str)
 		str++;
 	}
 	return (NULL);
-}
-
-void	ft_define_token_type(t_list *token)
-{
-	int	subtype;
-	int	type;
-
-	subtype = ft_check_token_subtype(*token->str);
-	type = ft_check_token_type(*token->str);
-	token->type = type;
-	token->subtype = subtype;
 }
 
 int	ft_check_token_type(char c)

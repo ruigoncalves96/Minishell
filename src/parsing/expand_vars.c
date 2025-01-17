@@ -6,57 +6,11 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 20:43:28 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/14 17:37:42 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:57:46 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-static char	*ft_join_var(char *token_str, char *var_value, char *var_key, size_t key_len)
-{
-	char	*new_token;
-	size_t	value_len;
-	size_t	i;
-	size_t	j;
-
-	value_len = ft_strlen(var_value);
-	new_token = ft_calloc((ft_strlen(token_str) - key_len) + value_len, sizeof(char));
-	if (!new_token)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (token_str[j])
-	{
-		if (&token_str[j] != var_key)
-			new_token[i++] = token_str[j++]; 
-		else
-		{
-			i += ft_strlcpy(&new_token[i], var_value, value_len + 1);
-			j += key_len + 1;
-		}
-	}
-	new_token[i] = '\0';
-	free(token_str);
-	return (new_token);
-}
-
-static char	*ft_expand(t_env_var *env, t_list *token)
-{
-	char	*var_value;
-	char	*dollar;
-
-	while (1)
-	{
-		dollar = ft_find_var(token->str);
-		if (!dollar)
-			break ; 
-		var_value = ft_find_var_value(env, dollar);
-		token->str = ft_join_var(token->str, var_value, dollar, ft_var_key_len(dollar + 1));
-		if (!token->str)
-			return (NULL);
-	}
-	return (token->str);
-}
 
 static t_list	*ft_build_list(t_list **new_list, t_list *token)
 {
@@ -85,7 +39,6 @@ static t_list	*ft_build_list(t_list **new_list, t_list *token)
 	return (*new_list);
 }
 
-
 static t_list	*ft_split_and_link(t_list **tokens_list, t_list **token)
 {
 	t_list	*new_list;
@@ -102,18 +55,78 @@ static t_list	*ft_split_and_link(t_list **tokens_list, t_list **token)
 	return (*tokens_list);
 }
 
+static char	*ft_join_var(char *token_str, char *var_value, char *var_key_pos, size_t key_len)
+{
+	char	*new_token;
+	size_t	value_len;
+	size_t	i;
+	size_t	j;
+
+	value_len = ft_strlen(var_value);
+	new_token = ft_calloc((ft_strlen(token_str) - key_len) + value_len, sizeof(char));
+	if (!new_token)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (token_str[j])
+	{
+		if (&token_str[j] != var_key_pos)
+			new_token[i++] = token_str[j++]; 
+		else
+		{
+			i += ft_strlcpy(&new_token[i], var_value, value_len + 1);
+			if (var_key_pos[1] != '"' && var_key_pos[1] != '\'')
+				j += key_len + 1;
+			else
+				j++;
+		}
+	}
+	new_token[i] = '\0';
+	free(token_str);
+	return (new_token);
+}
+
+static char	*ft_expand(t_env_var *env, t_list **tokens_list, t_list *token)
+{
+	char	*var_value;
+	char	*dollar;
+	bool	double_quotes;
+
+	double_quotes = false;
+	while (1)
+	{
+		dollar = ft_find_var(token->str, &double_quotes);
+		if (!dollar)
+			break ; 
+		var_value = ft_find_var_value(env, dollar);
+		token->str = ft_join_var(token->str, var_value, dollar,
+				ft_var_key_len(dollar + 1));
+		if (!token->str)
+			return (NULL);
+		if (double_quotes == false)
+		{
+			if (ft_split_and_link(tokens_list, &token) == NULL)
+				return (ft_free_list(*tokens_list), NULL);
+		}
+		else
+			double_quotes ^= 1;
+	}
+	return (token->str);
+}
+
 t_list	*ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
 {
 	t_list	*token;
+	bool	double_quotes;
 
+	double_quotes = false;
 	token = *tokens_list;
 	while (token)
 	{
-		if (ft_find_var(token->str))
+		if (ft_find_var(token->str, &double_quotes))
 		{
-			ft_expand(prompt_info->env->vars, token);
-			if (ft_split_and_link(tokens_list, &token) == NULL)
-				return (ft_free_list(*tokens_list), NULL);
+			ft_expand(prompt_info->env->vars, tokens_list, token);
+			double_quotes ^= 1;
 		}
 		token = token->next;
 	}

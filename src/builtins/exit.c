@@ -97,7 +97,7 @@ static int check_digit(const char *str)
 }
 void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
 {
-    rl_clear_history();
+    /*rl_*/clear_history();
 
     if (prompt_info->prompt)
     {

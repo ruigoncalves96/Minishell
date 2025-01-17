@@ -6,7 +6,7 @@
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/15 17:08:54 by randrade         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:38:14 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,6 @@ t_token	*ft_parsing(t_prompt_info *prompt_info)
 	ft_free_list(prompt_list);
 	if (!tokens_list)
 		return (NULL);
-	ft_print_linked_tokens(tokens_list);
+//	ft_print_linked_tokens(tokens_list);
 	return (tokens_list);
 }
