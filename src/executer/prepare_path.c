@@ -102,7 +102,7 @@ int validate_command_path(char *command, t_env *env)
     command_path = get_command_path(command, env);
     if (!command_path)
     {
-        printf("Command not found: %s\n", command);
+        ft_putstr_fd("Command not found: \n", 2);
         return (-1);
     }
     //printf("Command found: %s\n", command_path);

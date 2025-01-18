@@ -7,6 +7,13 @@ static int open_redirect(t_token *token)
         return 1;
     //[X] abrir o arquivo
    // printf("Redirect filename: %s\n", token->red->filename[0]);
+    // Close previous fd if it's still open
+    if (token->red->fd != -1)
+    {
+        close(token->red->fd);
+        token->red->fd = -1;
+    }
+
     if(token->red->type == OUT)
         token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
     else if(token->red->type == A_OUT)
@@ -15,7 +22,6 @@ static int open_redirect(t_token *token)
         token->red->fd = open(token->red->filename[0], O_RDONLY);
     if(token->red->fd == -1)
     {
-        //Talvez tenha de dar free no red e na str
         return 1;
     }
     return 0;
@@ -65,7 +71,9 @@ static void handle_redirections(t_token *token, int *backup_fd)
         }
         close(token->next->red->fd);  // Fechar FD após o dup2
         token->next->red->fd = -1;    // Marcar como fechado
-        token = token->next;
+        token = token->next->next;
+        if(!token)
+            break;
     }
 }
 static void close_stuff( int *backup_fd)
