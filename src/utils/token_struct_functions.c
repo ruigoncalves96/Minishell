@@ -40,39 +40,39 @@ void	ft_token_delone(t_token *token)
 	token = NULL;
 }
 
-void	ft_token_add_last(t_token **token, t_token *new)
+void	ft_token_add_last(t_token **token, t_token *new_token)
 {
 	t_token	*last;
 
-	if (token == NULL || new == NULL)
+	if (token == NULL || new_token == NULL)
 		return ;
 	if (*token)
 	{
 		last = ft_token_last(*token);
-		last->next = new;
-		new->previous = last;
+		last->next = new_token;
+		new_token->previous = last;
 	}
 	else
 	{
-		*token = new;
-		new->previous = NULL;
+		*token = new_token;
+		new_token->previous = NULL;
 	}
-	new->next = NULL;
+	new_token->next = NULL;
 }
 
-void	ft_token_add_first(t_token **token, t_token *new)
+void	ft_token_add_first(t_token **token, t_token *new_token)
 {
-	if (token && new)
+	if (token && new_token)
 	{
-		new->previous = NULL;
+		new_token->previous = NULL;
 		if (*token)
 		{
-			new->next = *token;
-			(*token)->previous = new;
+			new_token->next = *token;
+			(*token)->previous = new_token;
 		}
 		else
-			new->next = NULL;
-		*token = new;
+			new_token->next = NULL;
+		*token = new_token;
 	}
 }
 

@@ -98,7 +98,7 @@ int	ft_check_redirect_type(char *redirect)
 size_t	ft_strlen_until_spaces(char *str)
 {
 	size_t	i;
-	
+
 	i = 0;
 	while (str[i])
 	{
@@ -150,4 +150,3 @@ size_t	ft_command_array_len(t_list *node)
 	}
 	return (nbr_commands);
 }
-

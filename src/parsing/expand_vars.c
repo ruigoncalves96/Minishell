@@ -71,14 +71,11 @@ static char	*ft_join_var(char *token_str, char *var_value, char *var_key_pos, si
 	while (token_str[j])
 	{
 		if (&token_str[j] != var_key_pos)
-			new_token[i++] = token_str[j++]; 
+			new_token[i++] = token_str[j++];
 		else
 		{
 			i += ft_strlcpy(&new_token[i], var_value, value_len + 1);
-			if (var_key_pos[1] != '"' && var_key_pos[1] != '\'')
-				j += key_len + 1;
-			else
-				j++;
+			j += key_len + 1;
 		}
 	}
 	new_token[i] = '\0';
@@ -92,24 +89,20 @@ static char	*ft_expand(t_env_var *env, t_list **tokens_list, t_list *token)
 	char	*dollar;
 	bool	double_quotes;
 
+	dollar = token->str;
 	double_quotes = false;
 	while (1)
 	{
-		dollar = ft_find_var(token->str, &double_quotes);
+		dollar = ft_find_var(dollar, &double_quotes);
 		if (!dollar)
-			break ; 
+			break ;
 		var_value = ft_find_var_value(env, dollar);
-		token->str = ft_join_var(token->str, var_value, dollar,
-				ft_var_key_len(dollar + 1));
+		token->str = ft_join_var(token->str, var_value, dollar, ft_var_key_len(dollar + 1));
 		if (!token->str)
 			return (NULL);
 		if (double_quotes == false)
-		{
-			if (ft_split_and_link(tokens_list, &token) == NULL)
-				return (ft_free_list(*tokens_list), NULL);
-		}
-		else
-			double_quotes ^= 1;
+			ft_split_and_link(tokens_list, &token);
+		dollar++;
 	}
 	return (token->str);
 }
@@ -125,8 +118,10 @@ t_list	*ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
 	{
 		if (ft_find_var(token->str, &double_quotes))
 		{
-			ft_expand(prompt_info->env->vars, tokens_list, token);
-			double_quotes ^= 1;
+			if (ft_expand(prompt_info->env->vars, tokens_list, token) == NULL)
+			     return (NULL);
+			if (double_quotes == true)
+			     double_quotes ^= 1;
 		}
 		token = token->next;
 	}

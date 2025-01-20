@@ -94,7 +94,7 @@ t_token	*ft_parsing(t_prompt_info *prompt_info)
 {
 	t_list	*prompt_list;
 	t_token	*tokens_list;
-	
+
 	tokens_list = NULL;
 	prompt_list = ft_build_tokens_list(prompt_info->prompt);
 	if (!prompt_list)
@@ -109,6 +109,7 @@ t_token	*ft_parsing(t_prompt_info *prompt_info)
 	ft_free_list(prompt_list);
 	if (!tokens_list)
 		return (NULL);
-//	ft_print_linked_tokens(tokens_list);
+	// ft_print_linked_list(prompt_list);
+	// ft_print_linked_tokens(tokens_list);
 	return (tokens_list);
 }

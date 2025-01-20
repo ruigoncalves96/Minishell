@@ -16,8 +16,6 @@ size_t	ft_var_key_len(char *str)
 {
 	size_t	i;
 
-	if (str[0] == '"' || str[0] == '\'')
-		return (1);
 	i = 0;
 	while (str[i])
 	{
@@ -29,20 +27,20 @@ size_t	ft_var_key_len(char *str)
 	return (i);
 }
 
-static char	*ft_get_var_key(char *prompt)
+static char	*ft_get_var_key(char *dollar)
 {
 	char	*key;
 	size_t	key_len;
 
-	prompt++;
-	key_len = ft_var_key_len(prompt);
+	dollar++;
+	key_len = ft_var_key_len(dollar);
 	if (key_len == 0)
 		return (NULL);
 	key = ft_calloc(key_len + 1, sizeof(char));
 	if (!key)
 		return (NULL);
-	ft_strlcpy(key, prompt, key_len + 1);
-	prompt += key_len;
+	ft_strlcpy(key, dollar, key_len + 1);
+	dollar+= key_len;
 	return (key);
 }
 
@@ -55,7 +53,7 @@ static char	*ft_get_var_value(t_env_var *env, char *key)
 	var = env;
 	while (var)
 	{
-		if (ft_strncmp(var->key, key, ft_strlen(key)) == 0)
+		if (ft_strncmp(var->key, key, ft_strlen(var->key)) == 0)
 		{
 			var_value = var->value;
 			break ;

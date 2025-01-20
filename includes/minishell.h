@@ -111,15 +111,15 @@ int	ft_strcmp(const char *s1, const char *s2);
 //List_struct_functions
 t_list	*ft_lstlast(t_list *lst);
 void	ft_lstdelone(t_list *lst);
-void	ft_lstadd_last(t_list **lst, t_list *new);
-void	ft_lstadd_first(t_list **lst, t_list *new);
+void	ft_lstadd_last(t_list **lst, t_list *new_node);
+void	ft_lstadd_first(t_list **lst, t_list *new_node);
 t_list	*ft_lstnew(char *content);
 
 //Token_struct_functions
 t_token	*ft_token_last(t_token *token);
 void	ft_token_delone(t_token *token);
-void	ft_token_add_last(t_token **token, t_token *new);
-void	ft_token_add_first(t_token **token, t_token *new);
+void	ft_token_add_last(t_token **token, t_token *new_token);
+void	ft_token_add_first(t_token **token, t_token *new_token);
 t_token	*ft_token_new(char **content, int type, char subtype);
 
 //Free_structs

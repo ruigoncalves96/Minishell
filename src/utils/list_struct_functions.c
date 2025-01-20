@@ -40,39 +40,39 @@ void	ft_lstdelone(t_list *lst)
 	lst = NULL;
 }
 
-void	ft_lstadd_last(t_list **lst, t_list *new)
+void	ft_lstadd_last(t_list **lst, t_list *new_token)
 {
 	t_list	*last;
 
-	if (lst == NULL || new == NULL)
+	if (lst == NULL || new_token == NULL)
 		return ;
 	if (*lst)
 	{
 		last = ft_lstlast(*lst);
-		last->next = new;
-		new->previous = last;
+		last->next = new_token;
+		new_token->previous = last;
 	}
 	else
 	{
-		*lst = new;
-		new->previous = NULL;
+		*lst = new_token;
+		new_token->previous = NULL;
 	}
-	new->next = NULL;
+	new_token->next = NULL;
 }
 
-void	ft_lstadd_first(t_list **lst, t_list *new)
+void	ft_lstadd_first(t_list **lst, t_list *new_token)
 {
-	if (lst && new)
+	if (lst && new_token)
 	{
-		new->previous = NULL;
+		new_token->previous = NULL;
 		if (*lst)
 		{
-			new->next = *lst;
-			(*lst)->previous = new;
+			new_token->next = *lst;
+			(*lst)->previous = new_token;
 		}
 		else
-			new->next = NULL;
-		*lst = new;
+			new_token->next = NULL;
+		*lst = new_token;
 	}
 }
 
