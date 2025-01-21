@@ -85,15 +85,17 @@ static char	*ft_join_var(char *token_str, char *var_value, char *var_key_pos, si
 
 static char	*ft_expand(t_env_var *env, t_list **tokens_list, t_list *token)
 {
-	char	*var_value;
-	char	*dollar;
-	bool	double_quotes;
+	char   *var_value;
+	char   *dollar;
+	bool   double_quotes;
 
-	dollar = token->str;
+	var_value = NULL;
 	double_quotes = false;
 	while (1)
 	{
-		dollar = ft_find_var(dollar, &double_quotes);
+        dollar = token->str;
+        dollar += ft_strlen(var_value);
+	    dollar = ft_find_var(dollar, &double_quotes);
 		if (!dollar)
 			break ;
 		var_value = ft_find_var_value(env, dollar);
@@ -102,7 +104,6 @@ static char	*ft_expand(t_env_var *env, t_list **tokens_list, t_list *token)
 			return (NULL);
 		if (double_quotes == false)
 			ft_split_and_link(tokens_list, &token);
-		dollar++;
 	}
 	return (token->str);
 }

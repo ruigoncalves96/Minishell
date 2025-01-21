@@ -15,11 +15,12 @@
 # include "../Library/libft/libft.h"
 # include "../Library/ft_printf/ft_printf.h"
 # include "../Library/get_next_line/get_next_line.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <limits.h>
-#include <stdbool.h>
-#include <sys/wait.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <limits.h>
+# include <stdbool.h>
+# include <signal.h>
+# include <sys/wait.h>
 
 
 //	ERRORS
@@ -77,28 +78,28 @@ typedef struct	s_prompt_info
 
 typedef struct s_list
 {
-	char			*str;
-	int			type;
-	int			subtype;
-	struct s_list		*previous;
-	struct s_list		*next;
+	char           *str;
+	int            type;
+	int	           subtype;
+	struct s_list  *previous;
+	struct s_list  *next;
 }				t_list;
 
 typedef struct s_redirect
 {
-	int	fd;
-	char	**filename;
-	int	type;
+	int    fd;
+	char   **filename;
+	int    type;
 }		t_redirect;
 
 typedef struct s_token
 {
-	char			**token;
-	int			type;
-	int			subtype;
-	t_redirect		*red;
-	struct s_token		*previous;
-	struct s_token		*next;
+	char           **token;
+	int            type;
+	int            subtype;
+	t_redirect     *red;
+	struct s_token *previous;
+	struct s_token *next;
 }				t_token;
 
 //_____________	Utils ______________
