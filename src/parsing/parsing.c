@@ -57,35 +57,35 @@ void	ft_print_linked_tokens(t_token *list)
 //			ft_printf("token->previous = %s\n", temp->previous->str);
 //		else
 //			ft_printf("token->previous = NULL\n");
-		if (temp->type == COMMAND)
-			ft_printf("      = type = COMMAND\n");
-		else if (temp->type == OPERATOR)
-			ft_printf("      = type = OPERATOR\n");
-		if (temp->subtype == T_WORD)
-			ft_printf("      = subtype = WORD\n");
-		else if (temp->subtype == T_QUOTE)
-			ft_printf("      = subtype = QUOTE\n");
-		else if (temp->subtype == T_DOLLAR)
-			ft_printf("      = subtype = DOLLAR\n");
-		else if (temp->subtype == T_SPACE)
-			ft_printf("      = subtype = SPACE\n");
-		else if (temp->subtype == T_PIPE)
-			ft_printf("      = subtype = PIPE\n");
-		else if (temp->subtype == T_REDIRECT)
-		{
-			ft_printf("      = subtype = REDIRECT\n");
-			ft_printf("	 = 	   = 	      = fd = %d\n", temp->red->fd);
-			ft_printf("	 = 	   = 	      = filename = \n");
-			ft_print_double_array(temp->red->filename);
-			if (temp->red->type == IN)
-				ft_printf("	 = 	   = 	      = type = IN\n");
-			else if (temp->red->type == OUT)
-				ft_printf("	 = 	   = 	      = type = OUT\n");
-			else if (temp->red->type == A_OUT)
-				ft_printf("	 = 	   = 	      = type = A_OUT\n");
-			else if (temp->red->type == HEREDOC)
-				ft_printf("	 = 	   = 	      = type = HEREDOC\n");
-		}
+		// if (temp->type == COMMAND)
+		// 	ft_printf("      = type = COMMAND\n");
+		// else if (temp->type == OPERATOR)
+		// 	ft_printf("      = type = OPERATOR\n");
+		// if (temp->subtype == T_WORD)
+		// 	ft_printf("      = subtype = WORD\n");
+		// else if (temp->subtype == T_QUOTE)
+		// 	ft_printf("      = subtype = QUOTE\n");
+		// else if (temp->subtype == T_DOLLAR)
+		// 	ft_printf("      = subtype = DOLLAR\n");
+		// else if (temp->subtype == T_SPACE)
+		// 	ft_printf("      = subtype = SPACE\n");
+		// else if (temp->subtype == T_PIPE)
+		// 	ft_printf("      = subtype = PIPE\n");
+		// else if (temp->subtype == T_REDIRECT)
+		// {
+		// 	ft_printf("      = subtype = REDIRECT\n");
+		// 	ft_printf("	 = 	   = 	      = fd = %d\n", temp->red->fd);
+		// 	ft_printf("	 = 	   = 	      = filename = \n");
+		// 	ft_print_double_array(temp->red->filename);
+		// 	if (temp->red->type == IN)
+		// 		ft_printf("	 = 	   = 	      = type = IN\n");
+		// 	else if (temp->red->type == OUT)
+		// 		ft_printf("	 = 	   = 	      = type = OUT\n");
+		// 	else if (temp->red->type == A_OUT)
+		// 		ft_printf("	 = 	   = 	      = type = A_OUT\n");
+		// 	else if (temp->red->type == HEREDOC)
+		// 		ft_printf("	 = 	   = 	      = type = HEREDOC\n");
+		// }
 		temp = temp->next;
 	}
 }

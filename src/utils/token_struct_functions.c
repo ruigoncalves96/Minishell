@@ -32,6 +32,14 @@ void	ft_token_delone(t_token *token)
 		return ;
 	if (token->token)
 		ft_free_double_array(token->token);
+	if (token->type == T_REDIRECT)
+	{
+	    if (token->red->filename)
+			ft_free_double_array(token->red->filename);
+		if (token->red->fd != -1)
+		   close(token->red->fd);
+		free(token->red);
+	}
 	if (previous)
 		previous->next = next;
 	if (next)
