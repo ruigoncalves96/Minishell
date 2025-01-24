@@ -51,7 +51,7 @@ int main(int argc, char *argv[],char *envp[])
 	       		   add_history(prompt_info.prompt);
 		if(tokens)
 		{
-			loop_executer(tokens,prompt_info.env,prompt_info);
+			loop_executer(&tokens,prompt_info.env,prompt_info);
 		}
 		free(prompt_info.prompt);
 		ft_free_token_list(tokens);

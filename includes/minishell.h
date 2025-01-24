@@ -174,7 +174,7 @@ char *get_env_value(t_env *env,const char *key);
 char *get_command_path(char *command, t_env *env);
 int validate_command_path(char *command, t_env *env);
 
-void loop_executer(t_token *token,t_env *env,t_prompt_info prompt_info);
+void loop_executer(t_token **token,t_env *env,t_prompt_info prompt_info);
 int executer_manager( char **str,t_env *env);
 
 

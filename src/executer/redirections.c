@@ -182,14 +182,16 @@ static void redirections_executer(t_token *token, t_env *env, t_prompt_info prom
 
 //[X]Primeiro loop para abrir as coisas
 //[] Loop para verificar comandos
-void    loop_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
+void    loop_executer(t_token **token_head, t_env *env, t_prompt_info prompt_info)
 {
+    t_token *token;
     int original_fd[2];
 
     original_fd[0] = dup(STDIN_FILENO);
     original_fd[1] = dup(STDOUT_FILENO);
-    loop_and_open_fd(token);
-    parse_redirect_out(&token);
+    loop_and_open_fd(*token_head);
+    parse_redirect_out(token_head);
+    token = *token_head;
     if (!token->next)
         type_of_executer(token, env, prompt_info);
     else
