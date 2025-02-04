@@ -44,9 +44,9 @@
     Vai receber o builtins e o array de argumentos
     Vai retornar o exit status
 
-    Vou receber tres argumentos no maximo 
+    Vou receber tres argumentos no maximo
 
-    
+
  */
 
 static int  ft_atol(const char *str, long *result)
@@ -85,7 +85,7 @@ static int check_digit(const char *str)
 {
     int i = 0;
 
-    if (str[i] == '-' || str[i] == '+') 
+    if (str[i] == '-' || str[i] == '+')
         i++;
     while (str[i])
     {
@@ -97,7 +97,7 @@ static int check_digit(const char *str)
 }
 void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
 {
-    /*rl_*/clear_history();
+    rl_clear_history();
 
     if (prompt_info->prompt)
     {
@@ -119,36 +119,36 @@ void exit_manager(char **args,t_prompt_info	prompt_info,t_token		*tokens)
 {
     long num;
 
-    
+
     printf("exit\n");
-    
+
     if (array_size(args) == 1)
         exit(0);
-    
+
     if (!check_digit(args[1]))  // Se não for número
     {
         printf("bash: exit: %s: numeric argument required\n", args[1]);
         exit(2);
     }
-    
+
     if (array_size(args) > 2)  // Muitos argumentos
     {
         printf("bash: exit: too many arguments\n");
         return;  // Não sai se houver múltiplos argumentos
     }
-    
+
     if (!ft_atol(args[1], &num))  // Verifica overflow
     {
         printf("bash: exit: %s: numeric argument required\n", args[1]);
         cleanup_all(&prompt_info,tokens);
         exit(2);
     }
-    
+
     // Normaliza o número para 0-255
     num = num % 256;
     if (num < 0)
         num += 256;
-    
+
     cleanup_all(&prompt_info,tokens);
     exit((int)num);
 }

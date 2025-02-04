@@ -24,9 +24,9 @@ char *get_env_value(t_env *env,const char *key)
     return (NULL);
 }
 /// @brief  Joins directory with comand name and add /
-/// @param dir_path 
-/// @param command 
-/// @return 
+/// @param dir_path
+/// @param command
+/// @return
 static char *join_command_path(char *dir_path, char *command)
 {
     char *temp_path;
@@ -40,8 +40,8 @@ static char *join_command_path(char *dir_path, char *command)
     return (full_path);
 }
 /// @brief Search for comand in every path directory
-/// @param split_path 
-/// @param command 
+/// @param split_path
+/// @param command
 /// @return Return the path of the comand
 static char *search_in_path_dirs(char **split_path, char *command)
 {
@@ -66,9 +66,9 @@ static char *search_in_path_dirs(char **split_path, char *command)
     }
     return (command_path);
 }
-/// @brief 
-/// @param command 
-/// @param env 
+/// @brief
+/// @param command
+/// @param env
 /// @return path of comand
 char *get_command_path(char *command, t_env *env)
 {
@@ -78,8 +78,8 @@ char *get_command_path(char *command, t_env *env)
     if (command[0] == '/' || (command[0] == '.' && command[1] == '/'))
     {
         if (access(command, X_OK) == 0)
-            return (ft_strdup(command)); 
-        return (NULL); 
+            return (ft_strdup(command));
+        return (NULL);
     }
     path = get_env_value(env, "PATH");
     if (!path)
@@ -91,10 +91,10 @@ char *get_command_path(char *command, t_env *env)
     ft_free_double_array(split_path);
     return (command_path);
 }
-/// @brief 
-/// @param command 
-/// @param prompt_info 
-/// @return 0 if command exists, -1 command don't exist 
+/// @brief
+/// @param command
+/// @param prompt_info
+/// @return 0 if command exists, -1 command don't exist
 int validate_command_path(char *command, t_env *env)
 {
     char *command_path;
@@ -102,10 +102,12 @@ int validate_command_path(char *command, t_env *env)
     command_path = get_command_path(command, env);
     if (!command_path)
     {
-        ft_putstr_fd("Command not found: \n", 2);
+        ft_putstr_fd("Command not found: ", 2);
+        ft_putstr_fd(command,2);
+        ft_putstr_fd("\n",2);
         return (-1);
     }
-    //printf("Command found: %s\n", command_path);
+    
     free(command_path);
     return (0);
 }

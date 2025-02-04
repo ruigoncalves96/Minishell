@@ -1,6 +1,5 @@
 #include "../../includes/minishell.h"
 
-
 static int open_redirect(t_token *token)
 {
     if (!token || !token->red || !token->red->filename[0])
@@ -25,7 +24,7 @@ static int open_redirect(t_token *token)
         return 1;
     }
     return 0;
-} 
+}
 //
 
 static void loop_and_open_fd(t_token *token)
@@ -39,14 +38,14 @@ static void loop_and_open_fd(t_token *token)
         }
         token = token->next;
     }
-    
+
 }
 
-static void handle_redirections(t_token *token, int *backup_fd)
+static bool handle_redirections(t_token *token, int *backup_fd)
 {
-    
+
     if (!token->next || token->next->subtype != T_REDIRECT)
-        return;
+        return false;
 
     backup_fd[0] = dup(STDIN_FILENO);
     backup_fd[1] = dup(STDOUT_FILENO);
@@ -58,7 +57,7 @@ static void handle_redirections(t_token *token, int *backup_fd)
             if (dup2(token->next->red->fd, STDOUT_FILENO) == -1)
             {
                 perror("dup2");
-                return;
+                return false;
             }
         }
         else if (token->next->red->type == IN)
@@ -66,30 +65,30 @@ static void handle_redirections(t_token *token, int *backup_fd)
             if (dup2(token->next->red->fd, STDIN_FILENO) == -1)
             {
                 perror("dup2");
-                return;
+                return false;
             }
         }
-        close(token->next->red->fd);  // Fechar FD após o dup2
-        token->next->red->fd = -1;    // Marcar como fechado
+        close(token->next->red->fd);
+        token->next->red->fd = -1;
         token = token->next->next;
         if(!token)
             break;
     }
+    return true;
 }
 static void close_stuff( int *backup_fd)
 {
-
     dup2(backup_fd[0], STDIN_FILENO);
     dup2(backup_fd[1], STDOUT_FILENO);
     close(backup_fd[0]);
     close(backup_fd[1]);
 }
-//[X]Primeiro loop para abrir as coisas
-//[] Loop para verificar comandos
+
 void loop_executer(t_token *token,t_env *env,t_prompt_info prompt_info)
 {
     int original_fd[2];
-    loop_and_open_fd(token);   
+    bool redir_done;
+    loop_and_open_fd(token);
     while (token)
     {
         if(token->type == COMMAND)
@@ -99,7 +98,7 @@ void loop_executer(t_token *token,t_env *env,t_prompt_info prompt_info)
                 printf("vem ai o monstro aiai\n");
             }else
             {
-                handle_redirections(token,original_fd);
+                redir_done =   handle_redirections(token,original_fd);
                 if(is_builtin(*token->token))
                 {
                     execute_builtin(token,prompt_info);
@@ -108,7 +107,8 @@ void loop_executer(t_token *token,t_env *env,t_prompt_info prompt_info)
                 {
                     executer_manager(token->token,env);
                 }
-                close_stuff(original_fd);                             
+                if (redir_done)
+                    close_stuff(original_fd);
             }
         }
         token = token->next;
@@ -135,6 +135,7 @@ int executer_manager( char **str,t_env *env)
              perror("exeve");
              free(path);
              ft_free_double_array(env_array);
+             exit(1);
             }
         }else
         {
@@ -142,6 +143,5 @@ int executer_manager( char **str,t_env *env)
             free(path);
         }
             ft_free_double_array(env_array);
-      
     return 0;
 }

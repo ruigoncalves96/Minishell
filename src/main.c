@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
+/*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/17 17:39:13 by randrade         ###   ########.fr       */
+/*   Updated: 2025/02/04 13:28:18 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ int main(int argc, char *argv[],char *envp[])
 		free(prompt_info.prompt);
 		ft_free_token_list(tokens);
 	}
+
 	free_env(prompt_info.env);
-	/*rl_*/clear_history();
+	rl_clear_history();
 	return 0;
 }
