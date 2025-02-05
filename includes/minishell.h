@@ -20,6 +20,7 @@
 # include <limits.h>
 # include <stdbool.h>
 # include <signal.h>
+# include <termios.h>
 # include <sys/wait.h>
 
 
@@ -169,14 +170,19 @@ int manager_unset(char **str, t_env *env);
 
 
 //_____________	Executing______________
+
+//prepare_path
 char **convert_env_to_array(t_env *env);
 char *get_env_value(t_env *env,const char *key);
 char *get_command_path(char *command, t_env *env);
 int validate_command_path(char *command, t_env *env);
 
+//redirections
 void loop_executer(t_token **token,t_env *env,t_prompt_info prompt_info);
 int executer_manager( char **str,t_env *env);
 
+//signals
+void    set_signals(void);
 
 //_____________	Parsing	______________
 

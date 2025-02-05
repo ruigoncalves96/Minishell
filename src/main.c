@@ -21,42 +21,45 @@ static void welcome(void)
     printf("  |_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
 }
 
+static void shell_loop(t_prompt_info prompt_info)
+{
+    t_token		*tokens;
+
+	tokens = NULL;
+	while (1)
+	{
+		prompt_info.prompt = readline("Minishell> ");
+		if(!prompt_info.prompt)
+			break;
+		if (prompt_info.prompt[0] != '\0')
+		{
+		    add_history(prompt_info.prompt);
+		    tokens = ft_parsing(&prompt_info);
+			loop_executer(&tokens, prompt_info.env, prompt_info);
+			ft_free_token_list(tokens);
+		}
+		free(prompt_info.prompt);
+	}
+}
+
 int main(int argc, char *argv[],char *envp[])
 {
 	t_builtins	builtins;
 	t_prompt_info	prompt_info;
-	t_token		*tokens;
 
 	(void)argv;
 	if (argc != 1)
 	        return (1);
 	welcome();
+	set_signals();
 	init_variables_builtins(&builtins);
 	ft_memset(&prompt_info, 0, sizeof(t_prompt_info));
 	prompt_info.env = init_env(envp);
 	if(!prompt_info.env)
 	        return (1);
 	update_shlvl(prompt_info.env);
-	while (1)
-	{
-		prompt_info.prompt = readline("Minishell> ");
-		if(!prompt_info.prompt)
-		{
-			free_env(prompt_info.env);
-			break;
-		}
-		else
-			tokens = ft_parsing(&prompt_info);
-		if (prompt_info.prompt[0] != '\0')
-	       		   add_history(prompt_info.prompt);
-		if(tokens)
-		{
-			loop_executer(&tokens,prompt_info.env,prompt_info);
-		}
-		free(prompt_info.prompt);
-		ft_free_token_list(tokens);
-	}
+	shell_loop(prompt_info);
 	free_env(prompt_info.env);
-	/*rl_*/clear_history();
+	rl_clear_history();
 	return 0;
 }
