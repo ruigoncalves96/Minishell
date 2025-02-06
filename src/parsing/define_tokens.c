@@ -36,20 +36,31 @@ static char	**ft_get_command_array(t_list **node)
 static t_redirect	*ft_redirect_new(t_list *node, int type)
 {
 	t_redirect	*red;
-	
+
 	node = node->next;
 	red = ft_calloc(1, sizeof(t_redirect));
 	if (!red)
 		return (NULL);
 	red->fd = -1;
-	red->filename = ft_get_command_array(&node);
+	if (type == HEREDOC)
+	{
+	    red->filename = ft_calloc(2, sizeof(char *));
+		if (!red->filename)
+		    return (free(red), NULL);
+		red->filename[0] = ft_strdup(node->str);
+		if (!red->filename[0])
+		    return (free(red->filename), free(red), NULL);
+		red->filename[1] = NULL;
+	}
+	else
+	    red->filename = ft_get_command_array(&node);
 	if (!red->filename)
 		return (free(red), NULL);
 	red->type = type;
 	return (red);
 }
 
-static t_token	*ft_define_redirect_token(t_list *node)
+static t_token	*ft_define_redirect_token(t_list **node)
 {
 	t_token	*new_token;
 	char	**new_str;
@@ -59,7 +70,7 @@ static t_token	*ft_define_redirect_token(t_list *node)
 	new_str = ft_calloc(2, sizeof(char *));
 	if (!new_str)
 		return (NULL);
-	new_str[0] = ft_strdup(node->str);
+	new_str[0] = ft_strdup((*node)->str);
 	if (!new_str[0])
 		return (ft_free_double_array(new_str), NULL);
 	new_str[1] = NULL;
@@ -67,13 +78,17 @@ static t_token	*ft_define_redirect_token(t_list *node)
 	new_token = ft_token_new(new_str, OPERATOR, T_REDIRECT);
 	if (!new_token)
 		return (ft_free_double_array(new_str), NULL);
-	new_token->red = ft_redirect_new(node, type);
+	new_token->red = ft_redirect_new(*node, type);
 	if (!new_token->red)
 		return (ft_free_token_list(new_token), NULL);
+	if (type == HEREDOC)
+	    *node = (*node)->next->next;
+	else
+	    *node = (*node)->next;
 	return (new_token);
 }
 
-static t_token	*ft_define_pipe_token()
+static t_token	*ft_define_pipe_token(t_list **node)
 {
 	t_token	*new_token;
 	char	**new_str;
@@ -89,6 +104,7 @@ static t_token	*ft_define_pipe_token()
 	new_token = ft_token_new(new_str, OPERATOR, T_PIPE);
 	if (!new_token)
 		return (ft_free_double_array(new_str), NULL);
+	*node = (*node)->next;
 	return (new_token);
 }
 
@@ -107,10 +123,9 @@ t_token	*ft_define_tokens(t_list *prompt_list)
 		else
 		{
 			if (node->subtype == T_PIPE)
-				new_token = ft_define_pipe_token();
+				new_token = ft_define_pipe_token(&node);
 			else if (node->subtype == T_REDIRECT)
-				new_token = ft_define_redirect_token(node);
-			node = node->next;
+				new_token = ft_define_redirect_token(&node);
 		}
 		if (new_token == NULL)
 			return (ft_free_token_list(token_list), NULL);

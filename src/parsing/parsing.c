@@ -53,10 +53,10 @@ void	ft_print_linked_tokens(t_token *list)
 	{
 		ft_printf("Tokens =\n");
 		ft_print_double_array(temp->token);
-//		if (temp->previous)
-//			ft_printf("token->previous = %s\n", temp->previous->str);
-//		else
-//			ft_printf("token->previous = NULL\n");
+		// if (temp->previous)
+		// 	ft_printf("token->previous = %s\n", temp->previous->token);
+		// else
+		// 	ft_printf("token->previous = NULL\n");
 		// if (temp->type == COMMAND)
 		// 	ft_printf("      = type = COMMAND\n");
 		// else if (temp->type == OPERATOR)
