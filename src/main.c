@@ -35,8 +35,11 @@ static void shell_loop(t_prompt_info prompt_info)
 		{
 		    add_history(prompt_info.prompt);
 		    tokens = ft_parsing(&prompt_info);
-			loop_executer(&tokens, prompt_info.env, prompt_info);
-			ft_free_token_list(tokens);
+			if (tokens)
+			{
+			    loop_executer(&tokens, prompt_info.env, prompt_info);
+				ft_free_token_list(tokens);
+			}
 		}
 		free(prompt_info.prompt);
 	}
