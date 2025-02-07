@@ -225,6 +225,7 @@ int executer_manager(char **str, t_env *env)
 	path = get_command_path(*str,env);
 	if(!path)
         return (ft_free_double_array(env_array), -1);
+	signal(SIGINT, SIG_IGN);
     if(child == 0)
     {
         if(execve(path,str,env_array) == -1)
@@ -241,6 +242,7 @@ int executer_manager(char **str, t_env *env)
         wait(NULL);
         free(path);
     }
+    set_signals();
     ft_free_double_array(env_array);
     return 0;
 }
