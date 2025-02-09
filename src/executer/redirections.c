@@ -4,9 +4,7 @@ static int open_redirect(t_token *token)
 {
     if (!token || !token->red || !token->red->filename[0])
         return 1;
-    //[X] abrir o arquivo
-   // printf("Redirect filename: %s\n", token->red->filename[0]);
-    // Close previous fd if it's still open
+
     if (token->red->fd != -1)
     {
         close(token->red->fd);
@@ -25,7 +23,6 @@ static int open_redirect(t_token *token)
     }
     return 0;
 }
-//
 
 static void loop_and_open_fd(t_token *token)
 {
@@ -34,18 +31,23 @@ static void loop_and_open_fd(t_token *token)
         if(token->next && token->next->subtype == T_REDIRECT)
         {
               if(open_redirect(token->next) == 1)
-                    printf("Aconteceu alguma coisa de errado equanto processo de escrever o namefile\n");
+              {
+                ft_putstr_fd("Something went wrong opening File\n",2);
+              }
         }
         token = token->next;
     }
 
 }
 
-static bool handle_redirections(t_token *token, int *backup_fd)
+static t_token *handle_redirections(t_token *token, int *backup_fd)
 {
 
+    if(!token)
+        return NULL;
+
     if (!token->next || token->next->subtype != T_REDIRECT)
-        return false;
+        return token->next;
 
     backup_fd[0] = dup(STDIN_FILENO);
     backup_fd[1] = dup(STDOUT_FILENO);
@@ -56,25 +58,23 @@ static bool handle_redirections(t_token *token, int *backup_fd)
         {
             if (dup2(token->next->red->fd, STDOUT_FILENO) == -1)
             {
-                perror("dup2");
-                return false;
+                token = token->next;
+                break;
             }
         }
         else if (token->next->red->type == IN)
         {
             if (dup2(token->next->red->fd, STDIN_FILENO) == -1)
             {
-                perror("dup2");
-                return false;
+                token = token->next;
+                break;
             }
         }
         close(token->next->red->fd);
         token->next->red->fd = -1;
         token = token->next->next;
-        if(!token)
-            break;
     }
-    return true;
+    return token->next;
 }
 static void close_stuff( int *backup_fd)
 {
@@ -84,11 +84,13 @@ static void close_stuff( int *backup_fd)
     close(backup_fd[1]);
 }
 
-void loop_executer(t_token *token,t_env *env,t_prompt_info prompt_info)
+
+void loop_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
     int original_fd[2];
-    bool redir_done;
+     t_token *current_cmd;
     loop_and_open_fd(token);
+
     while (token)
     {
         if(token->type == COMMAND)
@@ -98,20 +100,24 @@ void loop_executer(t_token *token,t_env *env,t_prompt_info prompt_info)
                 printf("vem ai o monstro aiai\n");
             }else
             {
-                redir_done =   handle_redirections(token,original_fd);
-                if(is_builtin(*token->token))
-                {
-                    execute_builtin(token,prompt_info);
-                }
-                else if(validate_command_path(*token->token,env) == 0)
-                {
-                    executer_manager(token->token,env);
-                }
-                if (redir_done)
-                    close_stuff(original_fd);
+            current_cmd = token;
+            token = handle_redirections(token, original_fd);  
+
+            if(is_builtin(*current_cmd->token))
+            {
+                execute_builtin(current_cmd, prompt_info);
+            }
+            else if(validate_command_path(*current_cmd->token, env) == 0)
+            {
+                executer_manager(current_cmd->token, env);
+            }
+            close_stuff(original_fd);
             }
         }
-        token = token->next;
+        else
+        {
+            token = token->next;//Ignora redirecoes
+        }
     }
 }
 int executer_manager( char **str,t_env *env)
