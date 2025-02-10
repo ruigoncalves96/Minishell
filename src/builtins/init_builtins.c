@@ -28,17 +28,17 @@ static int env_manager(char **str,t_env *env)
         print_env_list(env);
         return 0;
     }
-    
+
     if(array_size(str) == 2 && ft_strcmp(str[1]," -i"))
         return 0;
     else
            ft_putstr_fd("Too many arguments in env\n",2);
-    
+
     return 1;
 }
 */
 
-int execute_builtin(t_token *tokens, t_prompt_info prompt_info)
+int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *builtins)
 {
     if (!tokens || !tokens->token || !*tokens->token)
         return (0);
@@ -59,7 +59,7 @@ int execute_builtin(t_token *tokens, t_prompt_info prompt_info)
     else if (ft_strcmp(*tokens->token, "echo") == 0)
         handle_echo(tokens->token);
 	else if (ft_strcmp(*tokens->token, "exit") == 0)
-		exit_manager(tokens->token,prompt_info,tokens);
+		exit_manager(tokens->token,builtins);
     return (1);
 }
 
@@ -88,7 +88,7 @@ char **convert_env_to_array(t_env *env)
 
     if (!env || env->var_count <= 0)
         return (NULL);
-    
+
     envp = malloc((env->var_count + 1) * sizeof(char *));
     if (!envp)
         return (NULL);

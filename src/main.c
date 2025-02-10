@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2025/02/04 13:28:18 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/02/10 11:57:46 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[],char *envp[])
 	       		   add_history(prompt_info.prompt);
 		if(tokens)
 		{
-			loop_executer(tokens,prompt_info.env,prompt_info);
+			loop_executer(tokens,prompt_info.env,prompt_info,&builtins);
 		}
 		free(prompt_info.prompt);
 		ft_free_token_list(tokens);

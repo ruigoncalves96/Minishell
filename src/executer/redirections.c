@@ -19,6 +19,11 @@ static int open_redirect(t_token *token)
         token->red->fd = open(token->red->filename[0], O_RDONLY);
     if(token->red->fd == -1)
     {
+        ft_putstr_fd("Error opening file: ", 2);
+        ft_putstr_fd(token->red->filename[0], 2);
+        ft_putstr_fd("\n", 2);
+        // -2 significa que o token deu erro exemplo nao tem permissoes
+        token->red->fd = -2;
         return 1;
     }
     return 0;
@@ -30,10 +35,7 @@ static void loop_and_open_fd(t_token *token)
     {
         if(token->next && token->next->subtype == T_REDIRECT)
         {
-              if(open_redirect(token->next) == 1)
-              {
-                ft_putstr_fd("Something went wrong opening File\n",2);
-              }
+              open_redirect(token->next);
         }
         token = token->next;
     }
@@ -54,6 +56,8 @@ static t_token *handle_redirections(t_token *token, int *backup_fd)
 
     while (token->next && token->next->subtype == T_REDIRECT)
     {
+        if(token->next->red->fd == -2)
+                return (t_token *)-1;
         if (token->next->red->type == OUT || token->next->red->type == A_OUT)
         {
             if (dup2(token->next->red->fd, STDOUT_FILENO) == -1)
@@ -74,7 +78,10 @@ static t_token *handle_redirections(t_token *token, int *backup_fd)
         token->next->red->fd = -1;
         token = token->next->next;
     }
-    return token->next;
+    if(token)
+        return token->next;
+    else
+        return NULL;
 }
 static void close_stuff( int *backup_fd)
 {
@@ -85,38 +92,48 @@ static void close_stuff( int *backup_fd)
 }
 
 
-void loop_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
+void loop_executer(t_token *token, t_env *env, t_prompt_info prompt_info, t_builtins *builtins)
 {
     int original_fd[2];
-     t_token *current_cmd;
+    t_token *current_cmd;
+    t_token *redir_result;
     loop_and_open_fd(token);
 
     while (token)
     {
-        if(token->type == COMMAND)
+        if (token->type == COMMAND)
         {
-            if(token->next && token->next->type == T_PIPE)
+            if (token->next && token->next->type == T_PIPE)
             {
                 printf("vem ai o monstro aiai\n");
-            }else
+            }
+            else
             {
-            current_cmd = token;
-            token = handle_redirections(token, original_fd);  
+                current_cmd = token;
+                redir_result = handle_redirections(token, original_fd);
+                // Se handle_redirections retornou -1, houve erro no redirecionamento.
+                if (redir_result == (t_token *)-1)
+                {
+                    close_stuff(original_fd);
+                    token = token->next;  // Pula este comando sem executá-lo.
+                    continue;
+                }
+                token = redir_result;
 
-            if(is_builtin(*current_cmd->token))
-            {
-                execute_builtin(current_cmd, prompt_info);
-            }
-            else if(validate_command_path(*current_cmd->token, env) == 0)
-            {
-                executer_manager(current_cmd->token, env);
-            }
-            close_stuff(original_fd);
+                if (is_builtin(*current_cmd->token))
+                {
+                    execute_builtin(current_cmd, prompt_info, builtins);
+                }
+                else if (validate_command_path(*current_cmd->token, env) == 0)
+                {
+                    executer_manager(current_cmd->token, env);
+                }
+                close_stuff(original_fd);
             }
         }
         else
         {
-            token = token->next;//Ignora redirecoes
+            token = token->next; // Ignora tokens de redirecionamento ou outros
         }
     }
 }

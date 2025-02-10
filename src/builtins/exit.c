@@ -115,32 +115,39 @@ void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
     }
 }
 //Create exit code
-void exit_manager(char **args,t_prompt_info	prompt_info,t_token		*tokens)
+void exit_manager(char **args, t_builtins *builtins)
 {
-    long num;
-
+    long num = 0;
 
     printf("exit\n");
 
-    if (array_size(args) == 1)
+    if (array_size(args) == 1) {
+        builtins->exit_code = 0;
+        printf("Codigo de saida: %d\n", builtins->exit_code);///////DEBUG
         exit(0);
+    }
 
     if (!check_digit(args[1]))  // Se não for número
     {
-        printf("bash: exit: %s: numeric argument required\n", args[1]);
+        ft_putstr_fd("bash: exit: ",2);
+        ft_putstr_fd(args[1],2);
+        ft_putstr_fd(": numeric argument required\n",2);
+        builtins->exit_code = 2;
         exit(2);
     }
 
     if (array_size(args) > 2)  // Muitos argumentos
     {
-        printf("bash: exit: too many arguments\n");
+        ft_putstr_fd("bash: exit: too many arguments\n",2);
         return;  // Não sai se houver múltiplos argumentos
     }
 
     if (!ft_atol(args[1], &num))  // Verifica overflow
     {
-        printf("bash: exit: %s: numeric argument required\n", args[1]);
-        cleanup_all(&prompt_info,tokens);
+        ft_putstr_fd("bash: exit: ",2);
+        ft_putstr_fd(args[1],2);
+        ft_putstr_fd(":  numeric argument required\n",2);
+        builtins->exit_code = 2;
         exit(2);
     }
 
@@ -148,8 +155,8 @@ void exit_manager(char **args,t_prompt_info	prompt_info,t_token		*tokens)
     num = num % 256;
     if (num < 0)
         num += 256;
-
-    cleanup_all(&prompt_info,tokens);
+    builtins->exit_code = (int)num;
+    printf("Codigo de saida: %d\n", builtins->exit_code);///////DEBUG
     exit((int)num);
 }
 
