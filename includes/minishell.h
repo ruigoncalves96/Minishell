@@ -206,6 +206,9 @@ t_list	*ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list);
 //define_tokens
 t_token	*ft_define_tokens(t_list *prompt_list);
 
+//build_tree
+t_token *build_tree(t_token *tokens_list);
+
 //find_var_value
 size_t	ft_var_key_len(char *str);
 char	*ft_find_var_value(t_env_var *env, char *str);

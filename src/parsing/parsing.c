@@ -90,10 +90,31 @@ void	ft_print_linked_tokens(t_token *list)
 	}
 }
 
+void	ft_print_token_tree(t_token *tree)
+{
+	t_token *temp;
+
+	temp = tree;
+	ft_printf("Token = ");
+	ft_print_double_array(temp->token);
+	ft_printf("\n");
+	if (temp->previous)
+	{
+	    ft_printf("left = \n");
+        ft_print_token_tree(temp->previous);
+	}
+	if (temp->next)
+	{
+        ft_printf("right = \n");
+	    ft_print_token_tree(temp->next);
+	}
+}
+
 t_token	*ft_parsing(t_prompt_info *prompt_info)
 {
-	t_list	*prompt_list;
-	t_token	*tokens_list;
+	t_list     *prompt_list;
+	t_token    *tokens_list;
+	t_token    *tokens_tree;
 
 	tokens_list = NULL;
 	prompt_list = ft_build_tokens_list(prompt_info->prompt);
@@ -109,6 +130,8 @@ t_token	*ft_parsing(t_prompt_info *prompt_info)
 	ft_free_list(prompt_list);
 	if (!tokens_list)
 		return (NULL);
+	tokens_tree = build_tree(tokens_list);
+	ft_print_token_tree(tokens_tree);
 	// ft_print_linked_list(prompt_list);
 	// ft_print_linked_tokens(tokens_list);
 	return (tokens_list);
