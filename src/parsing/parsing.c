@@ -110,13 +110,45 @@ void	ft_print_token_tree(t_token *tree)
 	}
 }
 
+static int open_redirect(t_token *token)
+{
+    if (!token || !token->red || !token->red->filename[0])
+        return 1;
+    // [X] abrir o arquivo
+    // printf("Redirect filename: %s\n", token->red->filename[0]);
+    if(token->red->type == OUT)
+        token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    else if(token->red->type == A_OUT)
+        token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_APPEND, 0644);
+    else if(token->red->type == IN)
+        token->red->fd = open(token->red->filename[0], O_RDONLY);
+    if(token->red->fd == -1)
+    {
+        //Talvez tenha de dar free no red e na str
+        return 1;
+    }
+    return 0;
+}
+
+static void loop_and_open_fd(t_token *token)
+{
+    while (token)
+    {
+        if(token->next && token->next->subtype == T_REDIRECT)
+        {
+              if(open_redirect(token->next) == 1)
+                    printf("Aconteceu alguma coisa de errado equanto processo de escrever o namefile\n");
+        }
+        token = token->next;
+    }
+}
+
 t_token	*ft_parsing(t_prompt_info *prompt_info)
 {
 	t_list     *prompt_list;
-	t_token    *tokens_list;
 	t_token    *tokens_tree;
 
-	tokens_list = NULL;
+	tokens_tree = NULL;
 	prompt_list = ft_build_tokens_list(prompt_info->prompt);
 	if (!prompt_list)
 		return (NULL);
@@ -126,13 +158,14 @@ t_token	*ft_parsing(t_prompt_info *prompt_info)
 		return (NULL);
 	if (ft_convert_quotes(prompt_list) == NULL)
 		return (NULL);
-	tokens_list = ft_define_tokens(prompt_list);
+	tokens_tree = ft_define_tokens(prompt_list);
 	ft_free_list(prompt_list);
-	if (!tokens_list)
+	if (!tokens_tree)
 		return (NULL);
-	tokens_tree = build_tree(tokens_list);
-	ft_print_token_tree(tokens_tree);
+	loop_and_open_fd(tokens_tree);
+	tokens_tree = build_tree(tokens_tree);
+	// ft_print_token_tree(tokens_tree);
 	// ft_print_linked_list(prompt_list);
 	// ft_print_linked_tokens(tokens_list);
-	return (tokens_list);
+	return (tokens_tree);
 }
