@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static t_list	*ft_build_list(t_list **new_list, t_list *token)
+static t_list	*build_list(t_list **new_list, t_list *token)
 {
 	t_list	*new_token;
 	char	*token_str;
@@ -22,7 +22,7 @@ static t_list	*ft_build_list(t_list **new_list, t_list *token)
 	token_str = token->str;
 	while (*token_str)
 	{
-		wordlen = ft_strlen_until_spaces(token_str);
+		wordlen = strlen_until_spaces(token_str);
 		new_str = ft_calloc(wordlen + 1, sizeof(char));
 		if (!new_str)
 			return (NULL);
@@ -34,28 +34,28 @@ static t_list	*ft_build_list(t_list **new_list, t_list *token)
 		new_token->type = COMMAND;
 		new_token->subtype = T_WORD;
 		token_str += wordlen;
-		ft_skip_spaces(&token_str);
+		skip_spaces(&token_str);
 	}
 	return (*new_list);
 }
 
-static t_list	*ft_split_and_link(t_list **tokens_list, t_list **token)
+static t_list	*split_and_link(t_list **tokens_list, t_list **token)
 {
 	t_list	*new_list;
 
 	new_list = NULL;
-	if (ft_strlen((*token)->str) != ft_strlen_until_spaces((*token)->str))
+	if (ft_strlen((*token)->str) != strlen_until_spaces((*token)->str))
 	{
-		ft_build_list(&new_list, *token);
+		build_list(&new_list, *token);
 		if (!new_list)
 			return (NULL);
-		ft_insert_list(tokens_list, *token, new_list);
+		insert_list(tokens_list, *token, new_list);
 		*token = new_list;
 	}
 	return (*tokens_list);
 }
 
-static char	*ft_join_var(char *token_str, char *var_value, char *var_key_pos, size_t key_len)
+static char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_t key_len)
 {
 	char	*new_token;
 	size_t	value_len;
@@ -83,7 +83,7 @@ static char	*ft_join_var(char *token_str, char *var_value, char *var_key_pos, si
 	return (new_token);
 }
 
-static char	*ft_expand(t_env_var *env, t_list **tokens_list, t_list *token)
+static char	*expand(t_env_var *env, t_list **tokens_list, t_list *token)
 {
 	char   *var_value;
 	char   *dollar;
@@ -95,20 +95,20 @@ static char	*ft_expand(t_env_var *env, t_list **tokens_list, t_list *token)
 	{
         dollar = token->str;
         dollar += ft_strlen(var_value);
-	    dollar = ft_find_var(dollar, &double_quotes);
+	    dollar = find_var(dollar, &double_quotes);
 		if (!dollar)
 			break ;
-		var_value = ft_find_var_value(env, dollar);
-		token->str = ft_join_var(token->str, var_value, dollar, ft_var_key_len(dollar + 1));
+		var_value = find_var_value(env, dollar);
+		token->str = join_var(token->str, var_value, dollar, var_key_len(dollar + 1));
 		if (!token->str)
 			return (NULL);
 		if (double_quotes == false)
-			ft_split_and_link(tokens_list, &token);
+			split_and_link(tokens_list, &token);
 	}
 	return (token->str);
 }
 
-t_list	*ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
+t_list	*expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
 {
 	t_list	*token;
 	bool	double_quotes;
@@ -117,9 +117,9 @@ t_list	*ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
 	token = *tokens_list;
 	while (token)
 	{
-		if (ft_find_var(token->str, &double_quotes))
+		if (find_var(token->str, &double_quotes))
 		{
-			if (ft_expand(prompt_info->env->vars, tokens_list, token) == NULL)
+			if (expand(prompt_info->env->vars, tokens_list, token) == NULL)
 			     return (NULL);
 			if (double_quotes == true)
 			     double_quotes ^= 1;

@@ -106,7 +106,7 @@ typedef struct s_token
 //_____________	Utils ______________
 
 //General functions
-void	ft_print_double_array(char **array);
+void	print_double_array(char **array);
 int array_size(char **array);
 int	ft_strcmp(const char *s1, const char *s2);
 
@@ -125,8 +125,8 @@ void	ft_token_add_first(t_token **token, t_token *new_token);
 t_token	*ft_token_new(char **content, int type, char subtype);
 
 //Free_structs
-void	ft_free_list(t_list *list);
-void	ft_free_token_list(t_token *tokens_list);
+void	free_list(t_list *list);
+void	free_token_list(t_token *tokens_list);
 
 
 //_____________	Builtins ______________
@@ -188,45 +188,48 @@ void    set_signals(void);
 //_____________	Parsing	______________
 
 //Parsing
-void	ft_print_linked_list(t_list *list);
-void	ft_print_linked_tokens(t_token *list);
-t_token	*ft_parsing(t_prompt_info *prompt_info);
+void	print_linked_list(t_list *list);
+void	print_linked_tokens(t_token *list);
+t_token	*parsing(t_prompt_info *prompt_info);
 
 //get_tokens
-t_list	*ft_build_tokens_list(char *prompt);
+t_list	*build_tokens_list(char *prompt);
 
 //parse_syntax
-bool	ft_parse_syntax(t_list *token_list);
+bool	parse_syntax(t_list *token_list);
 
 //convert_quotes
-t_list	*ft_convert_quotes(t_list *tokens_list);
+t_list	*convert_quotes(t_list *tokens_list);
 
 //expand_vars
-t_list	*ft_expand_vars(t_prompt_info *prompt_info, t_list **tokens_list);
+t_list	*expand_vars(t_prompt_info *prompt_info, t_list **tokens_list);
 
 //define_tokens
-t_token	*ft_define_tokens(t_list *prompt_list);
+t_token	*define_tokens(t_list *prompt_list);
 
 //build_tree
 t_token *build_tree(t_token *tokens_list);
 
+//open_files
+void loop_and_open_fd(t_token *token);
+
 //find_var_value
-size_t	ft_var_key_len(char *str);
-char	*ft_find_var_value(t_env_var *env, char *str);
+size_t	var_key_len(char *str);
+char	*find_var_value(t_env_var *env, char *str);
 
 //parsing_utils
-size_t	ft_quote_len(char *str);
-char	*ft_find_var(char *str, bool *double_quotes);
-int	ft_check_token_type(char c);
-int	ft_check_token_subtype(char c);
-int	ft_check_redirect_type(char *redirect);
-size_t	ft_strlen_until_spaces(char *str);
-void	ft_skip_spaces(char **prompt);
-void	ft_insert_list(t_list **tokens_list, t_list *token, t_list *new_list);
-size_t	ft_command_array_len(t_list *node);
+size_t	quote_len(char *str);
+char	*find_var(char *str, bool *double_quotes);
+int	check_token_type(char c);
+int	check_token_subtype(char c);
+int	check_redirect_type(char *redirect);
+size_t	strlen_until_spaces(char *str);
+void	skip_spaces(char **prompt);
+void	insert_list(t_list **tokens_list, t_list *token, t_list *new_list);
+size_t	command_array_len(t_list *node);
 
 //error_handling
-void	ft_quote_error();
-void	ft_syntax_error(t_list *token_list, t_list *token);
+void	quote_error();
+void	syntax_error(t_list *token_list, t_list *token);
 
 #endif

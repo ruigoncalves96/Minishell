@@ -12,34 +12,34 @@
 
 #include "../../includes/minishell.h"
 
-static size_t	ft_operator_len_def(t_list *token, char *str)
+static size_t	operator_len_def(t_list *token, char *str)
 {
-	token->subtype = ft_check_token_subtype(*str);
+	token->subtype = check_token_subtype(*str);
 	token->type = OPERATOR;
 	if ((str[0] == '>' && str[1] == '>') || (str[0] == '<' && str[1] == '<'))
 		return (2);
 	return (1);
 }
 
-static size_t	ft_command_len_def(t_list *token, char *str)
+static size_t	command_len_def(t_list *token, char *str)
 {
 	size_t	i;
-	size_t	quote_len;
+	size_t	quotelen;
 	char	token_type;
 	char	token_subtype;
 
-	quote_len = 0;
+	quotelen = 0;
 	i = 0;
 	while (str[i])
 	{
-		token_type = ft_check_token_type(str[i]);
-		token_subtype = ft_check_token_subtype(str[i]);
+		token_type = check_token_type(str[i]);
+		token_subtype = check_token_subtype(str[i]);
 		if (token_subtype == T_QUOTE)
 		{
-			quote_len = ft_quote_len(&str[i]);
-			if (quote_len == 0)
+			quotelen = quote_len(&str[i]);
+			if (quotelen == 0)
 				return (0);
-			i += quote_len;
+			i += quotelen;
 			token->subtype = T_QUOTE;
 		}
 		if (token_type == OPERATOR || token_subtype == T_SPACE)
@@ -49,18 +49,18 @@ static size_t	ft_command_len_def(t_list *token, char *str)
 	return (i);
 }
 
-static size_t	ft_token_len_def(t_list *token, char *str)
+static size_t	token_len_def(t_list *token, char *str)
 {
 	size_t	len;
 
 	len = 0;
-	if (ft_check_token_type(*str) == OPERATOR)
-		len = ft_operator_len_def(token, str);
+	if (check_token_type(*str) == OPERATOR)
+		len = operator_len_def(token, str);
 	else
 	{
-		len = ft_command_len_def(token, str);
+		len = command_len_def(token, str);
 		if (len == 0)
-			return (ft_quote_error(), 0);
+			return (quote_error(), 0);
 		token->type = COMMAND;
 		if (!token->subtype)
 			token->subtype = T_WORD;
@@ -68,7 +68,7 @@ static size_t	ft_token_len_def(t_list *token, char *str)
 	return (len);
 }
 
-static t_list	*ft_create_token(char **prompt)
+static t_list	*create_token(char **prompt)
 {
 	t_list	*token;
 	char	*str;
@@ -77,7 +77,7 @@ static t_list	*ft_create_token(char **prompt)
 	token = ft_lstnew(NULL);
 	if (!token)
 		return (NULL);
-	len = ft_token_len_def(token, *prompt);
+	len = token_len_def(token, *prompt);
 	if (len == 0)
 		return (free(token), NULL);
 	str = ft_calloc(len + 1, sizeof(char));
@@ -89,7 +89,7 @@ static t_list	*ft_create_token(char **prompt)
 	return (token);
 }
 
-t_list	*ft_build_tokens_list(char *prompt)
+t_list	*build_tokens_list(char *prompt)
 {
 	t_list	*tokens_list;
 	t_list	*token;
@@ -97,12 +97,12 @@ t_list	*ft_build_tokens_list(char *prompt)
 	tokens_list = NULL;
 	while (*prompt)
 	{
-		ft_skip_spaces(&prompt);
+		skip_spaces(&prompt);
 		if (*prompt)
 		{
-			token = ft_create_token(&prompt);
+			token = create_token(&prompt);
 			if (!token)
-				return (ft_free_list(tokens_list), NULL);
+				return (free_list(tokens_list), NULL);
 			ft_lstadd_last(&tokens_list, token);
 		}
 	}

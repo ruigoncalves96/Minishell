@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	ft_free_list(t_list *list)
+void	free_list(t_list *list)
 {
 	t_list	*temp;
 
@@ -25,7 +25,7 @@ void	ft_free_list(t_list *list)
 	}
 }
 
-void	ft_free_token_list(t_token *tokens_list)
+void	free_token_list(t_token *tokens_list)
 {
 	t_token	*temp;
 

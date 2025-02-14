@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static size_t	ft_quotes_nbr(char *str)
+static size_t	quotes_nbr(char *str)
 {
 	size_t	quotes_nbr;
 
@@ -21,7 +21,7 @@ static size_t	ft_quotes_nbr(char *str)
 	{
 		if (*str == '"' || *str == '\'')
 		{
-			str += ft_quote_len(str);
+			str += quote_len(str);
 			quotes_nbr++;
 		}
 		str++;
@@ -29,17 +29,17 @@ static size_t	ft_quotes_nbr(char *str)
 	return (quotes_nbr);
 }
 
-static size_t	ft_get_size_new_str(char *str)
+static size_t	get_size_new_str(char *str)
 {
 	size_t	len;
-	size_t	quotes_nbr;
+	size_t	quotesnbr;
 
 	len = ft_strlen(str);
-	quotes_nbr = ft_quotes_nbr(str);
-	return (len - (quotes_nbr * 2));
+	quotesnbr = quotes_nbr(str);
+	return (len - (quotesnbr * 2));
 }
 
-static bool	ft_ignore_quote(char str, char *quote)
+static bool	ignore_quote(char str, char *quote)
 {
 	if ((str == '"' || str == '\'') && *quote == 0)
 	{
@@ -54,7 +54,7 @@ static bool	ft_ignore_quote(char str, char *quote)
 	return (false);
 }
 
-static char	*ft_convert(t_list *token)
+static char	*convert(t_list *token)
 {
 	char	*new_str;
 	char	quote;
@@ -63,7 +63,7 @@ static char	*ft_convert(t_list *token)
 	size_t	j;
 
 	quote = 0;
-	len = ft_get_size_new_str(token->str);
+	len = get_size_new_str(token->str);
 	new_str = ft_calloc(len + 1, sizeof(char));
 	if (!new_str)
 		return (NULL);
@@ -73,9 +73,9 @@ static char	*ft_convert(t_list *token)
 	{
 		while (token->str[j])
 		{
-			if (ft_ignore_quote(token->str[j], &quote) == true)
+			if (ignore_quote(token->str[j], &quote) == true)
 				j++;
-			else 
+			else
 				new_str[i++] = token->str[j++];
 		}
 	}
@@ -83,7 +83,7 @@ static char	*ft_convert(t_list *token)
 	return (free(token->str), new_str);
 }
 
-t_list	*ft_convert_quotes(t_list *tokens_list)
+t_list	*convert_quotes(t_list *tokens_list)
 {
 	t_list	*token;
 
@@ -94,9 +94,9 @@ t_list	*ft_convert_quotes(t_list *tokens_list)
 			token = token->next;
 		if (token)
 		{
-			token->str = ft_convert(token);
+			token->str = convert(token);
 			if (token->str == NULL)
-				return (ft_free_list(tokens_list), NULL);
+				return (free_list(tokens_list), NULL);
 		}
 		token = token->next;
 	}

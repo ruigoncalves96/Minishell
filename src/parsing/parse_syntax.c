@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static bool	ft_parse_pipe(t_list *token)
+static bool	parse_pipe(t_list *token)
 {
 	if ((token->previous && token->previous->type == COMMAND)
 		&& ((token->next && token->next->type == COMMAND)
@@ -21,7 +21,7 @@ static bool	ft_parse_pipe(t_list *token)
 	return (false);
 }
 
-static bool	ft_parse_redirect(t_list *token)
+static bool	parse_redirect(t_list *token)
 {
 	if (token->next && token->next->type == OPERATOR)
 		return (false);
@@ -30,33 +30,33 @@ static bool	ft_parse_redirect(t_list *token)
 	return (true);
 }
 
-static bool	ft_parse_operator(t_list *token)
+static bool	parse_operator(t_list *token)
 {
 	if (token->subtype == T_PIPE)
 	{
-		if (ft_parse_pipe(token) == false)
+		if (parse_pipe(token) == false)
 			return (false);
 	}
 	else if (token->subtype == T_REDIRECT)
 	{
-		if (ft_parse_redirect(token) == false)
+		if (parse_redirect(token) == false)
 			return (false);
 	}
 	return (true);
 }
 
-bool	ft_parse_syntax(t_list *token_list)
+bool	parse_syntax(t_list *token_list)
 {
 	t_list	*token;
 
 	token = token_list;
-	while (token) 
+	while (token)
 	{
 		if (token->type == OPERATOR)
 		{
-			if (ft_parse_operator(token) == false)
+			if (parse_operator(token) == false)
 			{
-				ft_syntax_error(token_list, token);
+				syntax_error(token_list, token);
 				return (false);
 			}
 		}

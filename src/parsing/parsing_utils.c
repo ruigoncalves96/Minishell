@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-size_t	ft_quote_len(char *str)
+size_t	quote_len(char *str)
 {
 	char	quote;
 	size_t	i;
@@ -28,32 +28,32 @@ size_t	ft_quote_len(char *str)
 	return (0);
 }
 
-char	*ft_find_var(char *str, bool *double_quote)
+char	*find_var(char *str, bool *double_quote)
 {
-	size_t	quote_len;
+	size_t	quotelen;
 
-	quote_len = 0;
+	quotelen = 0;
 	while (*str)
 	{
 		if (*str == '"')
 			*double_quote ^= 1;
 		else if (*double_quote == false && *str == '\'')
 		{
-			quote_len += ft_quote_len(str);
-			str += quote_len;
+			quotelen += quote_len(str);
+			str += quotelen;
 		}
-		if (*str == '$' && ft_var_key_len(str + 1))
+		if (*str == '$' && var_key_len(str + 1))
 			return (str);
 		str++;
 	}
 	return (NULL);
 }
 
-int	ft_check_token_type(char c)
+int	check_token_type(char c)
 {
 	int	subtype;
 
-	subtype = ft_check_token_subtype(c);
+	subtype = check_token_subtype(c);
 	if (subtype == T_WORD || subtype == T_QUOTE || subtype == T_DOLLAR)
 		return (COMMAND);
 	else if (subtype == T_PIPE || subtype == T_REDIRECT)
@@ -61,7 +61,7 @@ int	ft_check_token_type(char c)
 	return (0);
 }
 
-int	ft_check_token_subtype(char c)
+int	check_token_subtype(char c)
 {
 	if (ft_strchr(SPACE_TOKENS, c) != NULL)
 		return (T_SPACE);
@@ -77,7 +77,7 @@ int	ft_check_token_subtype(char c)
 		return (T_WORD);
 }
 
-int	ft_check_redirect_type(char *redirect)
+int	check_redirect_type(char *redirect)
 {
 	int	type;
 	size_t	len;
@@ -95,21 +95,21 @@ int	ft_check_redirect_type(char *redirect)
 	return (type);
 }
 
-size_t	ft_strlen_until_spaces(char *str)
+size_t	strlen_until_spaces(char *str)
 {
 	size_t	i;
 
 	i = 0;
 	while (str[i])
 	{
-		if (ft_check_token_subtype(str[i]) == T_SPACE)
+		if (check_token_subtype(str[i]) == T_SPACE)
 			return (i);
 		i++;
 	}
 	return (i);
 }
 
-void	ft_skip_spaces(char **prompt)
+void	skip_spaces(char **prompt)
 {
 	while (**prompt)
 	{
@@ -119,7 +119,7 @@ void	ft_skip_spaces(char **prompt)
 	}
 }
 
-void	ft_insert_list(t_list **tokens_list, t_list *token, t_list *new_list)
+void	insert_list(t_list **tokens_list, t_list *token, t_list *new_list)
 {
 	t_list	*temp;
 
@@ -138,7 +138,7 @@ void	ft_insert_list(t_list **tokens_list, t_list *token, t_list *new_list)
 	token = NULL;
 }
 
-size_t	ft_command_array_len(t_list *node)
+size_t	command_array_len(t_list *node)
 {
 	size_t	nbr_commands;
 

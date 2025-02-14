@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-size_t	ft_var_key_len(char *str)
+size_t	var_key_len(char *str)
 {
 	size_t	i;
 
@@ -27,13 +27,13 @@ size_t	ft_var_key_len(char *str)
 	return (i);
 }
 
-static char	*ft_get_var_key(char *dollar)
+static char	*get_var_key(char *dollar)
 {
 	char	*key;
 	size_t	key_len;
 
 	dollar++;
-	key_len = ft_var_key_len(dollar);
+	key_len = var_key_len(dollar);
 	if (key_len == 0)
 		return (NULL);
 	key = ft_calloc(key_len + 1, sizeof(char));
@@ -44,7 +44,7 @@ static char	*ft_get_var_key(char *dollar)
 	return (key);
 }
 
-static char	*ft_get_var_value(t_env_var *env, char *key)
+static char	*get_var_value(t_env_var *env, char *key)
 {
 	t_env_var	*var;
 	char	*var_value;
@@ -63,15 +63,15 @@ static char	*ft_get_var_value(t_env_var *env, char *key)
 	return (var_value);
 }
 
-char	*ft_find_var_value(t_env_var *env, char *str)
+char	*find_var_value(t_env_var *env, char *str)
 {
 	char	*var_key;
 	char	*var_value;
 
-	var_key = ft_get_var_key(str);
+	var_key = get_var_key(str);
 	if (!var_key)
 		return (NULL);
-	var_value = ft_get_var_value(env, var_key);
+	var_value = get_var_value(env, var_key);
 	free(var_key);
 	if (!var_value)
 		return (NULL);
