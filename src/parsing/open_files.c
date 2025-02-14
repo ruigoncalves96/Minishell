@@ -12,6 +12,18 @@
 
 #include "../../includes/minishell.h"
 
+static void    close_repeated_redirections(t_token *token)
+{
+    if (token->previous && token->previous->previous && token->previous->previous->red)
+    {
+        if (token->previous->previous->red->type == token->red->type)
+        {
+            close(token->previous->previous->red->fd);
+            token->previous->previous->red->type = -1;
+        }
+    }
+}
+
 static int open_redirect(t_token *token)
 {
     if (!token || !token->red || !token->red->filename[0])
@@ -36,10 +48,11 @@ void loop_and_open_fd(t_token *token)
 {
     while (token)
     {
-        if(token->next && token->next->subtype == T_REDIRECT)
+        if (token->subtype == T_REDIRECT)
         {
-              if(open_redirect(token->next) == 1)
+              if (open_redirect(token) == 1)
                     printf("Aconteceu alguma coisa de errado equanto processo de escrever o namefile\n");
+              close_repeated_redirections(token);
         }
         token = token->next;
     }

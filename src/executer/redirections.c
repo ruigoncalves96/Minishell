@@ -38,14 +38,14 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 
 static void redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
-    if (token->red->type == OUT || token->red->type == A_OUT)
+    if ((token->red->type == OUT || token->red->type == A_OUT) && token->red->fd != -1)
     {
         if (dup2(token->red->fd, STDOUT_FILENO) == -1)
             return (perror("dup2"));
         close(token->red->fd);  // Fechar FD após o dup2
         token->red->fd = -1;    // Marcar como fechado
     }
-    else if (token->red->type == IN)
+    else if (token->red->type == IN && token->red->fd != -1)
     {
         if (dup2(token->red->fd, STDIN_FILENO) == -1)
             return (perror("dup2"));
