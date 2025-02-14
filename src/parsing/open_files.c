@@ -44,16 +44,20 @@ static int open_redirect(t_token *token)
     return 0;
 }
 
-void loop_and_open_fd(t_token *token)
+bool    loop_and_open_fd(t_token *token)
 {
     while (token)
     {
         if (token->subtype == T_REDIRECT)
         {
-              if (open_redirect(token) == 1)
-                    printf("Aconteceu alguma coisa de errado equanto processo de escrever o namefile\n");
-              close_repeated_redirections(token);
+            if (open_redirect(token) == 1)
+            {
+                printf("Aconteceu alguma coisa de errado equanto processo de escrever o namefile\n");
+                return (false);
+            }
+            close_repeated_redirections(token);
         }
         token = token->next;
     }
+    return (true);
 }

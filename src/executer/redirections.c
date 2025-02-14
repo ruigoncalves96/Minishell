@@ -21,7 +21,6 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         runcmd(token->previous, env, prompt_info);
         exit(0);
     }
-    wait(NULL);
     if (fork() == 0)
     {
         dup2(pipes[0], STDIN_FILENO);
@@ -32,6 +31,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     }
     close(pipes[0]);
     close(pipes[1]);
+    wait(NULL);
     wait(NULL);
     return (0);
 }
@@ -68,7 +68,7 @@ void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
             redirections_executer(token, env, prompt_info);
     }
     else if (token->type == COMMAND)
-        type_of_executer(token, env, prompt_info);
+            type_of_executer(token, env, prompt_info);
 }
 
 //[X]Primeiro loop para abrir as coisas
@@ -114,11 +114,8 @@ int executer_manager(char **str, t_env *env)
         }
         exit (0);
     }
-    else
-    {
-        wait(NULL);
-        free(path);
-    }
+    wait(NULL);
+    free(path);
     set_signals();
     ft_free_double_array(env_array);
     return 0;

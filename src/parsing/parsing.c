@@ -129,7 +129,8 @@ t_token	*parsing(t_prompt_info *prompt_info)
 	free_list(prompt_list);
 	if (!tokens_tree)
 		return (NULL);
-	loop_and_open_fd(tokens_tree);
+	if (loop_and_open_fd(tokens_tree) == false)
+	    return (NULL);
 	tokens_tree = build_tree(tokens_tree);
 	// ft_print_token_tree(tokens_tree);
 	// ft_print_linked_list(prompt_list);
