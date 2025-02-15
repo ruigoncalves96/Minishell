@@ -48,7 +48,7 @@ bool    loop_and_open_fd(t_token *token)
 {
     while (token)
     {
-        if (token->subtype == T_REDIRECT)
+        if (token->subtype == T_REDIRECT && token->red->type != HEREDOC)
         {
             if (open_redirect(token) == 1)
             {

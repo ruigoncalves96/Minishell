@@ -42,17 +42,6 @@ static t_redirect	*redirect_new(t_list *node, int type)
 	if (!red)
 		return (NULL);
 	red->fd = -1;
-	if (type == HEREDOC)
-	{
-	    red->filename = ft_calloc(2, sizeof(char *));
-		if (!red->filename)
-		    return (free(red), NULL);
-		red->filename[0] = ft_strdup(node->str);
-		if (!red->filename[0])
-		    return (free(red->filename), free(red), NULL);
-		red->filename[1] = NULL;
-	}
-	else
 	    red->filename = get_command_array(&node);
 	if (!red->filename)
 		return (free(red), NULL);
@@ -81,10 +70,7 @@ static t_token	*define_redirect_token(t_list **node)
 	new_token->red = redirect_new(*node, type);
 	if (!new_token->red)
 		return (free_token_list(new_token), NULL);
-	if (type == HEREDOC)
-	    *node = (*node)->next->next;
-	else
-	    *node = (*node)->next;
+	*node = (*node)->next;
 	return (new_token);
 }
 

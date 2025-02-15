@@ -71,12 +71,12 @@ void	ft_print_linked_tokens(t_token *list)
 		// 	ft_printf("      = subtype = SPACE\n");
 		// else if (temp->subtype == T_PIPE)
 		// 	ft_printf("      = subtype = PIPE\n");
-		// else if (temp->subtype == T_REDIRECT)
+		// /*else*/ if (temp->subtype == T_REDIRECT)
 		// {
 		// 	ft_printf("      = subtype = REDIRECT\n");
 		// 	ft_printf("	 = 	   = 	      = fd = %d\n", temp->red->fd);
 		// 	ft_printf("	 = 	   = 	      = filename = \n");
-		// 	ft_print_double_array(temp->red->filename);
+		// 	print_double_array(temp->red->filename);
 		// 	if (temp->red->type == IN)
 		// 		ft_printf("	 = 	   = 	      = type = IN\n");
 		// 	else if (temp->red->type == OUT)
@@ -125,15 +125,15 @@ t_token	*parsing(t_prompt_info *prompt_info)
 		return (NULL);
 	if (convert_quotes(prompt_list) == NULL)
 		return (NULL);
+	// ft_print_linked_list(prompt_list);
 	tokens_tree = define_tokens(prompt_list);
 	free_list(prompt_list);
+	// ft_print_linked_tokens(tokens_tree);
 	if (!tokens_tree)
 		return (NULL);
 	if (loop_and_open_fd(tokens_tree) == false)
 	    return (NULL);
 	tokens_tree = build_tree(tokens_tree);
-	// ft_print_token_tree(tokens_tree);
-	// ft_print_linked_list(prompt_list);
-	// ft_print_linked_tokens(tokens_list);
+	ft_print_token_tree(tokens_tree);
 	return (tokens_tree);
 }

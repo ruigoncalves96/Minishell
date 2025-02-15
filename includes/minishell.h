@@ -182,6 +182,9 @@ void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
 void loop_executer(t_token *token,t_env *env,t_prompt_info prompt_info);
 int executer_manager( char **str,t_env *env);
 
+//heredoc
+void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
+
 //signals
 void    set_signals(void);
 

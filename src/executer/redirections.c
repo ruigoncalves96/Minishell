@@ -65,7 +65,12 @@ void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
         if (token->subtype == T_PIPE)
             pipe_executer(token, env, prompt_info);
         else if (token->subtype == T_REDIRECT)
-            redirections_executer(token, env, prompt_info);
+        {
+            if (token->red->type != HEREDOC)
+                redirections_executer(token, env, prompt_info);
+            else
+                heredoc_executer(token, env, prompt_info);
+        }
     }
     else if (token->type == COMMAND)
             type_of_executer(token, env, prompt_info);
