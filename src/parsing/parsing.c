@@ -98,6 +98,8 @@ void	ft_print_token_tree(t_token *tree)
 	ft_printf("Token = ");
 	print_double_array(temp->token);
 	ft_printf("\n");
+	// if (temp->red)
+	//     ft_printf("red->fd = %d\n", temp->red->fd);
 	if (temp->previous)
 	{
 	    ft_printf("left = \n");
@@ -134,6 +136,6 @@ t_token	*parsing(t_prompt_info *prompt_info)
 	if (loop_and_open_fd(tokens_tree) == false)
 	    return (NULL);
 	tokens_tree = build_tree(tokens_tree);
-	ft_print_token_tree(tokens_tree);
+	// ft_print_token_tree(tokens_tree);
 	return (tokens_tree);
 }

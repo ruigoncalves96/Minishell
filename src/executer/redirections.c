@@ -12,6 +12,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
     int pipes[2];
 
+    //  HANDLE POSSIBLE ERRORS PIPE / FORK
     pipe(pipes);
     if (fork() == 0)
     {
@@ -107,7 +108,7 @@ int executer_manager(char **str, t_env *env)
 	path = get_command_path(*str,env);
 	if(!path)
         return (ft_free_double_array(env_array), -1);
-	signal(SIGINT, SIG_IGN);
+	// signal(SIGINT, SIG_IGN);
     if(child == 0)
     {
         if(execve(path,str,env_array) == -1)
@@ -121,7 +122,7 @@ int executer_manager(char **str, t_env *env)
     }
     wait(NULL);
     free(path);
-    set_signals();
+    // set_signals();
     ft_free_double_array(env_array);
     return 0;
 }

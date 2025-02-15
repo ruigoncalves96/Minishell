@@ -18,8 +18,9 @@ static void    close_repeated_redirections(t_token *token)
     {
         if (token->previous->previous->red->type == token->red->type)
         {
-            close(token->previous->previous->red->fd);
-            token->previous->previous->red->type = -1;
+            if (token->red->type != HEREDOC)
+                close(token->previous->previous->red->fd);
+            token->previous->previous->red->fd = -1;
         }
     }
 }
@@ -36,6 +37,8 @@ static int open_redirect(t_token *token)
         token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_APPEND, 0644);
     else if(token->red->type == IN)
         token->red->fd = open(token->red->filename[0], O_RDONLY);
+    else if (token->red->type == HEREDOC)
+        token->red->fd = 0;
     if(token->red->fd == -1)
     {
         //Talvez tenha de dar free no red e na str
@@ -48,7 +51,7 @@ bool    loop_and_open_fd(t_token *token)
 {
     while (token)
     {
-        if (token->subtype == T_REDIRECT && token->red->type != HEREDOC)
+        if (token->subtype == T_REDIRECT)
         {
             if (open_redirect(token) == 1)
             {

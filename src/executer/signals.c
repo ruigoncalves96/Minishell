@@ -40,7 +40,17 @@ static void    handler(int sig)
 
 void    set_signals(void)
 {
+    struct sigaction sa_c;
+
     disable_ctrl_backslash();
-    signal(SIGINT, handler);
-    signal(SIGQUIT, SIG_IGN);
+    sa_c.sa_handler = handler;
+    sa_c.sa_flags = SA_RESTART; // Restart system calls if interrupted
+    sigemptyset(&sa_c.sa_mask); // Block no other signals during handler execution
+    sigaction(SIGINT, &sa_c, NULL);
+
+    // Ignore SIGQUIT (Ctrl+\)
+    sa_c.sa_handler = SIG_IGN;
+    sigaction(SIGQUIT, &sa_c, NULL);
+    // signal(SIGINT, handler);
+    // signal(SIGQUIT, SIG_IGN);
 }

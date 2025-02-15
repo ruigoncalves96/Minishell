@@ -98,7 +98,10 @@ static char	*expand(t_env_var *env, t_list **tokens_list, t_list *token)
 	    dollar = find_var(dollar, &double_quotes);
 		if (!dollar)
 			break ;
-		var_value = find_var_value(env, dollar);
+		// if (dollar[1] == '$')
+		//     var_value = get_exit_value();
+		// else
+		    var_value = find_var_value(env, dollar);
 		token->str = join_var(token->str, var_value, dollar, var_key_len(dollar + 1));
 		if (!token->str)
 			return (NULL);
