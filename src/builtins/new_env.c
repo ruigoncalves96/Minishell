@@ -49,17 +49,35 @@ t_env *init_env(char **envp)
     env->var_count = 0; // vai ser bom no futuro para funções como o shell LVL
 
     i = 0;
-    while (envp[i])
+    if(!envp || !envp[0])
     {
-        t_env_var *new_var = create_env_node(envp[i]);
-        if (!new_var)
+    
+        export_env_var(env, "SHLVL", "1", 0);
+           // Add PWD
+         char  *pwd = getcwd(NULL, 0);
+           if (pwd)
+           {
+               export_env_var(env, "PWD", pwd, 0);
+               free(pwd);
+           }
+        // Add PATH
+        export_env_var(env, "PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", 1);
+        export_env_var(env,"_","/usr/bin/env",0);
+    }else
+    {
+
+        while (envp[i])
         {
-            free_env(env);
-            return NULL;
+            t_env_var *new_var = create_env_node(envp[i]);
+            if (!new_var)
+            {
+                free_env(env);
+                return NULL;
+            }
+            append_env_var(&env->vars, new_var);
+            env->var_count++;
+            i++;
         }
-        append_env_var(&env->vars, new_var);
-        env->var_count++;
-        i++;
     }
     return env;
 }
@@ -168,29 +186,3 @@ void update_shlvl(t_env *env)
 	export_env_var(env,"SHLVL",new_shlvl,0);
 	free(new_shlvl);
 }
-/*
-
-void flag_env()
-{
-    char *pwd;
-    char **flag_env;
-
-
-    flag_env = malloc(sizeof(char *) * 4);
-    if (!flag_env)
-        return;
-    pwd = getcwd(NULL, 0); 
-    if(pwd == NULL)
-    {
-        printf("Deu erro dentro da funcao flag_env guardar o pwd");
-        return;
-    }
-    flag_env[0] = ft_strdup(pwd);
-    free(pwd);
-    flag_env[1] = ft_strdup("SHLVL=1");
-    flag_env[2] = ft_strdup("_=/usr/bin/env");
-    flag_env[3] = NULL;
-    ft_print_double_array(flag_env);
-    free_double_array(flag_env);
-}
-*/

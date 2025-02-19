@@ -85,6 +85,7 @@ int export_env_var(t_env *env, const char *key, const char *value,int is_export_
             
         new_var->key = ft_strdup(key);
         new_var->value = ft_strdup(value);
+        new_var->is_export_only = is_export_only;
         new_var->next = NULL;
         
         if (!new_var->key || !new_var->value)
