@@ -51,6 +51,7 @@ static t_token *handle_redirections(t_token *token, int *backup_fd)
     if (!token->next || token->next->subtype != T_REDIRECT)
         return token->next;
 
+
     backup_fd[0] = dup(STDIN_FILENO);
     backup_fd[1] = dup(STDOUT_FILENO);
 
@@ -83,18 +84,20 @@ static t_token *handle_redirections(t_token *token, int *backup_fd)
     else
         return NULL;
 }
-static void close_stuff( int *backup_fd)
+static void close_stuff(int *backup_fd)
 {
-    dup2(backup_fd[0], STDIN_FILENO);
-    dup2(backup_fd[1], STDOUT_FILENO);
-    close(backup_fd[0]);
-    close(backup_fd[1]);
+    if (backup_fd[0] != -1 && backup_fd[1] != -1)
+    {
+        dup2(backup_fd[0], STDIN_FILENO);
+        dup2(backup_fd[1], STDOUT_FILENO);
+        close(backup_fd[0]);
+        close(backup_fd[1]);
+    }
 }
-
 
 void loop_executer(t_token *token, t_env *env, t_prompt_info prompt_info, t_builtins *builtins)
 {
-    int original_fd[2];
+    int original_fd[2] = { -1, -1 };
     t_token *current_cmd;
     t_token *redir_result;
     loop_and_open_fd(token);

@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/02/10 11:51:58 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/02/19 11:56:26 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ int is_builtin(char *cmd);
 int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *builtins);
 void update_shlvl(t_env *env);
 //Exit
-void exit_manager(char **args,t_builtins *builtins);
+void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens);
 void cleanup_all(t_prompt_info *prompt_info, t_token *tokens);
 //cd
 int cd_manager(char **str, t_env *env);

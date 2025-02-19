@@ -59,7 +59,7 @@ int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *built
     else if (ft_strcmp(*tokens->token, "echo") == 0)
         handle_echo(tokens->token);
 	else if (ft_strcmp(*tokens->token, "exit") == 0)
-		exit_manager(tokens->token,builtins);
+		exit_manager(tokens->token,builtins,&prompt_info,tokens);
     return (1);
 }
 
