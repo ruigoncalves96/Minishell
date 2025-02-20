@@ -1,4 +1,5 @@
 #include "../../includes/minishell.h"
+#include <unistd.h>
 
 static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
@@ -84,6 +85,8 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
     t_token *token;
     int original_fd[2];
 
+    original_fd[0] = -1;
+    original_fd[1] = -1;
     original_fd[0] = dup(STDIN_FILENO);
     original_fd[1] = dup(STDOUT_FILENO);
     token = token_head;
@@ -91,10 +94,12 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
         type_of_executer(token, env, prompt_info);
     else
         runcmd(token, env, prompt_info);
-    dup2(original_fd[0], STDIN_FILENO);
-    dup2(original_fd[1], STDOUT_FILENO);
-    close(original_fd[0]);
-    close(original_fd[1]);
+    if (STDIN_FILENO != original_fd[0])
+        dup2(original_fd[0], STDIN_FILENO);
+    if (STDOUT_FILENO != original_fd[1])
+        dup2(original_fd[1], STDOUT_FILENO);
+    // close(original_fd[0]);
+    // close(original_fd[1]);
 }
 
 int executer_manager(char **str, t_env *env)

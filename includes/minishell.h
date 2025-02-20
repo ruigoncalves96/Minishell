@@ -183,6 +183,8 @@ void loop_executer(t_token *token,t_env *env,t_prompt_info prompt_info);
 int executer_manager( char **str,t_env *env);
 
 //heredoc
+void    get_heredoc_input(t_token *token);
+void    get_heredoc_files(t_token *token);
 void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
 
 //signals

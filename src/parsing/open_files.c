@@ -20,16 +20,15 @@ static void    close_repeated_redirections(t_token *token)
         {
             if (token->red->type != HEREDOC)
                 close(token->previous->previous->red->fd);
-            token->previous->previous->red->fd = -1;
+           token->previous->previous->red->fd = -1;
         }
     }
 }
 
-static int open_redirect(t_token *token)
+static bool open_redirect(t_token *token)
 {
     if (!token || !token->red || !token->red->filename[0])
-        return 1;
-    // [X] abrir o arquivo
+        return (false);
     // printf("Redirect filename: %s\n", token->red->filename[0]);
     if(token->red->type == OUT)
         token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -38,13 +37,18 @@ static int open_redirect(t_token *token)
     else if(token->red->type == IN)
         token->red->fd = open(token->red->filename[0], O_RDONLY);
     else if (token->red->type == HEREDOC)
+    {
+        if (token->red->filename[1] != NULL)
+            get_heredoc_files(token);
+        get_heredoc_input(token);
         token->red->fd = 0;
+    }
     if(token->red->fd == -1)
     {
         //Talvez tenha de dar free no red e na str
-        return 1;
+        return (false);
     }
-    return 0;
+    return (true);
 }
 
 bool    loop_and_open_fd(t_token *token)
@@ -53,7 +57,7 @@ bool    loop_and_open_fd(t_token *token)
     {
         if (token->subtype == T_REDIRECT)
         {
-            if (open_redirect(token) == 1)
+            if (open_redirect(token) == false)
             {
                 printf("Aconteceu alguma coisa de errado equanto processo de escrever o namefile\n");
                 return (false);
