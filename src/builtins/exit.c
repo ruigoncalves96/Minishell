@@ -48,6 +48,7 @@ static int check_digit(const char *str)
 }
 void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
 {
+	(void)tokens;
     rl_clear_history();
 
     if (prompt_info->prompt)
@@ -60,7 +61,7 @@ void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
         free_token_list(tokens);
     if (prompt_info->env)
     {
-        free_env(prompt_info->env);
+         free_env(prompt_info->env);
          prompt_info->env = NULL;
     }
 }

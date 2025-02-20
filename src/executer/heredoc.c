@@ -36,6 +36,7 @@ void    get_heredoc_input(t_token *token)
     t_list    *top;
     t_list    *input;
 
+    input_len = 0;
     top = NULL;
     heredoc = NULL;
     while (1)

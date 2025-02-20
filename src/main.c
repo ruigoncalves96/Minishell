@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2025/02/20 11:18:14 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/02/20 15:52:26 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ int main(int argc, char *argv[],char *envp[])
 	init_variables_builtins(&builtins);
 	ft_memset(&prompt_info, 0, sizeof(t_prompt_info));
 	prompt_info.env = init_env(envp);
+	prompt_info.builtins = &builtins;
 	if(!prompt_info.env)
 	        return (1);
 	update_shlvl(prompt_info.env);
