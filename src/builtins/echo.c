@@ -1,8 +1,7 @@
 #include "../../includes/minishell.h"
-#include <string.h>
 
 static void echo(char **arr, bool echo_flag)
-{   
+{
    int i;
 
    i = 0;
@@ -23,7 +22,7 @@ static bool is_valid_n_flag(const char *str)
 
     if (!str || str[0] != '-')
         return false;
-    
+
     i = 1;
     while (str[i])
     {

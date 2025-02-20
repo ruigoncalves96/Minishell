@@ -76,6 +76,7 @@ typedef struct	s_prompt_info
 {
 	char	*prompt;
 	t_env	*env;
+	t_builtins *builtins;
 }		t_prompt_info;
 
 typedef struct s_list

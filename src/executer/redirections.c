@@ -3,7 +3,7 @@
 static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
     if(is_builtin(*token->token))
-        execute_builtin(token,prompt_info);
+        execute_builtin(token,prompt_info, prompt_info.builtins);
     else if(validate_command_path(*token->token,env) == 0)
         executer_manager(token->token,env);
 }

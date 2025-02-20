@@ -57,13 +57,7 @@ void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
     }
 
     if (tokens)
-<<<<<<< HEAD
         free_token_list(tokens);
-
-=======
-        ft_free_token_list(tokens);
-
->>>>>>> hugo
     if (prompt_info->env)
     {
         free_env(prompt_info->env);
@@ -71,13 +65,6 @@ void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
     }
 }
 
-<<<<<<< HEAD
-
-    printf("exit\n");
-
-    if (array_size(args) == 1)
-        exit(0);
-=======
 //Create exit code
 void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens)
 {
@@ -91,8 +78,6 @@ void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t
         cleanup_all(prompt_info, tokens);
         exit(0);
     }
->>>>>>> hugo
-
     if (!check_digit(args[1]))  // Se não for número
     {
         ft_putstr_fd("bash: exit: ",2);
@@ -102,7 +87,6 @@ void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t
         cleanup_all(prompt_info, tokens);
         exit(2);
     }
-
     if (array_size(args) > 2)  // Muitos argumentos
     {
         ft_putstr_fd("bash: exit: too many arguments\n",2);
@@ -124,13 +108,8 @@ void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t
     num = num % 256;
     if (num < 0)
         num += 256;
-<<<<<<< HEAD
-
-    cleanup_all(&prompt_info,tokens);
-=======
     builtins->exit_code = (int)num;
     printf("Codigo de saida: %d\n", builtins->exit_code);///////DEBUG
     cleanup_all(prompt_info, tokens);
->>>>>>> hugo
     exit((int)num);
 }
