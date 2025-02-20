@@ -13,7 +13,7 @@ char *get_key(char *env)
 }
 
 void append_env_var(t_env_var **head, t_env_var *new_var)
-{ 
+{
     if (!*head)
     {
         *head = new_var;
@@ -36,48 +36,56 @@ void append_env_var(t_env_var **head, t_env_var *new_var)
  * @param envp Original environment array
  * @return Pointer to new env structure or NULL if error
  */
-t_env *init_env(char **envp)
+
+static void create_vars_env_flag(t_env *env)
 {
-    t_env *env;
-    int i;
-
-    env = ft_calloc(1,sizeof(t_env));
-    if (!env)
-        return NULL;
-
-    env->vars = NULL;
-    env->var_count = 0; // vai ser bom no futuro para funções como o shell LVL
-
-    i = 0;
-    if(!envp || !envp[0])
-    {
-    
         export_env_var(env, "SHLVL", "1", 0);
-           // Add PWD
          char  *pwd = getcwd(NULL, 0);
            if (pwd)
            {
                export_env_var(env, "PWD", pwd, 0);
                free(pwd);
            }
-        // Add PATH
+
         export_env_var(env, "PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", 1);
         export_env_var(env,"_","/usr/bin/env",0);
-    }else
-    {
+}
 
-        while (envp[i])
+static void apeend_env_to_list(char **envp,t_env *env)
+{
+    int i;
+     t_env_var *new_var;
+    i = 0;
+    while (envp[i])
         {
-            t_env_var *new_var = create_env_node(envp[i]);
+            new_var= create_env_node(envp[i]);
             if (!new_var)
             {
                 free_env(env);
-                return NULL;
+                return;
             }
             append_env_var(&env->vars, new_var);
             env->var_count++;
             i++;
         }
+}
+
+t_env *init_env(char **envp)
+{
+    t_env *env;
+
+    env = ft_calloc(1,sizeof(t_env));
+    if (!env)
+        return NULL;
+
+    env->vars = NULL;
+    env->var_count = 0;
+    if(!envp || !envp[0])
+    {
+        create_vars_env_flag(env);
+    }else
+    {
+        apeend_env_to_list(envp,env);
     }
     return env;
 }
@@ -109,7 +117,7 @@ t_env_var *create_env_node(char *env_str)
     var->key = get_key(env_str);
     var->value = get_value(env_str);
     var->is_export_only = 0;
-    
+
     if (!var->key || !var->value)
     {
         free(var->key);
@@ -117,7 +125,7 @@ t_env_var *create_env_node(char *env_str)
         free(var);
         return NULL;
     }
-    
+
     var->prev = NULL;
     var->next = NULL;
     return var;
@@ -154,7 +162,7 @@ void print_env_list(t_env *env)
     current = env->vars;
     while (current)
     {
-        if (!current->is_export_only)  // Só mostra se não for export-only
+        if (!current->is_export_only)
             printf("%s=%s\n", current->key, current->value);
         current = current->next;
     }
@@ -162,8 +170,6 @@ void print_env_list(t_env *env)
 
 void update_shlvl(t_env *env)
 {
-
-	// [X] Vou perceber qual e o meu shlvl
 	char *shlvl_value;
 	int shlvl_number;
 	char *new_shlvl;

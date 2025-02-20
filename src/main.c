@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2025/02/19 12:11:13 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/02/20 11:18:14 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[],char *envp[])
     prompt_info.prompt = readline("Minishell> ");
     if (!prompt_info.prompt)
     {
-        break; // Removed free_env here
+        break;
     }
     else
         tokens = ft_parsing(&prompt_info);
