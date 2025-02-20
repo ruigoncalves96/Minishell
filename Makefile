@@ -77,7 +77,7 @@ fclean: clean
 	@echo "$(RED)Removing executable...$(RESET)"
 	@rm -f $(NAME)
 	@echo "$(GREEN)Executable removed!$(RESET)"
-	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@$(MAKE) -C $(LIBFT_DIR) fclean -s
 
 re: fclean all
 

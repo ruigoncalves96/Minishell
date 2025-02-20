@@ -38,7 +38,7 @@ static int env_manager(char **str,t_env *env)
 }
 */
 
-int execute_builtin(t_token *tokens, t_prompt_info prompt_info)
+int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *builtins)
 {
     if (!tokens || !tokens->token || !*tokens->token)
         return (0);
@@ -59,7 +59,7 @@ int execute_builtin(t_token *tokens, t_prompt_info prompt_info)
     else if (ft_strcmp(*tokens->token, "echo") == 0)
         handle_echo(tokens->token);
 	else if (ft_strcmp(*tokens->token, "exit") == 0)
-		exit_manager(tokens->token,prompt_info,tokens);
+		exit_manager(tokens->token,builtins,&prompt_info,tokens);
     return (1);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
+/*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/16 14:14:35 by randrade         ###   ########.fr       */
+/*   Updated: 2025/02/19 11:56:26 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@
 typedef struct	s_builtins
 {
     bool echo_flag;
+	int	 exit_code;
 }		t_builtins;
 
 typedef struct s_env_var {
@@ -134,10 +135,10 @@ void	free_token_list(t_token *tokens_list);
 //Init Builtins
 void init_variables_builtins(t_builtins *builtins);
 int is_builtin(char *cmd);
-int execute_builtin(t_token *tokens, t_prompt_info prompt_info);
+int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *builtins);
 void update_shlvl(t_env *env);
 //Exit
-void exit_manager(char **args,t_prompt_info	prompt_info,t_token		*tokens);
+void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens);
 void cleanup_all(t_prompt_info *prompt_info, t_token *tokens);
 //cd
 int cd_manager(char **str, t_env *env);
@@ -179,7 +180,7 @@ int validate_command_path(char *command, t_env *env);
 
 //redirections
 void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
-void loop_executer(t_token *token,t_env *env,t_prompt_info prompt_info);
+void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info);
 int executer_manager( char **str,t_env *env);
 
 //heredoc

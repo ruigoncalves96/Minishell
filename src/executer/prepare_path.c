@@ -107,7 +107,7 @@ int validate_command_path(char *command, t_env *env)
         ft_putstr_fd("\n",2);
         return (-1);
     }
-    //printf("Command found: %s\n", command_path);
+    
     free(command_path);
     return (0);
 }

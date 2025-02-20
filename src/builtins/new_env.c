@@ -13,7 +13,7 @@ char *get_key(char *env)
 }
 
 void append_env_var(t_env_var **head, t_env_var *new_var)
-{ 
+{
     if (!*head)
     {
         *head = new_var;
@@ -36,30 +36,56 @@ void append_env_var(t_env_var **head, t_env_var *new_var)
  * @param envp Original environment array
  * @return Pointer to new env structure or NULL if error
  */
+
+static void create_vars_env_flag(t_env *env)
+{
+        export_env_var(env, "SHLVL", "1", 0);
+         char  *pwd = getcwd(NULL, 0);
+           if (pwd)
+           {
+               export_env_var(env, "PWD", pwd, 0);
+               free(pwd);
+           }
+
+        export_env_var(env, "PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", 1);
+        export_env_var(env,"_","/usr/bin/env",0);
+}
+
+static void apeend_env_to_list(char **envp,t_env *env)
+{
+    int i;
+     t_env_var *new_var;
+    i = 0;
+    while (envp[i])
+        {
+            new_var= create_env_node(envp[i]);
+            if (!new_var)
+            {
+                free_env(env);
+                return;
+            }
+            append_env_var(&env->vars, new_var);
+            env->var_count++;
+            i++;
+        }
+}
+
 t_env *init_env(char **envp)
 {
     t_env *env;
-    int i;
 
     env = ft_calloc(1,sizeof(t_env));
     if (!env)
         return NULL;
 
     env->vars = NULL;
-    env->var_count = 0; // vai ser bom no futuro para funções como o shell LVL
-
-    i = 0;
-    while (envp[i])
+    env->var_count = 0;
+    if(!envp || !envp[0])
     {
-        t_env_var *new_var = create_env_node(envp[i]);
-        if (!new_var)
-        {
-            free_env(env);
-            return NULL;
-        }
-        append_env_var(&env->vars, new_var);
-        env->var_count++;
-        i++;
+        create_vars_env_flag(env);
+    }else
+    {
+        apeend_env_to_list(envp,env);
     }
     return env;
 }
@@ -91,7 +117,7 @@ t_env_var *create_env_node(char *env_str)
     var->key = get_key(env_str);
     var->value = get_value(env_str);
     var->is_export_only = 0;
-    
+
     if (!var->key || !var->value)
     {
         free(var->key);
@@ -99,7 +125,7 @@ t_env_var *create_env_node(char *env_str)
         free(var);
         return NULL;
     }
-    
+
     var->prev = NULL;
     var->next = NULL;
     return var;
@@ -136,7 +162,7 @@ void print_env_list(t_env *env)
     current = env->vars;
     while (current)
     {
-        if (!current->is_export_only)  // Só mostra se não for export-only
+        if (!current->is_export_only)
             printf("%s=%s\n", current->key, current->value);
         current = current->next;
     }
@@ -144,8 +170,6 @@ void print_env_list(t_env *env)
 
 void update_shlvl(t_env *env)
 {
-
-	// [X] Vou perceber qual e o meu shlvl
 	char *shlvl_value;
 	int shlvl_number;
 	char *new_shlvl;
@@ -168,29 +192,3 @@ void update_shlvl(t_env *env)
 	export_env_var(env,"SHLVL",new_shlvl,0);
 	free(new_shlvl);
 }
-/*
-
-void flag_env()
-{
-    char *pwd;
-    char **flag_env;
-
-
-    flag_env = malloc(sizeof(char *) * 4);
-    if (!flag_env)
-        return;
-    pwd = getcwd(NULL, 0); 
-    if(pwd == NULL)
-    {
-        printf("Deu erro dentro da funcao flag_env guardar o pwd");
-        return;
-    }
-    flag_env[0] = ft_strdup(pwd);
-    free(pwd);
-    flag_env[1] = ft_strdup("SHLVL=1");
-    flag_env[2] = ft_strdup("_=/usr/bin/env");
-    flag_env[3] = NULL;
-    ft_print_double_array(flag_env);
-    free_double_array(flag_env);
-}
-*/

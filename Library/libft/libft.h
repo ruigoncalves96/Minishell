@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
+/*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:34:25 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/15 12:45:54 by randrade         ###   ########.fr       */
+/*   Updated: 2025/02/10 11:54:33 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ size_t				ft_strlen(const char *s);
 size_t				ft_strlcpy(char *dst, const char *src, size_t size);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
 
-// Functions PART 2 
-//	v
+// Functions PART 2
+//	
 
 char				*ft_substr(char const *s, unsigned int start, size_t len);
 char				*ft_strjoin(char const *s1, char const *s2);

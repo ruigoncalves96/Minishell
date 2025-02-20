@@ -1,54 +1,5 @@
 #include "../../includes/minishell.h"
 
-
-/*
-    arg[0] = Exit;
-    arg[1] = ...; // O ideal e ser numero
-
-    atol(arg[1]);
-
-    //Evitar overflows caso passem o LONG_MAX OU LONG_MIN
-
-    EXIT
-    Retorna 0 sem receber nenhum parametro
-
-    arg[1]
-    Caso receba um numero ate 256 ele vai returna com o value do numero
-    SE FOR MAIOR DO QUE UM BYTE TENHO DE FAZER O MOD
-
-    exit se receber dois inputs numericos  nao vai sair
-    exit 23 54534 ||
-    exit
-    bash: exit: too many arguments
------------------------------------
-    exit ao receber uma string vai dar mensagem de erro MAS SAI
-///!RETURNA 2 PARA ERRO DE STRING
-    redgtxt@DESKTOP-7SB9EC4:~/42/Minishell$ exit ola
-    exit
-    bash: exit: ola: numeric argument required
- */
-
-
-/*
-	eu acho que tenho os if state mal feitos
-	corrigir isso
-		dar handle caso passem certo tipos de argumentos
-			tratar de strings
-				tratar de mensagens de eroos
-					e provavelmente estou me a esquecer de alguma coisa
-
-*/
-
-/*
-    Funcao que vai tratar do exit
-    Vai receber o builtins e o array de argumentos
-    Vai retornar o exit status
-
-    Vou receber tres argumentos no maximo
-
-
- */
-
 static int  ft_atol(const char *str, long *result)
 {
     long    num;
@@ -97,7 +48,7 @@ static int check_digit(const char *str)
 }
 void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
 {
-    /*rl_*/clear_history();
+    rl_clear_history();
 
     if (prompt_info->prompt)
     {
@@ -106,41 +57,66 @@ void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
     }
 
     if (tokens)
+<<<<<<< HEAD
         free_token_list(tokens);
 
+=======
+        ft_free_token_list(tokens);
+
+>>>>>>> hugo
     if (prompt_info->env)
     {
         free_env(prompt_info->env);
          prompt_info->env = NULL;
     }
 }
-//Create exit code
-void exit_manager(char **args,t_prompt_info	prompt_info,t_token		*tokens)
-{
-    long num;
 
+<<<<<<< HEAD
 
     printf("exit\n");
 
     if (array_size(args) == 1)
         exit(0);
+=======
+//Create exit code
+void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens)
+{
+    long num = 0;
+
+    printf("exit\n");
+
+    if (array_size(args) == 1) {
+        builtins->exit_code = 0;
+        printf("Codigo de saida: %d\n", builtins->exit_code);///////DEBUG
+        cleanup_all(prompt_info, tokens);
+        exit(0);
+    }
+>>>>>>> hugo
 
     if (!check_digit(args[1]))  // Se não for número
     {
-        printf("bash: exit: %s: numeric argument required\n", args[1]);
+        ft_putstr_fd("bash: exit: ",2);
+        ft_putstr_fd(args[1],2);
+        ft_putstr_fd(": numeric argument required\n",2);
+        builtins->exit_code = 2;
+        cleanup_all(prompt_info, tokens);
         exit(2);
     }
 
     if (array_size(args) > 2)  // Muitos argumentos
     {
-        printf("bash: exit: too many arguments\n");
+        ft_putstr_fd("bash: exit: too many arguments\n",2);
         return;  // Não sai se houver múltiplos argumentos
     }
 
     if (!ft_atol(args[1], &num))  // Verifica overflow
     {
-        printf("bash: exit: %s: numeric argument required\n", args[1]);
-        cleanup_all(&prompt_info,tokens);
+        ft_putstr_fd("bash: exit: ",2);
+        ft_putstr_fd(args[1],2);
+        ft_putstr_fd(":  numeric argument required\n",2);
+        cleanup_all(prompt_info, tokens);
+        builtins->exit_code = 2;
+        cleanup_all(prompt_info, tokens);
         exit(2);
     }
 
@@ -148,7 +124,13 @@ void exit_manager(char **args,t_prompt_info	prompt_info,t_token		*tokens)
     num = num % 256;
     if (num < 0)
         num += 256;
+<<<<<<< HEAD
 
     cleanup_all(&prompt_info,tokens);
+=======
+    builtins->exit_code = (int)num;
+    printf("Codigo de saida: %d\n", builtins->exit_code);///////DEBUG
+    cleanup_all(prompt_info, tokens);
+>>>>>>> hugo
     exit((int)num);
 }

@@ -1,5 +1,4 @@
 #include "../../includes/minishell.h"
-#include <unistd.h>
 
 static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
