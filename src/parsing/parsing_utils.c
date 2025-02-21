@@ -28,7 +28,7 @@ size_t	quote_len(char *str)
 	return (0);
 }
 
-char	*find_var(char *str, bool *double_quote)
+char	*find_expand_dollar(char *str, bool *double_quote)
 {
 	size_t	quotelen;
 

@@ -83,7 +83,7 @@ static char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_
 	return (new_token);
 }
 
-static char	*expand(t_env_var *env, t_list **tokens_list, t_list *token)
+static char	*expand(t_prompt_info *prompt_info, t_list **tokens_list, t_list *token)
 {
 	char   *var_value;
 	char   *dollar;
@@ -95,13 +95,10 @@ static char	*expand(t_env_var *env, t_list **tokens_list, t_list *token)
 	{
         dollar = token->str;
         dollar += ft_strlen(var_value);
-	    dollar = find_var(dollar, &double_quotes);
+	    dollar = find_expand_dollar(dollar, &double_quotes);
 		if (!dollar)
 			break ;
-		// if (dollar[1] == '$')
-		//     var_value = get_exit_value();
-		// else
-		    var_value = find_var_value(env, dollar);
+		var_value = find_var_value(prompt_info, dollar);
 		token->str = join_var(token->str, var_value, dollar, var_key_len(dollar + 1));
 		if (!token->str)
 			return (NULL);
@@ -120,9 +117,9 @@ t_list	*expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
 	token = *tokens_list;
 	while (token)
 	{
-		if (find_var(token->str, &double_quotes))
+		if (find_expand_dollar(token->str, &double_quotes))
 		{
-			if (expand(prompt_info->env->vars, tokens_list, token) == NULL)
+			if (expand(prompt_info, tokens_list, token) == NULL)
 			     return (NULL);
 			if (double_quotes == true)
 			     double_quotes ^= 1;
