@@ -22,6 +22,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 
 
 //	ERRORS
@@ -183,7 +184,7 @@ int validate_command_path(char *command, t_env *env);
 //redirections
 void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info);
-int executer_manager( char **str,t_env *env);
+int executer_manager(char **str, t_env *env,t_prompt_info prompt_info);
 
 //heredoc
 void    get_heredoc_input(t_token *token);
@@ -223,7 +224,7 @@ bool    loop_and_open_fd(t_token *token);
 
 //find_var_value
 size_t	var_key_len(char *str);
-char	*find_var_value(t_prompt_info *prompt_info, char *str);
+char	*find_var_value(t_prompt_info *prompt_info, char *dollar);
 
 //parsing_utils
 size_t	quote_len(char *str);

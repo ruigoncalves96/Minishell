@@ -18,6 +18,8 @@ size_t	var_key_len(char *str)
 	size_t	i;
 
 	i = 0;
+	if (!ft_isalpha(str[i]) || str[i] != '_')
+	    return (1);
 	while (str[i])
 	{
 		if (ft_isalpha(str[i]) || ft_isdigit(str[i]) || str[i] == '_' || str[i] == '?')
@@ -64,14 +66,14 @@ static char	*get_var_value(t_env_var *env, char *key)
 	return (var_value);
 }
 
-char	*find_var_value(t_prompt_info *prompt_info, char *str)
+char	*find_var_value(t_prompt_info *prompt_info, char *dollar)
 {
 	char	*var_key;
 	char	*var_value;
 
-	if (str[1] == '?')
+	if (dollar[1] == '?')
 	    return (ft_itoa(prompt_info->builtins->exit_code));
-	var_key = get_var_key(str);
+	var_key = get_var_key(dollar);
 	if (!var_key)
 		return (NULL);
 	var_value = get_var_value(prompt_info->env->vars, var_key);
