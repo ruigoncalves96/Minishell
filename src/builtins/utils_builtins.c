@@ -1,15 +1,18 @@
 #include "../../includes/minishell.h"
 
-
 /// @brief Print a error message
 /// @param cmd COMAND USED 
 /// @param arg ARGUMENT FOR THE COMAND (PASS NULL TO IGNORE)
 /// @param msg MESSAGE ERROR
-void print_error(const char *cmd, const char *arg, const char *msg)
+void print_error(const char *cmd, const char *arg, const char *msg,bool print_bash)
 {
-    ft_putstr_fd("bash: ", 2);
-    ft_putstr_fd((char *)cmd, 2);
-    ft_putstr_fd(": ", 2);
+    if(print_bash)
+        ft_putstr_fd("bash: ", 2);
+    if(cmd)
+    {
+        ft_putstr_fd((char *)cmd, 2);
+        ft_putstr_fd(": ", 2);
+    }
 
     if (arg)
     {
@@ -24,7 +27,9 @@ void print_error(const char *cmd, const char *arg, const char *msg)
 //Gets a key of a string "KEY=VALUE"
 char *get_key(char *env)
 {
-    int len = 0;
+    int len;
+    
+    len = 0;
     while (env[len] && env[len] != '=')
         len++;
     char *key = ft_calloc(len + 1,1);
@@ -37,7 +42,9 @@ char *get_key(char *env)
 //Gets a value of a string "KEY=VALUE"
 char *get_value(char *env_str)
 {
-    char *equals = ft_strchr(env_str, '=');
+    char *equals;
+
+    equals = ft_strchr(env_str, '=');
     if (!equals)
         return NULL;
     return ft_strdup(equals + 1);

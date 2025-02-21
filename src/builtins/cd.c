@@ -15,8 +15,7 @@ static int validate_arguments(char **str)
 {
     if (array_size(str) > 3)
     {
-        print_error("cd",NULL,TOO_MANY_ARGS);
-        //ft_putstr_fd("cd: ", 2);
+        print_error("cd",NULL,TOO_MANY_ARGS,true);
         return (-1);
     }
     return (0);
@@ -29,7 +28,7 @@ static char *get_target_path(char *path)
         path = getenv("HOME");
         if (!path)
         {
-            print_error("cd",NULL,HOME_NOT_SET);
+            print_error("cd",NULL,HOME_NOT_SET,true);
             return (NULL);
         }
     }

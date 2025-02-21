@@ -10,9 +10,7 @@ static int  ft_atol(const char *str, long *result)
     neg = 1;
     i = 0;
     *result = 0;
-    while (str[i] && (str[i] == ' ' || str[i] == '\t'
-            || str[i] == '\n' || str[i] == '\r'
-            || str[i] == '\v' || str[i] == '\f'))
+    while (str[i] && (str[i] < 32))
         i++;
     if (str[i] == '+' || str[i] == '-') // Lida com sinal
     {
@@ -30,7 +28,6 @@ static int  ft_atol(const char *str, long *result)
     *result = num * neg;
     return (1);
 }
-
 
 static int check_digit(const char *str)
 {
@@ -65,39 +62,35 @@ void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
          prompt_info->env = NULL;
     }
 }
-
-//Create exit code
+static void free_error_exit(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens)
+{
+    print_error("exit",args[1],EXIT_NUMERIC_ERROR,true);
+    builtins->exit_code = 2;
+    cleanup_all(prompt_info, tokens);
+    exit(2);
+}
 void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens)
 {
-    long num = 0;
-
+    long num;
+    
+    num = 0;
     printf("exit\n");
-
     if (array_size(args) == 1) {
         builtins->exit_code = 0;
         cleanup_all(prompt_info, tokens);
         exit(0);
     }
-    if (!check_digit(args[1]))  // Se não for número
+    if (!check_digit(args[1]))
+        free_error_exit(args,builtins,prompt_info,tokens);
+    if (array_size(args) > 2)
     {
-        print_error("exit",args[1],EXIT_NUMERIC_ERROR);
-        builtins->exit_code = 2;
-        cleanup_all(prompt_info, tokens);
-        exit(2);
-    }
-    if (array_size(args) > 2)  // Muitos argumentos
-    {
-        print_error("exit",NULL,TOO_MANY_ARGS);
+        print_error("exit",NULL,TOO_MANY_ARGS,true);
         return;  
     }
-    if (!ft_atol(args[1], &num))  // Verifica overflow
-    {
-        print_error("exit",args[1],EXIT_NUMERIC_ERROR);
-        builtins->exit_code = 2;
-        cleanup_all(prompt_info, tokens);
-        exit(2);
-    }
-    num = num % 256;
+    if (!ft_atol(args[1], &num))
+        free_error_exit(args,builtins,prompt_info,tokens);
+    
+    num %= 256;
     if (num < 0)
         num += 256;
     builtins->exit_code = (int)num;

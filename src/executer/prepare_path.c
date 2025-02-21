@@ -8,6 +8,16 @@
 */
 
 ///@return funcao vai returnar value de uma variavel existente no sistema
+
+static int is_directory(const char *path)
+{
+    struct stat path_stat;
+    if (stat(path, &path_stat) != 0) {
+        return 0;  // Error
+    }
+    return S_ISDIR(path_stat.st_mode); // Check if it's a directory
+}
+
 char *get_env_value(t_env *env,const char *key)
 {
     t_env_var *current;
@@ -99,15 +109,23 @@ int validate_command_path(char *command, t_env *env)
 {
     char *command_path;
 
-    command_path = get_command_path(command, env);
-    if (!command_path || command[0] == '\0')
+    if (command[0] == '.' && (command[1] == '\0' || (command[1] == '.' && command[2] == '\0')))
     {
-        ft_putstr_fd("Command not found: ", 2);
-        ft_putstr_fd(command,2);
-        ft_putstr_fd("\n",2);
+        print_error(NULL,command,COMMAND_NOT_FOUND,false);
         return (-1);
     }
-    
+    command_path = get_command_path(command, env);
+    if (!command_path)
+    {
+        print_error(NULL,command,COMMAND_NOT_FOUND,false);
+        return (-1);
+    }
+    else if (is_directory(command_path))
+    {
+        print_error(NULL,command,DIRECTORY,true);
+        //  ft_printf("SOU UM DIRECTORY :(\n");
+        return (-1);
+    }
     free(command_path);
     return (0);
 }

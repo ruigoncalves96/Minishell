@@ -22,7 +22,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <sys/wait.h>
-
+#include <sys/stat.h>
 
 //	ERRORS
 #define QUOTE_ERROR "syntax error unclosed quote"
@@ -34,7 +34,12 @@
 //CD
 #define HOME_NOT_SET "HOME not set"
 
+//COMANDS
+#define DIRECTORY "Is a directory"
+#define COMMAND_NOT_FOUND "Command not found"
 
+//Export
+#define NOT_VALID_IDENTIFIER "not a valid identifier"
 //	TOKEN_TYPE
 #define COMMAND 1
 #define OPERATOR 2
@@ -118,7 +123,7 @@ typedef struct s_token
 void	print_double_array(char **array);
 int array_size(char **array);
 int	ft_strcmp(const char *s1, const char *s2);
-void print_error(const char *cmd, const char *arg, const char *msg);
+void print_error(const char *cmd, const char *arg, const char *msg,bool print_bash);
 
 //List_struct_functions
 t_list	*ft_lstlast(t_list *lst);
@@ -189,7 +194,7 @@ int validate_command_path(char *command, t_env *env);
 //redirections
 void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info);
-int executer_manager( char **str,t_env *env);
+int executer_manager(char **str, t_env *env,t_prompt_info prompt_info);
 
 //heredoc
 void    get_heredoc_input(t_token *token);

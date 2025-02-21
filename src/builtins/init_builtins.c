@@ -70,7 +70,6 @@ char **convert_env_to_array(t_env *env)
     envp = malloc((env->var_count + 1) * sizeof(char *));
     if (!envp)
         return (NULL);
-
     current = env->vars;
     i = 0;
     while (current)
@@ -79,10 +78,7 @@ char **convert_env_to_array(t_env *env)
         {
             envp[i] = create_env_string(current->key, current->value);
             if (!envp[i])
-            {
-                ft_free_double_array(envp);
-                return (NULL);
-            }
+                return(ft_free_double_array(envp),NULL);
             i++;
         }
         current = current->next;

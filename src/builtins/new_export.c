@@ -67,8 +67,8 @@ static void sort_env_list(t_env_var *head)
 
     t_env_var *current;
     t_env_var *next_node;
-
-    int sorted = 0;
+    int sorted;
+    sorted = 0;
     while (!sorted)
     {
         sorted = 1;

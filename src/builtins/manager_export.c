@@ -22,15 +22,11 @@ static int is_valid_env_name(const char *key)
     return 1;
 }
 
-
-
 static int validate_and_handle_key(char *key, char *value)
 {
     if (key == NULL || ft_strlen(key) == 0)
     {
-        ft_putstr_fd("bash: export: `=", 2);
-        ft_putstr_fd(value, 2);
-        ft_putstr_fd("': not a valid identifier\n", 2);
+        print_error("export",value,NOT_VALID_IDENTIFIER,true);
         free(key);
         free(value);
         return 0;
@@ -38,9 +34,7 @@ static int validate_and_handle_key(char *key, char *value)
     
     if (!is_valid_env_name(key))
     {
-        ft_putstr_fd("bash: export: `", 2);
-        ft_putstr_fd(key, 2);
-        ft_putstr_fd("': not a valid identifier\n", 2);
+        print_error("export",key,NOT_VALID_IDENTIFIER,true);
         free(key);
         free(value);
         return 0;

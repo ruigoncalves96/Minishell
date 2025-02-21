@@ -2,10 +2,12 @@
 
 static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
+    if (token->token[0][0] == '\0')
+        return ;
     if(is_builtin(*token->token))
         execute_builtin(token,prompt_info, prompt_info.builtins);
     else if(validate_command_path(*token->token,env) == 0)
-        executer_manager(token->token,env);
+        executer_manager(token->token,env,prompt_info);
 }
 
 static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
@@ -100,12 +102,28 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
     // close(original_fd[0]);
     // close(original_fd[1]);
 }
+static void exit_code_child(t_prompt_info prompt_info)
+{
+    int status;
+    int exit_code;
 
-int executer_manager(char **str, t_env *env)
+    wait(&status);
+    exit_code = (status >> 8) & 0xFF;
+    prompt_info.builtins->exit_code = exit_code;
+}
+
+static void handle_execve_error(char *path,char **env_array)
+{
+    perror("exeve");
+    free(path);
+    ft_free_double_array(env_array);
+    exit (1);
+}
+int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
 {
 	char *path;
 	char **env_array;
-	int child;
+	pid_t child;
 
     child = fork();
     env_array = convert_env_to_array(env);
@@ -117,13 +135,10 @@ int executer_manager(char **str, t_env *env)
     {
         if(execve(path,str,env_array) == -1)
         {
-            perror("exeve");
-            free(path);
-            ft_free_double_array(env_array);
-            exit (1);
+            handle_execve_error(path,env_array);
         }
-        exit (0);
-    }
+    }else
+        exit_code_child(prompt_info);
     wait(NULL);
     free(path);
     // set_signals();
