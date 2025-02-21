@@ -22,7 +22,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <sys/wait.h>
-#include <sys/stat.h>
+# include <sys/stat.h>
 
 //	ERRORS
 #define QUOTE_ERROR "syntax error unclosed quote"
@@ -144,6 +144,7 @@ void	free_list(t_list *list);
 void	free_token_list(t_token *tokens_list);
 void    free_token_tree(t_token *token_tree);
 
+
 //_____________	Builtins ______________
 
 //Init Builtins
@@ -234,11 +235,11 @@ bool    loop_and_open_fd(t_token *token);
 
 //find_var_value
 size_t	var_key_len(char *str);
-char	*find_var_value(t_env_var *env, char *str);
+char	*find_var_value(t_prompt_info *prompt_info, char *dollar);
 
 //parsing_utils
 size_t	quote_len(char *str);
-char	*find_var(char *str, bool *double_quotes);
+char	*find_expand_dollar(char *str, bool *double_quotes);
 int	check_token_type(char c);
 int	check_token_subtype(char c);
 int	check_redirect_type(char *redirect);

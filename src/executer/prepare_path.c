@@ -7,8 +7,6 @@
    [X] usar funcao access para verificar se o comando e executavel
 */
 
-///@return funcao vai returnar value de uma variavel existente no sistema
-
 static int is_directory(const char *path)
 {
     struct stat path_stat;
@@ -18,6 +16,7 @@ static int is_directory(const char *path)
     return S_ISDIR(path_stat.st_mode); // Check if it's a directory
 }
 
+///@return funcao vai returnar value de uma variavel existente no sistema
 char *get_env_value(t_env *env,const char *key)
 {
     t_env_var *current;

@@ -119,6 +119,7 @@ static void handle_execve_error(char *path,char **env_array)
     ft_free_double_array(env_array);
     exit (1);
 }
+
 int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
 {
 	char *path;
@@ -127,17 +128,16 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
 
     child = fork();
     env_array = convert_env_to_array(env);
-	path = get_command_path(*str,env);
-	if(!path)
+    path = get_command_path(*str,env);
+    if(!path)
         return (ft_free_double_array(env_array), -1);
-	// signal(SIGINT, SIG_IGN);
+    // signal(SIGINT, SIG_IGN);
     if(child == 0)
     {
         if(execve(path,str,env_array) == -1)
-        {
             handle_execve_error(path,env_array);
-        }
-    }else
+    }
+    else
         exit_code_child(prompt_info);
     wait(NULL);
     free(path);

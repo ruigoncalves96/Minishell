@@ -20,7 +20,8 @@ void	free_list(t_list *list)
 	{
 		temp = list;
 		list = list->next;
-		free(temp->str);
+		if(temp->str)
+		    free(temp->str);
 		free(temp);
 	}
 }
@@ -33,15 +34,17 @@ void	free_token_list(t_token *tokens_list)
 	{
 		temp = tokens_list;
 		tokens_list = tokens_list->next;
-		if (tokens_list && tokens_list->red)
+		if (temp->token)
+	        ft_free_double_array(temp->token);
+		if (temp->red)
 		{
-			ft_free_double_array(tokens_list->red->filename);
-			free(tokens_list->red);
+			ft_free_double_array(temp->red->filename);
+			free(temp->red);
 		}
-		ft_free_double_array(temp->token);
 		free(temp);
 	}
 }
+
 void    free_token_tree(t_token *token_tree)
 {
     if (token_tree->previous)
@@ -49,11 +52,11 @@ void    free_token_tree(t_token *token_tree)
     if (token_tree->next)
         free_token_tree(token_tree->next);
     if (token_tree->token)
-        ft_free_double_array(token_tree->token);
-    if (token_tree->red)
-    {
-        ft_free_double_array(token_tree->red->filename);
-        free(token_tree->red);
-    }
-    free(token_tree);
+	    ft_free_double_array(token_tree->token);
+	if (token_tree->red)
+	{
+		ft_free_double_array(token_tree->red->filename);
+		free(token_tree->red);
+	}
+	free(token_tree);
 }
