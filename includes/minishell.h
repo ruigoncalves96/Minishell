@@ -27,6 +27,13 @@
 //	ERRORS
 #define QUOTE_ERROR "syntax error unclosed quote"
 #define SYNTAX_ERROR "syntax error near unexpected token"
+#define TOO_MANY_ARGS "too many arguments"
+//Exit
+#define	EXIT_NUMERIC_ERROR "numeric argument required"
+
+//CD
+#define HOME_NOT_SET "HOME not set"
+
 
 //	TOKEN_TYPE
 #define COMMAND 1
@@ -111,6 +118,7 @@ typedef struct s_token
 void	print_double_array(char **array);
 int array_size(char **array);
 int	ft_strcmp(const char *s1, const char *s2);
+void print_error(const char *cmd, const char *arg, const char *msg);
 
 //List_struct_functions
 t_list	*ft_lstlast(t_list *lst);
@@ -129,7 +137,7 @@ t_token	*ft_token_new(char **content, int type, char subtype);
 //Free_structs
 void	free_list(t_list *list);
 void	free_token_list(t_token *tokens_list);
-
+void    free_token_tree(t_token *token_tree);
 
 //_____________	Builtins ______________
 
@@ -165,7 +173,6 @@ t_env *init_env(char **envp);
 t_env_var *create_env_node(char *env_str);
 void free_env(t_env *env);
 void print_env_list(t_env *env);
-
 //UNSET FUNCTIONS
 int unset_env_var(t_env *env,char *key_to_unset);
 int manager_unset(char **str, t_env *env);

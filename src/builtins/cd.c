@@ -1,11 +1,5 @@
 #include "../../includes/minishell.h"
 
-/*
-    [X] cd sem argumentos deve ir para a home
-    [X] se o argumento do cd existir deve ir para a pasta
-    [X] se ele navegar para o diretorio tenho de alterar as variaveis dentro do env (PWD OLDPWD)
-*/
-
 static int create_pwd(char **pwd)
 {
     *pwd = getcwd(NULL, 0);
@@ -21,7 +15,8 @@ static int validate_arguments(char **str)
 {
     if (array_size(str) > 3)
     {
-        ft_putstr_fd("cd: too many arguments", 2);
+        print_error("cd",NULL,TOO_MANY_ARGS);
+        //ft_putstr_fd("cd: ", 2);
         return (-1);
     }
     return (0);
@@ -34,7 +29,7 @@ static char *get_target_path(char *path)
         path = getenv("HOME");
         if (!path)
         {
-            ft_putstr_fd("cd: HOME not set", 2);
+            print_error("cd",NULL,HOME_NOT_SET);
             return (NULL);
         }
     }

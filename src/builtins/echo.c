@@ -51,7 +51,5 @@ void handle_echo(char *argv[])
                 break;
         }
     }
-
-
     echo(&argv[start], vars.echo_flag);
 }

@@ -42,3 +42,18 @@ void	free_token_list(t_token *tokens_list)
 		free(temp);
 	}
 }
+void    free_token_tree(t_token *token_tree)
+{
+    if (token_tree->previous)
+        free_token_tree(token_tree->previous);
+    if (token_tree->next)
+        free_token_tree(token_tree->next);
+    if (token_tree->token)
+        ft_free_double_array(token_tree->token);
+    if (token_tree->red)
+    {
+        ft_free_double_array(token_tree->red->filename);
+        free(token_tree->red);
+    }
+    free(token_tree);
+}

@@ -28,7 +28,9 @@ static int validate_and_handle_key(char *key, char *value)
 {
     if (key == NULL || ft_strlen(key) == 0)
     {
-        printf("Maroto o que andas a tentar fazer\n");
+        ft_putstr_fd("bash: export: `=", 2);
+        ft_putstr_fd(value, 2);
+        ft_putstr_fd("': not a valid identifier\n", 2);
         free(key);
         free(value);
         return 0;
@@ -36,7 +38,9 @@ static int validate_and_handle_key(char *key, char *value)
     
     if (!is_valid_env_name(key))
     {
-        printf("AIAIA escreve como deve de ser hehehe.\n");
+        ft_putstr_fd("bash: export: `", 2);
+        ft_putstr_fd(key, 2);
+        ft_putstr_fd("': not a valid identifier\n", 2);
         free(key);
         free(value);
         return 0;

@@ -1,17 +1,5 @@
 #include "../../includes/minishell.h"
 
-char *get_key(char *env)
-{
-    int len = 0;
-    while (env[len] && env[len] != '=')
-        len++;
-    char *key = ft_calloc(len + 1,1);
-    if (!key)
-        return NULL;
-    ft_strlcpy(key, env, len + 1);
-    return key;
-}
-
 void append_env_var(t_env_var **head, t_env_var *new_var)
 {
     if (!*head)
@@ -30,12 +18,6 @@ void append_env_var(t_env_var **head, t_env_var *new_var)
     new_var->prev =  current;
     new_var->next = NULL;
 }
-
-/**
- * @brief Initialize environment linked list
- * @param envp Original environment array
- * @return Pointer to new env structure or NULL if error
- */
 
 static void create_vars_env_flag(t_env *env)
 {
@@ -90,18 +72,7 @@ t_env *init_env(char **envp)
     return env;
 }
 
-/**
- * @brief Get value part from environment string
- * @param env_str String in format "KEY=VALUE"
- * @return Value string or NULL if error
- */
-char *get_value(char *env_str)
-{
-    char *equals = ft_strchr(env_str, '=');
-    if (!equals)
-        return NULL;
-    return ft_strdup(equals + 1);
-}
+
 
 /**
  * @brief Create new environment variable node

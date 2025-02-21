@@ -18,25 +18,6 @@ int is_builtin(char *cmd)
     }
     return (0);
 }
-/*
-static int env_manager(char **str,t_env *env)
-{
-    if (str == NULL || *str == NULL)
-        return 1;
-    if(array_size(str) == 1)
-    {
-        print_env_list(env);
-        return 0;
-    }
-
-    if(array_size(str) == 2 && ft_strcmp(str[1]," -i"))
-        return 0;
-    else
-           ft_putstr_fd("Too many arguments in env\n",2);
-
-    return 1;
-}
-*/
 
 int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *builtins)
 {
@@ -63,7 +44,7 @@ int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *built
     return (1);
 }
 
-// Aloca e constrói uma string no formato "KEY=VALUE"
+// Create a string in format "KEY=VALUE"
 static char *create_env_string(const char *key, const char *value)
 {
     size_t key_len = ft_strlen(key);
@@ -76,10 +57,7 @@ static char *create_env_string(const char *key, const char *value)
     ft_strlcat(env_str, value,key_len + value_len + 2);
     return (env_str);
 }
-
-/// @brief Converte uma linked list de ambiente (t_env) para um array de strings no formato "KEY=VALUE".
-/// @param env Estrutura de ambiente.
-/// @return Um array de strings ou NULL em caso de falha.
+//Convert list in an array
 char **convert_env_to_array(t_env *env)
 {
     char **envp;

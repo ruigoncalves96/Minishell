@@ -58,7 +58,7 @@ void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
     }
 
     if (tokens)
-        free_token_list(tokens);
+        free_token_tree(tokens);
     if (prompt_info->env)
     {
          free_env(prompt_info->env);
@@ -75,42 +75,32 @@ void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t
 
     if (array_size(args) == 1) {
         builtins->exit_code = 0;
-        printf("Codigo de saida: %d\n", builtins->exit_code);///////DEBUG
         cleanup_all(prompt_info, tokens);
         exit(0);
     }
     if (!check_digit(args[1]))  // Se não for número
     {
-        ft_putstr_fd("bash: exit: ",2);
-        ft_putstr_fd(args[1],2);
-        ft_putstr_fd(": numeric argument required\n",2);
+        print_error("exit",args[1],EXIT_NUMERIC_ERROR);
         builtins->exit_code = 2;
         cleanup_all(prompt_info, tokens);
         exit(2);
     }
     if (array_size(args) > 2)  // Muitos argumentos
     {
-        ft_putstr_fd("bash: exit: too many arguments\n",2);
-        return;  // Não sai se houver múltiplos argumentos
+        print_error("exit",NULL,TOO_MANY_ARGS);
+        return;  
     }
-
     if (!ft_atol(args[1], &num))  // Verifica overflow
     {
-        ft_putstr_fd("bash: exit: ",2);
-        ft_putstr_fd(args[1],2);
-        ft_putstr_fd(":  numeric argument required\n",2);
-        cleanup_all(prompt_info, tokens);
+        print_error("exit",args[1],EXIT_NUMERIC_ERROR);
         builtins->exit_code = 2;
         cleanup_all(prompt_info, tokens);
         exit(2);
     }
-
-    // Normaliza o número para 0-255
     num = num % 256;
     if (num < 0)
         num += 256;
     builtins->exit_code = (int)num;
-    printf("Codigo de saida: %d\n", builtins->exit_code);///////DEBUG
     cleanup_all(prompt_info, tokens);
     exit((int)num);
 }
