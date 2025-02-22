@@ -137,7 +137,7 @@ t_token	*parsing(t_prompt_info *prompt_info)
 	// ft_print_linked_tokens(tokens_tree);
 	if (!tokens_tree)
 		return (NULL);
-	if (loop_and_open_fd(tokens_tree) == false)
+	if (loop_and_open_fd(tokens_tree,prompt_info) == false)
 	    return (NULL);
 	tokens_tree = build_tree(tokens_tree);
 	// ft_print_token_tree(tokens_tree);

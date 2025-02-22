@@ -51,15 +51,21 @@ static bool open_redirect(t_token *token)
     return (true);
 }
 
-bool    loop_and_open_fd(t_token *token)
+bool    loop_and_open_fd(t_token *token,t_prompt_info *prompt_info)
 {
+
+ //   bool success;
+
+    //success = true;
     while (token)
     {
         if (token->subtype == T_REDIRECT)
         {
             if (open_redirect(token) == false)
             {
-                printf("Aconteceu alguma coisa de errado equanto processo de escrever o namefile\n");
+                perror(token->red->filename[0]);
+                prompt_info->builtins->exit_code = 1;
+               //success = false;
                 return (false);
             }
             close_repeated_redirections(token);

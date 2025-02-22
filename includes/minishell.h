@@ -231,7 +231,7 @@ t_token	*define_tokens(t_list *prompt_list);
 t_token *build_tree(t_token *tokens_list);
 
 //open_files
-bool    loop_and_open_fd(t_token *token);
+bool    loop_and_open_fd(t_token *token,t_prompt_info  *prompt_info);
 
 //find_var_value
 size_t	var_key_len(char *str);
