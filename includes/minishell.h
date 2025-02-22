@@ -173,7 +173,7 @@ void append_env_var(t_env_var **head, t_env_var *new_var);
 char *get_value(char *env_str);
 void set_export_only(t_env *env, const char *key, int is_export_only);
 
-int export_manager(char **str,t_env *env);
+int export_manager(char **str, t_env *env,t_builtins *builtins);
 //ENV FUNCTIONS
 t_env *init_env(char **envp);
 t_env_var *create_env_node(char *env_str);

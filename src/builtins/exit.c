@@ -5,6 +5,7 @@ static int  ft_atol(const char *str, long *result)
     long    num;
     int     neg;
     int     i;
+    long    max_last_digit;
 
     num = 0;
     neg = 1;
@@ -12,15 +13,22 @@ static int  ft_atol(const char *str, long *result)
     *result = 0;
     while (str[i] && (str[i] < 32))
         i++;
-    if (str[i] == '+' || str[i] == '-') // Lida com sinal
+    if (str[i] == '+' || str[i] == '-')
     {
         if (str[i] == '-')
             neg = -1;
         i++;
     }
+    if (neg == 1)
+        max_last_digit = LONG_MAX % 10;
+    else
+        max_last_digit = -(LONG_MIN % 10);
+    
     while (str[i] >= '0' && str[i] <= '9')
     {
-        if (num > (LONG_MAX - (str[i] - '0')) / 10) // Detecta overflow
+        if (num > LONG_MAX / 10)
+            return (0);
+        if (num == LONG_MAX / 10 && (str[i] - '0') > max_last_digit)
             return (0);
         num = (num * 10) + (str[i] - '0');
         i++;
@@ -85,6 +93,7 @@ void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t
     if (array_size(args) > 2)
     {
         print_error("exit",NULL,TOO_MANY_ARGS,true);
+        builtins->exit_code = 1;
         return;  
     }
     if (!ft_atol(args[1], &num))

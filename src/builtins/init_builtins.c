@@ -32,9 +32,16 @@ int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *built
     else if (ft_strcmp(*tokens->token, "pwd") == 0)
         pwd_builtin();
     else if (ft_strcmp(*tokens->token, "cd") == 0)
-        cd_manager(tokens->token, prompt_info.env);
+    {
+        if(cd_manager(tokens->token, prompt_info.env) == -1)
+        {
+            builtins ->exit_code = 1;
+        }
+    }
     else if (ft_strcmp(*tokens->token, "export") == 0)
-        export_manager(tokens->token, prompt_info.env);
+    {
+        export_manager(tokens->token, prompt_info.env,builtins);
+    }
     else if (ft_strcmp(*tokens->token, "unset") == 0)
         manager_unset(tokens->token, prompt_info.env);
     else if (ft_strcmp(*tokens->token, "echo") == 0)

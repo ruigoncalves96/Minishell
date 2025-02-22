@@ -80,7 +80,7 @@ void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
 }
 
 //[X]Primeiro loop para abrir as coisas
-//[] Loop para verificar comandos
+//[X] Loop para verificar comandos
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info)
 {
     t_token *token;

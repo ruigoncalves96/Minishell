@@ -13,7 +13,7 @@ static int create_pwd(char **pwd)
 
 static int validate_arguments(char **str)
 {
-    if (array_size(str) > 3)
+    if (array_size(str) >= 3)
     {
         print_error("cd",NULL,TOO_MANY_ARGS,true);
         return (-1);

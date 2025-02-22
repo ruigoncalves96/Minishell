@@ -31,7 +31,7 @@ static void    handler(int sig)
 {
     if (sig == SIGINT)
     {
-        ft_printf("\n");
+        write(1, "\n", 1);
         rl_on_new_line();    // Tell readline we moved to a new line
         rl_replace_line("", 0);  // Clear the current input
         rl_redisplay();

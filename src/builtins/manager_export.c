@@ -22,13 +22,14 @@ static int is_valid_env_name(const char *key)
     return 1;
 }
 
-static int validate_and_handle_key(char *key, char *value)
+static int validate_and_handle_key(char *key, char *value,t_builtins *builtins)
 {
     if (key == NULL || ft_strlen(key) == 0)
     {
         print_error("export",value,NOT_VALID_IDENTIFIER,true);
         free(key);
         free(value);
+        builtins->exit_code = 1;
         return 0;
     }
     
@@ -37,6 +38,7 @@ static int validate_and_handle_key(char *key, char *value)
         print_error("export",key,NOT_VALID_IDENTIFIER,true);
         free(key);
         free(value);
+        builtins->exit_code = 1;
         return 0;
     }
     return 1;
@@ -52,7 +54,7 @@ static void handle_key_value(t_env *env, char *key, char *value)
     free(value);
 }
 
-static int process_multiple_exports(char **str, t_env *env)
+static int process_multiple_exports(char **str, t_env *env,t_builtins *builtins)
 {
     int i = 1;
     while (str[i] != NULL)
@@ -60,7 +62,7 @@ static int process_multiple_exports(char **str, t_env *env)
         char *key = get_key(str[i]);
         char *value = get_value(str[i]);
         
-        if (!validate_and_handle_key(key, value))
+        if (!validate_and_handle_key(key, value,builtins))
         {
             i++;
             continue;
@@ -71,7 +73,7 @@ static int process_multiple_exports(char **str, t_env *env)
     return 0;
 }
 
-int export_manager(char **str, t_env *env)
+int export_manager(char **str, t_env *env,t_builtins *builtins)
 {
     if (str == NULL || *str == NULL)
         return 1;
@@ -83,7 +85,7 @@ int export_manager(char **str, t_env *env)
     }
         
     if (array_size(str) >= 2)
-        return process_multiple_exports(str, env);
+        return process_multiple_exports(str, env,builtins);
         
     return 0;
 }
