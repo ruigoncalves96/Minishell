@@ -13,29 +13,37 @@ static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_in
 static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
     int pipes[2];
-
+    pid_t   left_pid;
+    pid_t   right_pid;
+    int status;
     //  HANDLE POSSIBLE ERRORS PIPE / FORK
-    pipe(pipes);
-    if (fork() == 0)
+    if(pipe(pipes) == -1)
+        return (perror("pipe"),-1);
+    
+    left_pid = fork();
+    if (left_pid == 0)
     {
         dup2(pipes[1], STDOUT_FILENO);
         close(pipes[0]);
         close(pipes[1]);
         runcmd(token->previous, env, prompt_info);
-        exit(0);
+        exit(prompt_info.builtins->exit_code);
     }
-    if (fork() == 0)
+    right_pid = fork();
+    if (right_pid == 0)
     {
         dup2(pipes[0], STDIN_FILENO);
         close(pipes[0]);
         close(pipes[1]);
         runcmd(token->next, env, prompt_info);
-        exit(0);
+        exit(prompt_info.builtins->exit_code);
     }
     close(pipes[0]);
     close(pipes[1]);
-    wait(NULL);
-    wait(NULL);
+    waitpid(left_pid,NULL,0);
+    waitpid(right_pid,&status,0);
+
+    prompt_info.builtins->exit_code = (status >> 8) & 0xFF;
     return (0);
 }
 
@@ -44,14 +52,22 @@ static void redirections_executer(t_token *token, t_env *env, t_prompt_info prom
     if ((token->red->type == OUT || token->red->type == A_OUT) && token->red->fd != -1)
     {
         if (dup2(token->red->fd, STDOUT_FILENO) == -1)
-            return (perror("dup2"));
+        {
+            prompt_info.builtins->exit_code = 1;
+            perror("dup2");
+            exit(1);  
+        }
         close(token->red->fd);  // Fechar FD após o dup2
         token->red->fd = -1;    // Marcar como fechado
     }
     else if (token->red->type == IN && token->red->fd != -1)
     {
         if (dup2(token->red->fd, STDIN_FILENO) == -1)
-            return (perror("dup2"));
+        {
+            prompt_info.builtins->exit_code = 1;
+            perror("dup2");
+            exit(1);  
+        }
         close(token->red->fd);  // Fechar FD após o dup2
         token->red->fd = -1;    // Marcar como fechado
     }
@@ -130,7 +146,10 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
     env_array = convert_env_to_array(env);
     path = get_command_path(*str,env);
     if(!path)
-        return (ft_free_double_array(env_array), -1);
+    {
+        prompt_info.builtins->exit_code = 127;
+        return (ft_free_double_array(env_array), 127);
+    }
     // signal(SIGINT, SIG_IGN);
     if(child == 0)
     {
