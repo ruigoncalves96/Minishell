@@ -11,14 +11,13 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <readline/readline.h>
 
 size_t	var_key_len(char *str)
 {
 	size_t	i;
 
 	i = 0;
-	if (!ft_isalpha(str[i]) || str[i] != '_')
+	if (str[i] &&  (ft_isdigit(str[i]) || str[i] == '?'))
 	    return (1);
 	while (str[i])
 	{

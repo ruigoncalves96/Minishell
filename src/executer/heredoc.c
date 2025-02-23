@@ -28,6 +28,7 @@ char    **create_double_array(t_list *top, int input_len)
     return (double_array);
 }
 
+//  Creates double array, inside red->filename, with the heredoc input
 void    get_heredoc_input(t_token *token)
 {
     char    *heredoc;
@@ -53,6 +54,7 @@ void    get_heredoc_input(t_token *token)
         input_len++;
     }
 }
+//  NOTE: PROTECT ALLOCATION ERRORS ^ -> return bool (false in case of error)
 
 size_t  array_len(char **array)
 {
@@ -64,44 +66,55 @@ size_t  array_len(char **array)
     return (i);
 }
 
+t_token    *get_heredoc_command(t_token *token)
+{
+    while (token->previous && token->previous->previous && token->previous->previous->red)
+        token = token->previous->previous;
+    if (token->previous && token->previous->type == COMMAND)
+        return (token->previous);
+    return (NULL);
+}
+
+//  Gives the extra file_input from heredoc to the command (creating a new double array)
 void    get_heredoc_files(t_token *token)
 {
-    char    **command;
-    char    **heredoc;
+    t_token *command;
+    char    **heredoc_file;
     char    **new_array;
     int     i;
 
     i = 0;
-    command = token->previous->token;
-    heredoc = token->red->filename + 1;
-    new_array = ft_calloc(array_len(command) + array_len(heredoc) + 1, sizeof(char *));
+    command = get_heredoc_command(token);
+    if (!command)
+        return ;
+    heredoc_file = token->red->filename + 1;
+    new_array = ft_calloc(array_len(command->token) + array_len(heredoc_file) + 1, sizeof(char *));
     if (!new_array)
         return ;
-    while (*command)
+    while (command->token[i])
     {
-        new_array[i] = ft_strdup(*command);
+        new_array[i] = ft_strdup(command->token[i]);
         if (!new_array[i])
         {
             ft_free_double_array(new_array);
             return ;
         }
         i++;
-        command++;
     }
-    while (*heredoc)
+    while (*heredoc_file)
     {
-        new_array[i] = ft_strdup(*heredoc);
+        new_array[i] = ft_strdup(*heredoc_file);
         if (!new_array[i])
         {
             ft_free_double_array(new_array);
             return ;
         }
         i++;
-        heredoc++;
+        heredoc_file++;
     }
     new_array[i] = NULL;
-    ft_free_double_array(token->previous->token);
-    token->previous->token = new_array;
+    ft_free_double_array(command->token);
+    command->token = new_array;
 }
 
 void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
