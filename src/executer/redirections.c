@@ -2,12 +2,20 @@
 
 static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
+    int valid;
+
     if (token->token[0][0] == '\0')
         return ;
-    if(is_builtin(*token->token))
-        execute_builtin(token,prompt_info, prompt_info.builtins);
-    else if(validate_command_path(*token->token,env) == 0)
-        executer_manager(token->token,env,prompt_info);
+    if (is_builtin(*token->token))
+        execute_builtin(token, prompt_info, prompt_info.builtins);
+    else
+    {
+        valid = validate_command_path(*token->token, env);
+        if (valid == 0)
+            executer_manager(token->token, env, prompt_info);
+        else
+            prompt_info.builtins->exit_code = valid;
+    }
 }
 
 static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
@@ -128,12 +136,29 @@ static void exit_code_child(t_prompt_info prompt_info)
     prompt_info.builtins->exit_code = exit_code;
 }
 
-static void handle_execve_error(char *path,char **env_array)
+static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt_info)
 {
-    perror("exeve");
-    free(path);
     ft_free_double_array(env_array);
-    exit (1);
+
+    //arquivo existe
+    if (access(path, F_OK) != 0)
+    {
+        free(path);
+        perror("access");
+        prompt_info.builtins->exit_code = 127;
+        exit(127);
+    }
+    // arquivo existe mas nao tem permisao de execucao
+    if (access(path, X_OK) != 0)
+    {
+        free(path);
+        perror("access");
+        prompt_info.builtins->exit_code = 126;
+        exit(126);
+    }
+    free(path);
+    perror("execve");
+    exit(1);
 }
 
 int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
@@ -141,20 +166,22 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
 	char *path;
 	char **env_array;
 	pid_t child;
-
-    child = fork();
-    env_array = convert_env_to_array(env);
+    
     path = get_command_path(*str,env);
+    env_array = convert_env_to_array(env);
     if(!path)
     {
         prompt_info.builtins->exit_code = 127;
-        return (ft_free_double_array(env_array), 127);
+         ft_free_double_array(env_array);
+        //exit(127);
     }
+    child = fork();
+ 
     // signal(SIGINT, SIG_IGN);
     if(child == 0)
     {
         if(execve(path,str,env_array) == -1)
-            handle_execve_error(path,env_array);
+            handle_execve_error(path,env_array,prompt_info);
     }
     else
         exit_code_child(prompt_info);

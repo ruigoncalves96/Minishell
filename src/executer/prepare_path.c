@@ -16,6 +16,7 @@ static int is_directory(const char *path)
     return S_ISDIR(path_stat.st_mode); // Check if it's a directory
 }
 
+
 ///@return funcao vai returnar value de uma variavel existente no sistema
 char *get_env_value(t_env *env,const char *key)
 {
@@ -110,20 +111,20 @@ int validate_command_path(char *command, t_env *env)
 
     if (command[0] == '.' && (command[1] == '\0' || (command[1] == '.' && command[2] == '\0')))
     {
-        print_error(NULL,command,COMMAND_NOT_FOUND,false);
-        return (-1);
+        print_error(NULL, command, COMMAND_NOT_FOUND, false);
+        return (127);
     }
     command_path = get_command_path(command, env);
     if (!command_path)
     {
-        print_error(NULL,command,COMMAND_NOT_FOUND,false);
-        return (-1);
+        print_error(NULL, command, COMMAND_NOT_FOUND, false);
+        return (127);
     }
-    else if (is_directory(command_path))
+    if (is_directory(command_path))
     {
-        print_error(NULL,command,DIRECTORY,true);
-        //  ft_printf("SOU UM DIRECTORY :(\n");
-        return (-1);
+        print_error(NULL, command, DIRECTORY, true);
+        free(command_path);
+        return (126);
     }
     free(command_path);
     return (0);
