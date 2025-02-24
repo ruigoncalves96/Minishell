@@ -36,7 +36,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         close(pipes[0]);
         close(pipes[1]);
         signal(SIGINT, SIG_DFL);
-        signal(SIGQUIT, SIG_DFL);   
+        signal(SIGQUIT, SIG_DFL);
         runcmd(token->previous, env, prompt_info);
         exit(prompt_info.builtins->exit_code);
     }
@@ -60,31 +60,64 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     return (0);
 }
 
+void    error_redirection_file(t_token *token, t_prompt_info prompt_info)
+{
+    if (token->red->fd == -1)
+    {
+        ft_putstr_fd("Error on opening redirect file: ", 2);
+        ft_putstr_fd(token->red->filename[0], 2);
+        ft_putstr_fd("\n", 2);
+    }
+    else if (token->red->fd == -2)
+    {
+        ft_putstr_fd("Permission denied: ", 2);
+        ft_putstr_fd(token->red->filename[0], 2);
+        ft_putstr_fd("\n", 2);
+    }
+    else if (token->red->fd == -3)
+    {
+        ft_putstr_fd("File doesn't exist: ", 2);
+        ft_putstr_fd(token->red->filename[0], 2);
+        ft_putstr_fd("\n", 2);
+    }
+    prompt_info.builtins->exit_code = 1;
+}
+
+//  ------   //   ------
+//  FD CODES REDS
+//      >= 0 -> EXECUTE RED
+//      -1 -> ERROR ON OPEN
+//      -2 -> PERMISSION DENIED
+//      -3 -> DOESNT EXIST
+//      -4 -> DONT EXECUTE
+//
 static void redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
-    if ((token->red->type == OUT || token->red->type == A_OUT) && token->red->fd != -1)
+    if (token->red->fd < 0)
+        error_redirection_file(token, prompt_info);
+    else if ((token->red->type == OUT || token->red->type == A_OUT))
     {
         if (dup2(token->red->fd, STDOUT_FILENO) == -1)
         {
             prompt_info.builtins->exit_code = 1;
             perror("dup2");
-            exit(1);  
+            exit(1);
         }
         close(token->red->fd);  // Fechar FD após o dup2
-        token->red->fd = -1;    // Marcar como fechado
+        token->red->fd = -4;    // Marcar como fechado
     }
-    else if (token->red->type == IN && token->red->fd != -1)
+    else if (token->red->type == IN)
     {
         if (dup2(token->red->fd, STDIN_FILENO) == -1)
         {
             prompt_info.builtins->exit_code = 1;
             perror("dup2");
-            exit(1);  
+            exit(1);
         }
         close(token->red->fd);  // Fechar FD após o dup2
-        token->red->fd = -1;    // Marcar como fechado
+        token->red->fd = -4;    // Marcar como fechado
     }
-    if (token->previous && token->previous->type == COMMAND)
+    if (token->previous && token->previous->type == COMMAND && (token->red->fd >= 0 || token->red->fd == -4))
         type_of_executer(token->previous, env, prompt_info);
     else if (token->previous && token->previous->type == OPERATOR)
         runcmd(token->previous, env, prompt_info);
@@ -139,7 +172,7 @@ static void exit_code_child(t_prompt_info prompt_info)
     wait(&status);
     exit_code = (status >> 8) & 0xFF;
     prompt_info.builtins->exit_code = exit_code;
-    
+
 }
 
 static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt_info)
@@ -172,7 +205,7 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
 	char *path;
 	char **env_array;
 	pid_t child;
-    
+
     path = get_command_path(*str,env);
     env_array = convert_env_to_array(env);
     if(!path)
@@ -181,7 +214,7 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
          ft_free_double_array(env_array);
     }
     child = fork();
- 
+
     // signal(SIGINT, SIG_IGN);
     if(child == 0)
     {

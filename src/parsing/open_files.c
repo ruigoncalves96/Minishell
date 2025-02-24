@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <stdbool.h>
+#include <unistd.h>
 
 static void    close_repeated_redirections(t_token *token)
 {
@@ -26,37 +28,77 @@ static void    close_repeated_redirections(t_token *token)
     }
 }
 
+static bool verify_file_exists(t_token *token)
+{
+    if (access(token->red->filename[0], F_OK) != 0)
+    {
+        token->red->fd = -3;
+        return (false);
+    }
+    return (true);
+}
+
+static bool verify_file_permissions(t_token *token)
+{
+    if (token->red->type == IN)
+    {
+        if (access(token->red->filename[0], R_OK) != 0)
+        {
+            token->red->fd = -2;
+            return (false);
+        }
+    }
+    else if (token->red->type == OUT || token->red->type == A_OUT)
+    {
+        if (access(token->red->filename[0], W_OK) != 0)
+        {
+            token->red->fd = -2;
+            return (false);
+        }
+    }
+    return (true);
+}
+
+//  ------   //   ------
+//  FD CODES REDS
+//      >= 0 -> EXECUTE RED
+//      -1 -> ERROR ON OPEN
+//      -2 -> PERMISSION DENIED
+//      -3 -> DOESNT EXIST
+//      -4 -> DONT EXECUTE
+
 static bool open_redirect(t_token *token)
 {
     if (!token || !token->red || !token->red->filename[0])
         return (false);
-    if(token->red->type == OUT)
-        token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    else if(token->red->type == A_OUT)
-        token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (token->red->type == OUT || token->red->type == A_OUT)
+    {
+        if (!verify_file_exists(token))
+            token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        else if (verify_file_permissions(token))
+            token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    }
     else if(token->red->type == IN)
-        token->red->fd = open(token->red->filename[0], O_RDONLY);
+    {
+        if (verify_file_exists(token) && verify_file_permissions(token))
+            token->red->fd = open(token->red->filename[0], O_RDONLY);
+    }
     else if (token->red->type == HEREDOC)
     {
         if (token->red->filename[1] != NULL)
         {
             get_redirection_files(token);
-            token->red->fd = -1;
+            token->red->fd = -4;
         }
         else
             token->red->fd = 0;
         get_heredoc_input(token);
     }
-    if(token->red->fd == -1 && token->red->type == IN)
-    {
-        //Talvez tenha de dar free no red e na str
-        return (false);
-    }
     if (token->red->filename[1] != NULL && token->red->type != HEREDOC)
     {
         get_redirection_files(token);
         if (token->red->type == IN)
-            token->red->fd = -1;
+            token->red->fd = -4;
     }
     return (true);
 }
