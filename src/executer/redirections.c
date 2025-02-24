@@ -27,13 +27,16 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     //  HANDLE POSSIBLE ERRORS PIPE / FORK
     if(pipe(pipes) == -1)
         return (perror("pipe"),-1);
-    
+
+    signal(SIGINT, SIG_IGN);
     left_pid = fork();
     if (left_pid == 0)
     {
         dup2(pipes[1], STDOUT_FILENO);
         close(pipes[0]);
         close(pipes[1]);
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);   
         runcmd(token->previous, env, prompt_info);
         exit(prompt_info.builtins->exit_code);
     }
@@ -43,6 +46,8 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         dup2(pipes[0], STDIN_FILENO);
         close(pipes[0]);
         close(pipes[1]);
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
         runcmd(token->next, env, prompt_info);
         exit(prompt_info.builtins->exit_code);
     }
@@ -50,7 +55,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     close(pipes[1]);
     waitpid(left_pid,NULL,0);
     waitpid(right_pid,&status,0);
-
+    set_signals();
     prompt_info.builtins->exit_code = (status >> 8) & 0xFF;
     return (0);
 }
@@ -134,6 +139,7 @@ static void exit_code_child(t_prompt_info prompt_info)
     wait(&status);
     exit_code = (status >> 8) & 0xFF;
     prompt_info.builtins->exit_code = exit_code;
+    
 }
 
 static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt_info)
@@ -173,19 +179,24 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
     {
         prompt_info.builtins->exit_code = 127;
          ft_free_double_array(env_array);
-        //exit(127);
     }
     child = fork();
  
     // signal(SIGINT, SIG_IGN);
     if(child == 0)
     {
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
+
         if(execve(path,str,env_array) == -1)
             handle_execve_error(path,env_array,prompt_info);
     }
     else
+    {
+        signal(SIGINT, SIG_IGN);
         exit_code_child(prompt_info);
-    wait(NULL);
+        set_signals();
+    }
     free(path);
     // set_signals();
     ft_free_double_array(env_array);
