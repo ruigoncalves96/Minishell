@@ -28,6 +28,7 @@ char    **create_double_array(t_list *top, int input_len)
     return (double_array);
 }
 
+//  Creates double array, inside red->filename, with the heredoc input
 void    get_heredoc_input(t_token *token)
 {
     char    *heredoc;
@@ -53,6 +54,7 @@ void    get_heredoc_input(t_token *token)
         input_len++;
     }
 }
+//  NOTE: PROTECT ALLOCATION ERRORS ^ -> return bool (false in case of error)
 
 size_t  array_len(char **array)
 {
@@ -64,44 +66,64 @@ size_t  array_len(char **array)
     return (i);
 }
 
-void    get_heredoc_files(t_token *token)
+t_token    *get_heredoc_command_tree(t_token *token)
 {
-    char    **command;
-    char    **heredoc;
+    while (token->previous && token->previous->red)
+            token = token->previous;
+    if (token->previous && token->previous->type == COMMAND)
+        return (token->previous);
+    return (NULL);
+}
+
+t_token    *get_heredoc_command_list(t_token *token)
+{
+    while (token->previous && token->previous->previous && token->previous->previous->red)
+        token = token->previous->previous;
+    if (token->previous && token->previous->type == COMMAND)
+        return (token->previous);
+    return (NULL);
+}
+
+//  Gives the extra file_input from heredoc to the command (creating a new double array)
+void    get_redirection_files(t_token *token)
+{
+    t_token *command;
+    char    **heredoc_file;
     char    **new_array;
     int     i;
 
     i = 0;
-    command = token->previous->token;
-    heredoc = token->red->filename + 1;
-    new_array = ft_calloc(array_len(command) + array_len(heredoc) + 1, sizeof(char *));
+    command = get_heredoc_command_list(token);
+    if (!command)
+        return ;
+    heredoc_file = token->red->filename + 1;
+    new_array = ft_calloc(array_len(command->token) + array_len(heredoc_file) + 1, sizeof(char *));
     if (!new_array)
         return ;
-    while (*command)
+    while (command->token[i])
     {
-        new_array[i] = ft_strdup(*command);
+        new_array[i] = ft_strdup(command->token[i]);
         if (!new_array[i])
         {
             ft_free_double_array(new_array);
             return ;
         }
         i++;
-        command++;
     }
-    while (*heredoc)
+    while (*heredoc_file)
     {
-        new_array[i] = ft_strdup(*heredoc);
+        new_array[i] = ft_strdup(*heredoc_file);
         if (!new_array[i])
         {
             ft_free_double_array(new_array);
             return ;
         }
         i++;
-        heredoc++;
+        heredoc_file++;
     }
     new_array[i] = NULL;
-    ft_free_double_array(token->previous->token);
-    token->previous->token = new_array;
+    ft_free_double_array(command->token);
+    command->token = new_array;
 }
 
 void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
@@ -110,33 +132,38 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     int     i;
 
     i = 0;
-    if (token->red->fd == -1 /*|| token->red->filename[1] == NULL*/)
+    if (!get_heredoc_command_tree(token))
+        return ;
+    if (token->red->fd == -1)
     {
         runcmd(token->previous, env, prompt_info);
         return ;
     }
-    pipe(pipes);
-    if (fork() == 0)
+    else
     {
-        close(pipes[0]);
-        while (token->red->filename[i])
+        pipe(pipes);
+        if (fork() == 0)
         {
-            ft_putstr_fd(token->red->filename[i], pipes[1]);
-            ft_putstr_fd("\n", pipes[1]);
-            i++;
+            close(pipes[0]);
+            while (token->red->filename[i])
+            {
+                ft_putstr_fd(token->red->filename[i], pipes[1]);
+                ft_putstr_fd("\n", pipes[1]);
+                i++;
+            }
+            exit(0);
         }
-        exit(0);
-    }
-    wait(NULL);
-    if (fork() == 0)
-    {
-        close(pipes[1]);
-        dup2(pipes[0], STDIN_FILENO);
+        wait(NULL);
+        if (fork() == 0)
+        {
+            close(pipes[1]);
+            dup2(pipes[0], STDIN_FILENO);
+            close(pipes[0]);
+            runcmd(token->previous, env, prompt_info);
+            exit(0);
+        }
         close(pipes[0]);
-        runcmd(token->previous, env, prompt_info);
-        exit(0);
+        close(pipes[1]);
+        wait(NULL);
     }
-    close(pipes[0]);
-    close(pipes[1]);
-    wait(NULL);
 }

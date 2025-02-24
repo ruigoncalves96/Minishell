@@ -95,7 +95,7 @@ void	ft_print_token_tree(t_token *tree)
 	t_token *temp;
 
 	temp = tree;
-	ft_printf("\nToken = ");
+	ft_printf("Token = ");
 	print_double_array(temp->token);
 	// ft_printf("\n");
 	if (temp->red)
@@ -103,16 +103,19 @@ void	ft_print_token_tree(t_token *tree)
 	    ft_printf("red->filename = ");
 		print_double_array(temp->red->filename);
         ft_printf("red->fd = %d\n", temp->red->fd);
+        ft_printf("\n");
 	}
 	if (temp->previous)
 	{
 	    ft_printf("left = \n");
         ft_print_token_tree(temp->previous);
+        ft_printf("\n");
 	}
 	if (temp->next)
 	{
         ft_printf("right = \n");
 	    ft_print_token_tree(temp->next);
+		ft_printf("\n");
 	}
 }
 
