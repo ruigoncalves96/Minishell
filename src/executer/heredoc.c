@@ -66,7 +66,16 @@ size_t  array_len(char **array)
     return (i);
 }
 
-t_token    *get_heredoc_command(t_token *token)
+t_token    *get_heredoc_command_tree(t_token *token)
+{
+    while (token->previous && token->previous->red)
+            token = token->previous;
+    if (token->previous && token->previous->type == COMMAND)
+        return (token->previous);
+    return (NULL);
+}
+
+t_token    *get_heredoc_command_list(t_token *token)
 {
     while (token->previous && token->previous->previous && token->previous->previous->red)
         token = token->previous->previous;
@@ -84,7 +93,7 @@ void    get_heredoc_files(t_token *token)
     int     i;
 
     i = 0;
-    command = get_heredoc_command(token);
+    command = get_heredoc_command_list(token);
     if (!command)
         return ;
     heredoc_file = token->red->filename + 1;
@@ -123,11 +132,15 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     int     i;
 
     i = 0;
-    if (token->red->fd == -1 /*|| token->red->filename[1] == NULL*/)
+    if (!get_heredoc_command_tree(token))
+        return ;
+    if (token->red->fd == -1)
     {
         runcmd(token->previous, env, prompt_info);
         return ;
     }
+    if (token->previous->type == T_REDIRECT && token->previous->red->type == IN)
+        runcmd(get_heredoc_command_tree(token), env, prompt_info);
     pipe(pipes);
     if (fork() == 0)
     {

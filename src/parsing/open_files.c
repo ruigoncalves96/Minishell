@@ -16,11 +16,12 @@ static void    close_repeated_redirections(t_token *token)
 {
     if (token->previous && token->previous->previous && token->previous->previous->red)
     {
-        if (token->previous->previous->red->type == token->red->type)
+        if (token->previous->previous->red->type == token->red->type ||
+            (token->red->type == HEREDOC && token->previous->previous->red->type == IN))
         {
             if (token->red->type != HEREDOC)
                 close(token->previous->previous->red->fd);
-           token->previous->previous->red->fd = -1;
+            token->previous->previous->red->fd = -1;
         }
     }
 }
@@ -29,7 +30,6 @@ static bool open_redirect(t_token *token)
 {
     if (!token || !token->red || !token->red->filename[0])
         return (false);
-    // printf("Redirect filename: %s\n", token->red->filename[0]);
     if(token->red->type == OUT)
         token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
     else if(token->red->type == A_OUT)
