@@ -23,7 +23,8 @@ static void    close_repeated_redirections(t_token *token)
         {
             if (token->red->type != HEREDOC)
                 close(token->previous->previous->red->fd);
-            token->previous->previous->red->fd = -1;
+            if (token->previous->previous->red->fd >= 0)
+                token->previous->previous->red->fd = -4;
         }
     }
 }
@@ -67,7 +68,7 @@ static bool verify_file_permissions(t_token *token)
 //      -3 -> DOESNT EXIST
 //      -4 -> DONT EXECUTE
 
-static bool open_redirect(t_token *token)
+static bool open_redirect(t_token *token, bool *open_error)
 {
     if (!token || !token->red || !token->red->filename[0])
         return (false);
@@ -83,7 +84,22 @@ static bool open_redirect(t_token *token)
         if (verify_file_exists(token) && verify_file_permissions(token))
             token->red->fd = open(token->red->filename[0], O_RDONLY);
     }
-    else if (token->red->type == HEREDOC)
+    if (token->red->filename[1] != NULL)
+    {
+        get_redirection_files(token);
+        if (token->red->type == IN)
+            token->red->fd = -4;
+    }
+    if (token->red->fd < 0 && token->red->fd > -4)
+        *open_error ^= 1;
+    return (true);
+}
+
+static bool open_redirect_heredoc(t_token *token)
+{
+    if (!token || !token->red || !token->red->filename[0])
+        return (false);
+    if (token->red->type == HEREDOC)
     {
         if (token->red->filename[1] != NULL)
         {
@@ -94,30 +110,32 @@ static bool open_redirect(t_token *token)
             token->red->fd = 0;
         get_heredoc_input(token);
     }
-    if (token->red->filename[1] != NULL && token->red->type != HEREDOC)
-    {
-        get_redirection_files(token);
-        if (token->red->type == IN)
-            token->red->fd = -4;
-    }
     return (true);
 }
 
 bool    loop_and_open_fd(t_token *token,t_prompt_info *prompt_info)
 {
+    bool    open_error;
 
- //   bool success;
-
-    //success = true;
+    open_error = false;
     while (token)
     {
-        if (token->subtype == T_REDIRECT)
+        if (token->subtype == T_REDIRECT && token->red->type != HEREDOC && open_error == false)
         {
-            if (open_redirect(token) == false)
+            if (open_redirect(token, &open_error) == false)
             {
                 perror(token->red->filename[0]);
                 prompt_info->builtins->exit_code = 1;
-               //success = false;
+                return (false);
+            }
+            close_repeated_redirections(token);
+        }
+        else if (token->subtype == T_REDIRECT && token->red->type == HEREDOC)
+        {
+            if (open_redirect_heredoc(token) == false)
+            {
+                perror(token->red->filename[0]);
+                prompt_info->builtins->exit_code = 1;
                 return (false);
             }
             close_repeated_redirections(token);

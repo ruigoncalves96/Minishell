@@ -93,9 +93,12 @@ void    error_redirection_file(t_token *token, t_prompt_info prompt_info)
 //
 static void redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
-    if (token->red->fd < 0)
+    if (token->red->fd < 0 && token->red->fd != -4)
+    {
         error_redirection_file(token, prompt_info);
-    else if ((token->red->type == OUT || token->red->type == A_OUT))
+        return ;
+    }
+    else if ((token->red->type == OUT || token->red->type == A_OUT) && token->red->fd != -4)
     {
         if (dup2(token->red->fd, STDOUT_FILENO) == -1)
         {
@@ -106,7 +109,7 @@ static void redirections_executer(t_token *token, t_env *env, t_prompt_info prom
         close(token->red->fd);  // Fechar FD após o dup2
         token->red->fd = -4;    // Marcar como fechado
     }
-    else if (token->red->type == IN)
+    else if (token->red->type == IN && token->red->fd != -4)
     {
         if (dup2(token->red->fd, STDIN_FILENO) == -1)
         {
@@ -131,10 +134,10 @@ void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
             pipe_executer(token, env, prompt_info);
         else if (token->subtype == T_REDIRECT)
         {
-            if (token->red->type != HEREDOC)
-                redirections_executer(token, env, prompt_info);
-            else
+            if (token->red->type == HEREDOC)
                 heredoc_executer(token, env, prompt_info);
+            else
+                redirections_executer(token, env, prompt_info);
         }
     }
     else if (token->type == COMMAND)
