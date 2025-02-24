@@ -39,14 +39,24 @@ static bool open_redirect(t_token *token)
     else if (token->red->type == HEREDOC)
     {
         if (token->red->filename[1] != NULL)
-            get_heredoc_files(token);
+        {
+            get_redirection_files(token);
+            token->red->fd = -1;
+        }
+        else
+            token->red->fd = 0;
         get_heredoc_input(token);
-        token->red->fd = 0;
     }
-    if(token->red->fd == -1)
+    if(token->red->fd == -1 && token->red->type == IN)
     {
         //Talvez tenha de dar free no red e na str
         return (false);
+    }
+    if (token->red->filename[1] != NULL && token->red->type != HEREDOC)
+    {
+        get_redirection_files(token);
+        if (token->red->type == IN)
+            token->red->fd = -1;
     }
     return (true);
 }

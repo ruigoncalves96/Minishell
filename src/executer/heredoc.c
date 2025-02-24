@@ -85,7 +85,7 @@ t_token    *get_heredoc_command_list(t_token *token)
 }
 
 //  Gives the extra file_input from heredoc to the command (creating a new double array)
-void    get_heredoc_files(t_token *token)
+void    get_redirection_files(t_token *token)
 {
     t_token *command;
     char    **heredoc_file;
@@ -139,30 +139,31 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         runcmd(token->previous, env, prompt_info);
         return ;
     }
-    if (token->previous->type == T_REDIRECT && token->previous->red->type == IN)
-        runcmd(get_heredoc_command_tree(token), env, prompt_info);
-    pipe(pipes);
-    if (fork() == 0)
+    else
     {
-        close(pipes[0]);
-        while (token->red->filename[i])
+        pipe(pipes);
+        if (fork() == 0)
         {
-            ft_putstr_fd(token->red->filename[i], pipes[1]);
-            ft_putstr_fd("\n", pipes[1]);
-            i++;
+            close(pipes[0]);
+            while (token->red->filename[i])
+            {
+                ft_putstr_fd(token->red->filename[i], pipes[1]);
+                ft_putstr_fd("\n", pipes[1]);
+                i++;
+            }
+            exit(0);
         }
-        exit(0);
-    }
-    wait(NULL);
-    if (fork() == 0)
-    {
-        close(pipes[1]);
-        dup2(pipes[0], STDIN_FILENO);
+        wait(NULL);
+        if (fork() == 0)
+        {
+            close(pipes[1]);
+            dup2(pipes[0], STDIN_FILENO);
+            close(pipes[0]);
+            runcmd(token->previous, env, prompt_info);
+            exit(0);
+        }
         close(pipes[0]);
-        runcmd(token->previous, env, prompt_info);
-        exit(0);
+        close(pipes[1]);
+        wait(NULL);
     }
-    close(pipes[0]);
-    close(pipes[1]);
-    wait(NULL);
 }
