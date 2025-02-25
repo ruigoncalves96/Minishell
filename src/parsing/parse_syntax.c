@@ -45,7 +45,7 @@ static bool	parse_operator(t_list *token)
 	return (true);
 }
 
-bool	parse_syntax(t_list *token_list)
+bool	parse_syntax(t_list *token_list,t_prompt_info *prompt_info)
 {
 	t_list	*token;
 
@@ -57,6 +57,7 @@ bool	parse_syntax(t_list *token_list)
 			if (parse_operator(token) == false)
 			{
 				syntax_error(token_list, token);
+				prompt_info->builtins->exit_code = 2;
 				return (false);
 			}
 		}

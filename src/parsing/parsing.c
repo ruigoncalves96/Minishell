@@ -128,7 +128,7 @@ t_token	*parsing(t_prompt_info *prompt_info)
 	prompt_list = build_tokens_list(prompt_info->prompt);
 	if (!prompt_list)
 		return (NULL);
-	if (parse_syntax(prompt_list) == false)
+	if (parse_syntax(prompt_list,prompt_info) == false)
 		return (NULL);
 	if (expand_vars(prompt_info, &prompt_list) == NULL)
 		return (NULL);

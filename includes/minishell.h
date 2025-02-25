@@ -221,7 +221,7 @@ t_token	*parsing(t_prompt_info *prompt_info);
 t_list	*build_tokens_list(char *prompt);
 
 //parse_syntax
-bool	parse_syntax(t_list *token_list);
+bool	parse_syntax(t_list *token_list,t_prompt_info *prompt_info);
 
 //convert_quotes
 t_list	*convert_quotes(t_list *tokens_list);

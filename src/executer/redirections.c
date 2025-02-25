@@ -221,6 +221,7 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
     {
         prompt_info.builtins->exit_code = 127;
         ft_free_double_array(env_array);
+        return 1;
     }
     child = fork();
 
