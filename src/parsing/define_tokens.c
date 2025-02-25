@@ -11,22 +11,30 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <unistd.h>
 
 static char	**get_command_array(t_list **node)
 {
-	char	**new_token;
-	size_t	i;
+	char   **new_token;
+	size_t array_len;
+	size_t i;
 
-	new_token = ft_calloc(command_array_len(*node) + 1, sizeof(char *));
+	array_len = command_array_len(*node);
+	if (array_len == 0)
+	    array_len = 1;
+	new_token = ft_calloc(array_len + 1, sizeof(char *));
 	if (!new_token)
 		return (NULL);
 	i = 0;
 	while (*node && (*node)->type == COMMAND)
 	{
-		new_token[i] = ft_strdup((*node)->str);
-		if (new_token[i] == NULL)
-			return (ft_free_double_array(new_token), NULL);
-		i++;
+	    if ((*node)->str[0] != '\0' || command_array_len(*node) == 0)
+		{
+		    new_token[i] = ft_strdup((*node)->str);
+		    if (new_token[i] == NULL)
+	            return (ft_free_double_array(new_token), NULL);
+		    i++;
+		}
 		*node = (*node)->next;
 	}
 	new_token[i] = NULL;

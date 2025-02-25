@@ -11,21 +11,23 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <stdbool.h>
-#include <unistd.h>
 
 static void    close_repeated_redirections(t_token *token)
 {
+    t_token *previous;
+
+    previous = NULL;
     if (token->previous && token->previous->previous && token->previous->previous->red)
+        previous = token->previous->previous;
+    else
+        return ;
+    if (((token->red->type == OUT || token->red->type == A_OUT) && (previous->red->type == OUT || previous->red->type == A_OUT))
+            || ((token->red->type == HEREDOC || token->red->type == IN) && (token->red->type == HEREDOC || token->red->type == IN)))
     {
-        if (token->previous->previous->red->type == token->red->type ||
-            (token->red->type == HEREDOC && token->previous->previous->red->type == IN))
-        {
-            if (token->red->type != HEREDOC)
-                close(token->previous->previous->red->fd);
-            if (token->previous->previous->red->fd >= 0)
-                token->previous->previous->red->fd = -4;
-        }
+        if (previous->red->type != HEREDOC && token->red->fd >= 0)
+            close(previous->red->fd);
+        if (previous->red->fd >= 0 || previous->red->type == HEREDOC)
+            previous->red->fd = -4;
     }
 }
 
@@ -120,6 +122,8 @@ bool    loop_and_open_fd(t_token *token,t_prompt_info *prompt_info)
     open_error = false;
     while (token)
     {
+        if (token->subtype == T_PIPE && open_error == true)
+            open_error = false;
         if (token->subtype == T_REDIRECT && token->red->type != HEREDOC && open_error == false)
         {
             if (open_redirect(token, &open_error) == false)

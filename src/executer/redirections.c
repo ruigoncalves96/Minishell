@@ -99,7 +99,7 @@ static void redirections_executer(t_token *token, t_env *env, t_prompt_info prom
         error_redirection_file(token, prompt_info);
         return ;
     }
-    else if ((token->red->type == OUT || token->red->type == A_OUT) && token->red->fd != -4)
+    if ((token->red->type == OUT || token->red->type == A_OUT) && token->red->fd != -4)
     {
         if (dup2(token->red->fd, STDOUT_FILENO) == -1)
         {
