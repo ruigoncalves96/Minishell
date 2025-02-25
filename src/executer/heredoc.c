@@ -134,7 +134,7 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     i = 0;
     if (!get_heredoc_command_tree(token))
         return ;
-    if (token->red->fd == -1)
+    if (token->red->fd == -4)
     {
         runcmd(token->previous, env, prompt_info);
         return ;

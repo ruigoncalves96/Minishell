@@ -91,11 +91,12 @@ void    error_redirection_file(t_token *token, t_prompt_info prompt_info)
 //      -3 -> DOESNT EXIST
 //      -4 -> DONT EXECUTE
 //
+
 static void redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
-    if (token->red->fd < 0)
+    if (token->red->fd < 0 && token->red->fd != -4)
         error_redirection_file(token, prompt_info);
-    else if ((token->red->type == OUT || token->red->type == A_OUT))
+    else if ((token->red->type == OUT || token->red->type == A_OUT) && token->red->fd != -4)
     {
         if (dup2(token->red->fd, STDOUT_FILENO) == -1)
         {
@@ -106,7 +107,7 @@ static void redirections_executer(t_token *token, t_env *env, t_prompt_info prom
         close(token->red->fd);  // Fechar FD após o dup2
         token->red->fd = -4;    // Marcar como fechado
     }
-    else if (token->red->type == IN)
+    else if (token->red->type == IN && token->red->fd != -4)
     {
         if (dup2(token->red->fd, STDIN_FILENO) == -1)
         {
@@ -141,8 +142,7 @@ void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
             type_of_executer(token, env, prompt_info);
 }
 
-//[X]Primeiro loop para abrir as coisas
-//[X] Loop para verificar comandos
+
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info)
 {
     t_token *token;
@@ -215,7 +215,6 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
     }
     child = fork();
 
-    // signal(SIGINT, SIG_IGN);
     if(child == 0)
     {
         signal(SIGINT, SIG_DFL);
@@ -231,7 +230,7 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
         set_signals();
     }
     free(path);
-    // set_signals();
+
     ft_free_double_array(env_array);
     return 0;
 }

@@ -23,7 +23,8 @@ static void    close_repeated_redirections(t_token *token)
         {
             if (token->red->type != HEREDOC)
                 close(token->previous->previous->red->fd);
-            token->previous->previous->red->fd = -1;
+            if (token->previous->previous->red->fd >= 0)
+                token->previous->previous->red->fd = -4;
         }
     }
 }
@@ -100,15 +101,12 @@ static bool open_redirect(t_token *token)
         if (token->red->type == IN)
             token->red->fd = -4;
     }
+    //printf("FD SAFADO: %d\n",token->red->fd);
     return (true);
 }
 
 bool    loop_and_open_fd(t_token *token,t_prompt_info *prompt_info)
 {
-
- //   bool success;
-
-    //success = true;
     while (token)
     {
         if (token->subtype == T_REDIRECT)
@@ -117,7 +115,6 @@ bool    loop_and_open_fd(t_token *token,t_prompt_info *prompt_info)
             {
                 perror(token->red->filename[0]);
                 prompt_info->builtins->exit_code = 1;
-               //success = false;
                 return (false);
             }
             close_repeated_redirections(token);
