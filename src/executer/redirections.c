@@ -64,21 +64,15 @@ void    error_redirection_file(t_token *token, t_prompt_info prompt_info)
 {
     if (token->red->fd == -1)
     {
-        ft_putstr_fd("Error on opening redirect file: ", 2);
-        ft_putstr_fd(token->red->filename[0], 2);
-        ft_putstr_fd("\n", 2);
+        print_error(NULL,token->red->filename[0],ERROR_OPENING_FILE,true);
     }
     else if (token->red->fd == -2)
     {
-        ft_putstr_fd("Permission denied: ", 2);
-        ft_putstr_fd(token->red->filename[0], 2);
-        ft_putstr_fd("\n", 2);
+        print_error(NULL,token->red->filename[0],PERMISSION_DENIED,true);
     }
     else if (token->red->fd == -3)
     {
-        ft_putstr_fd("File doesn't exist: ", 2);
-        ft_putstr_fd(token->red->filename[0], 2);
-        ft_putstr_fd("\n", 2);
+        print_error(NULL,token->red->filename[0],NO_FILE_OR_DIRECTORY,true);
     }
     prompt_info.builtins->exit_code = 1;
 }
@@ -181,11 +175,10 @@ static void exit_code_child(t_prompt_info prompt_info)
     } else {
         // Process was terminated by a signal
         int signal_num = status & 0x7F;
-        if (signal_num == 2) {  // SIGINT is 2
+        if (signal_num == 2)  // SIGINT is 2
             exit_code = 130;
-        } else {
+         else 
             exit_code = 128 + signal_num;
-        }
     }
     
     prompt_info.builtins->exit_code = exit_code;
@@ -227,7 +220,7 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
     if(!path)
     {
         prompt_info.builtins->exit_code = 127;
-         ft_free_double_array(env_array);
+        ft_free_double_array(env_array);
     }
     child = fork();
 

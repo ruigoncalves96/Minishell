@@ -28,6 +28,8 @@
 #define QUOTE_ERROR "syntax error unclosed quote"
 #define SYNTAX_ERROR "syntax error near unexpected token"
 #define TOO_MANY_ARGS "too many arguments"
+#define ERROR_OPENING_FILE "Error on opening redirect file"
+#define NO_FILE_OR_DIRECTORY "No such file or directory"
 //Exit
 #define	EXIT_NUMERIC_ERROR "numeric argument required"
 
@@ -38,6 +40,8 @@
 #define DIRECTORY "Is a directory"
 #define COMMAND_NOT_FOUND "Command not found"
 #define PERMISSION_DENIED "Permission denied"
+
+
 
 //Export
 #define NOT_VALID_IDENTIFIER "not a valid identifier"
