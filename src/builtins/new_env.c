@@ -69,7 +69,6 @@ static void create_vars_env_flag(t_env *env)
                export_env_var(env, "PWD", pwd, 0);
                free(pwd);
            }
-
         export_env_var(env, "PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", 1);
         export_env_var(env,"_","/usr/bin/env",0);
 }
