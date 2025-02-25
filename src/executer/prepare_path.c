@@ -33,10 +33,7 @@ char *get_env_value(t_env *env,const char *key)
     }
     return (NULL);
 }
-/// @brief  Joins directory with comand name and add /
-/// @param dir_path
-/// @param command
-/// @return
+
 static char *join_command_path(char *dir_path, char *command)
 {
     char *temp_path;
@@ -49,10 +46,7 @@ static char *join_command_path(char *dir_path, char *command)
     free(temp_path);
     return (full_path);
 }
-/// @brief Search for comand in every path directory
-/// @param split_path
-/// @param command
-/// @return Return the path of the comand
+
 static char *search_in_path_dirs(char **split_path, char *command)
 {
     int i;
@@ -66,7 +60,7 @@ static char *search_in_path_dirs(char **split_path, char *command)
         full_path = join_command_path(split_path[i], command);
         if (!full_path)
             return (NULL);
-        if (access(full_path, X_OK) == 0)
+        if (access(full_path, F_OK) == 0)
         {
             command_path = full_path;
             break;
@@ -76,10 +70,7 @@ static char *search_in_path_dirs(char **split_path, char *command)
     }
     return (command_path);
 }
-/// @brief
-/// @param command
-/// @param env
-/// @return path of comand
+
 char *get_command_path(char *command, t_env *env)
 {
     char *path;
@@ -87,7 +78,7 @@ char *get_command_path(char *command, t_env *env)
     char *command_path;
     if (command[0] == '/' || (command[0] == '.' && command[1] == '/'))
     {
-        if (access(command, X_OK) == 0)
+        if (access(command, F_OK) == 0)
             return (ft_strdup(command));
         return (NULL);
     }
@@ -101,10 +92,7 @@ char *get_command_path(char *command, t_env *env)
     ft_free_double_array(split_path);
     return (command_path);
 }
-/// @brief
-/// @param command
-/// @param prompt_info
-/// @return 0 if command exists, -1 command don't exist
+
 int validate_command_path(char *command, t_env *env)
 {
     char *command_path;
@@ -125,6 +113,12 @@ int validate_command_path(char *command, t_env *env)
         print_error(NULL, command, DIRECTORY, true);
         free(command_path);
         return (126);
+    }
+    if(access(command_path,X_OK) != 0) //Checo se tenho permissoes safadas
+    {
+        print_error(NULL,command,PERMISSION_DENIED,true);
+        free(command_path);
+        return(126);
     }
     free(command_path);
     return (0);

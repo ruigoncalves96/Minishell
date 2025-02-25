@@ -171,11 +171,24 @@ static void exit_code_child(t_prompt_info prompt_info)
 {
     int status;
     int exit_code;
-
+    
     wait(&status);
-    exit_code = (status >> 8) & 0xFF;
-    prompt_info.builtins->exit_code = exit_code;
 
+    //Vou extrair o sinal, se nao for 0 significa que foi usado um sinal
+    if ((status & 0x7f) == 0) {
+        // sai normal nengue
+        exit_code = (status >> 8) & 0xFF;
+    } else {
+        // Process was terminated by a signal
+        int signal_num = status & 0x7F;
+        if (signal_num == 2) {  // SIGINT is 2
+            exit_code = 130;
+        } else {
+            exit_code = 128 + signal_num;
+        }
+    }
+    
+    prompt_info.builtins->exit_code = exit_code;
 }
 
 static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt_info)

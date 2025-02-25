@@ -37,6 +37,7 @@
 //COMANDS
 #define DIRECTORY "Is a directory"
 #define COMMAND_NOT_FOUND "Command not found"
+#define PERMISSION_DENIED "Permission denied"
 
 //Export
 #define NOT_VALID_IDENTIFIER "not a valid identifier"
