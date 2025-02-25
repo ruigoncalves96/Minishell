@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static  t_token *find_operator(t_token *list)
+static t_token  *find_operator(t_token *list)
 {
     while (list)
     {
@@ -24,7 +24,7 @@ static  t_token *find_operator(t_token *list)
     return (NULL);
 }
 
-static  t_token *find_pipe(t_token *list)
+static t_token  *find_pipe(t_token *list)
 {
     while (list)
     {
@@ -36,25 +36,30 @@ static  t_token *find_pipe(t_token *list)
     return (NULL);
 }
 
-static  void    close_tree(t_token *tree)
+static void close_tree(t_token *tree)
 {
     if (tree->previous && tree->previous->type == OPERATOR)
-        close_tree(tree->previous);
+    {
+        if (tree->previous->subtype == T_PIPE && tree->subtype != T_PIPE)
+            tree->previous = NULL;
+        else
+            close_tree(tree->previous);
+    }
     else if (tree->previous && tree->previous->type == COMMAND)
     {
         tree->previous->previous = NULL;
         tree->previous->next = NULL;
     }
-    if (tree->next&& tree->next->type == OPERATOR)
+    if (tree->next && tree->next->type == OPERATOR)
             close_tree(tree->next);
-    else if (tree->next&& tree->next->type == COMMAND)
+    else if (tree->next && tree->next->type == COMMAND)
     {
         tree->next->previous = NULL;
         tree->next->next = NULL;
     }
 }
 
-static  t_token *build_subtree(t_token *list)
+static t_token  *build_subtree(t_token *list)
 {
     t_token *subtree;
     t_token *node;

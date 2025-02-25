@@ -145,7 +145,8 @@ size_t	command_array_len(t_list *node)
 	nbr_commands = 0;
 	while (node && node->type == COMMAND)
 	{
-		nbr_commands++;
+	    if (node->str[0] != '\0')
+			nbr_commands++;
 		node = node->next;
 	}
 	return (nbr_commands);
