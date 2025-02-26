@@ -32,7 +32,7 @@ static void shell_loop(t_prompt_info prompt_info)
 		prompt_info.prompt = readline("Minishell> ");
 		if(!prompt_info.prompt)
 		{
-			cleanup_all(&prompt_info,tokens);
+			cleanup_all(&prompt_info, NULL);
 			break;
 		}
 		if (prompt_info.prompt[0] != '\0')
@@ -43,6 +43,7 @@ static void shell_loop(t_prompt_info prompt_info)
 			{
 			    loop_executer(tokens, prompt_info.env, prompt_info);
 				free_token_tree(tokens);
+				tokens = NULL;
 			}
 		}
 		free(prompt_info.prompt);
