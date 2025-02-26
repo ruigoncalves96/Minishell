@@ -31,7 +31,10 @@ static void shell_loop(t_prompt_info prompt_info)
 	{
 		prompt_info.prompt = readline("Minishell> ");
 		if(!prompt_info.prompt)
+		{
+			cleanup_all(&prompt_info,tokens);
 			break;
+		}
 		if (prompt_info.prompt[0] != '\0')
 		{
 		    add_history(prompt_info.prompt);
@@ -64,7 +67,7 @@ int main(int argc, char *argv[],char *envp[])
 	        return (1);
 	update_shlvl(prompt_info.env);
 	shell_loop(prompt_info);
-	free_env(prompt_info.env);
-	rl_clear_history();
+	//free_env(prompt_info.env);
+	//rl_clear_history();
 	return 0;
 }

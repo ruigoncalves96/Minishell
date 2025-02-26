@@ -201,7 +201,7 @@ int validate_command_path(char *command, t_env *env);
 void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info);
 int executer_manager(char **str, t_env *env,t_prompt_info prompt_info);
-
+void close_fds();
 //heredoc
 void    get_heredoc_input(t_token *token);
 void    get_redirection_files(t_token *token);

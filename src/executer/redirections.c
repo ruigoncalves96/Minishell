@@ -38,6 +38,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
         runcmd(token->previous, env, prompt_info);
+        close_fds();
         exit(prompt_info.builtins->exit_code);
     }
     right_pid = fork();
@@ -49,6 +50,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
         runcmd(token->next, env, prompt_info);
+        close_fds();
         exit(prompt_info.builtins->exit_code);
     }
     close(pipes[0]);
@@ -99,6 +101,7 @@ static void redirections_executer(t_token *token, t_env *env, t_prompt_info prom
         {
             prompt_info.builtins->exit_code = 1;
             perror("dup2");
+            close_fds();
             exit(1);
         }
         close(token->red->fd);  // Fechar FD após o dup2
@@ -110,6 +113,7 @@ static void redirections_executer(t_token *token, t_env *env, t_prompt_info prom
         {
             prompt_info.builtins->exit_code = 1;
             perror("dup2");
+            close_fds();
             exit(1);
         }
         close(token->red->fd);  // Fechar FD após o dup2
@@ -145,21 +149,29 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
     t_token *token;
     int original_fd[2];
 
-    original_fd[0] = -1;
-    original_fd[1] = -1;
     original_fd[0] = dup(STDIN_FILENO);
     original_fd[1] = dup(STDOUT_FILENO);
+
+    if (original_fd[0] == -1 || original_fd[1] == -1)
+    {
+        if (original_fd[0] != -1)
+            close(original_fd[0]);
+        if (original_fd[1] != -1)
+            close(original_fd[1]);
+        return;
+    }
+
     token = token_head;
     if (!token->next)
         type_of_executer(token, env, prompt_info);
     else
         runcmd(token, env, prompt_info);
-    if (STDIN_FILENO != original_fd[0])
-        dup2(original_fd[0], STDIN_FILENO);
-    if (STDOUT_FILENO != original_fd[1])
-        dup2(original_fd[1], STDOUT_FILENO);
-    // close(original_fd[0]);
-    // close(original_fd[1]);
+    dup2(original_fd[0], STDIN_FILENO);
+    dup2(original_fd[1], STDOUT_FILENO);
+    
+    // Close the duplicated file descriptors
+    close(original_fd[0]);
+    close(original_fd[1]);
 }
 static void exit_code_child(t_prompt_info prompt_info)
 {
@@ -193,6 +205,7 @@ static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt
     {
         free(path);
         perror("access");
+        close_fds();
         prompt_info.builtins->exit_code = 127;
         exit(127);
     }
@@ -201,11 +214,13 @@ static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt
     {
         free(path);
         perror("access");
+        close_fds();
         prompt_info.builtins->exit_code = 126;
         exit(126);
     }
     free(path);
     perror("execve");
+    close_fds();
     exit(1);
 }
 

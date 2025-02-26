@@ -51,9 +51,18 @@ static int check_digit(const char *str)
     }
     return (1);
 }
+void close_fds()
+{
+    int fd = 3;
+    while (fd < 256) 
+    {
+        close(fd);
+        fd++;
+    }
+}
+
 void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
 {
-	(void)tokens;
     rl_clear_history();
 
     if (prompt_info->prompt)
@@ -69,6 +78,8 @@ void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
          free_env(prompt_info->env);
          prompt_info->env = NULL;
     }
+
+    close_fds();
 }
 static void free_error_exit(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens)
 {

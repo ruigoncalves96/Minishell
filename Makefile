@@ -13,7 +13,7 @@ WHITE   = \033[1;37m
 # ======================== #
 #       FLAGS              #
 # ======================== #
-CC        = cc
+CC        = cc -g
 FLAGS     = -Wall -Werror -Wextra
 READLINE  = -lreadline #-L/opt/homebrew/opt/readline
 
@@ -66,7 +66,7 @@ $(NAME): $(LIBFT) $(OBJS)
 
 valgrind: $(NAME)
 	@echo "$(YELLOW)Running with Valgrind... 🧠$(RESET)"
-	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./$(NAME)
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes --suppressions=readline.supp ./$(NAME)
 
 clean:
 	@echo "$(RED)Cleaning object files...$(RESET)"
