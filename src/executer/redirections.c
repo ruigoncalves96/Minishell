@@ -158,14 +158,14 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
         dup2(original_fd[0], STDIN_FILENO);
     if (STDOUT_FILENO != original_fd[1])
         dup2(original_fd[1], STDOUT_FILENO);
-    // close(original_fd[0]);
-    // close(original_fd[1]);
+    close(original_fd[0]);
+    close(original_fd[1]);
 }
 static void exit_code_child(t_prompt_info prompt_info)
 {
     int status;
     int exit_code;
-    
+
     wait(&status);
 
     //Vou extrair o sinal, se nao for 0 significa que foi usado um sinal
@@ -177,10 +177,10 @@ static void exit_code_child(t_prompt_info prompt_info)
         int signal_num = status & 0x7F;
         if (signal_num == 2)  // SIGINT is 2
             exit_code = 130;
-         else 
+         else
             exit_code = 128 + signal_num;
     }
-    
+
     prompt_info.builtins->exit_code = exit_code;
 }
 

@@ -84,7 +84,7 @@ void	ft_token_add_first(t_token **token, t_token *new_token)
 	}
 }
 
-t_token	*ft_token_new(char **content, int type, char subtype)
+t_token	*ft_token_new(int type, char subtype, char **content)
 {
 	t_token	*token;
 

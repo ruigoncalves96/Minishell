@@ -50,7 +50,7 @@ static t_redirect	*redirect_new(t_list *node, int type)
 	if (!red)
 		return (NULL);
 	red->fd = -1;
-	    red->filename = get_command_array(&node);
+	red->filename = get_command_array(&node);
 	if (!red->filename)
 		return (free(red), NULL);
 	red->type = type;
@@ -72,7 +72,7 @@ static t_token	*define_redirect_token(t_list **node)
 		return (ft_free_double_array(new_str), NULL);
 	new_str[1] = NULL;
 	type = check_redirect_type(new_str[0]);
-	new_token = ft_token_new(new_str, OPERATOR, T_REDIRECT);
+	new_token = ft_token_new(OPERATOR, T_REDIRECT, new_str);
 	if (!new_token)
 		return (ft_free_double_array(new_str), NULL);
 	new_token->red = redirect_new(*node, type);
@@ -95,7 +95,7 @@ static t_token	*define_pipe_token(t_list **node)
 	if (!new_str[0])
 		return (ft_free_double_array(new_str), NULL);
 	new_str[1] = NULL;
-	new_token = ft_token_new(new_str, OPERATOR, T_PIPE);
+	new_token = ft_token_new(OPERATOR, T_PIPE, new_str);
 	if (!new_token)
 		return (ft_free_double_array(new_str), NULL);
 	*node = (*node)->next;
@@ -113,7 +113,7 @@ t_token	*define_tokens(t_list *prompt_list)
 	while (node)
 	{
 		if (node->type == COMMAND)
-			new_token = ft_token_new(get_command_array(&node), COMMAND, T_WORD);
+			new_token = ft_token_new(COMMAND, node->subtype, get_command_array(&node));
 		else
 		{
 			if (node->subtype == T_PIPE)

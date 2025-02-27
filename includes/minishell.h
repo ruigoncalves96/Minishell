@@ -142,7 +142,7 @@ t_token	*ft_token_last(t_token *token);
 void	ft_token_delone(t_token *token);
 void	ft_token_add_last(t_token **token, t_token *new_token);
 void	ft_token_add_first(t_token **token, t_token *new_token);
-t_token	*ft_token_new(char **content, int type, char subtype);
+t_token	*ft_token_new(int type, char subtype, char **content);
 
 //Free_structs
 void	free_list(t_list *list);
@@ -203,7 +203,7 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
 int executer_manager(char **str, t_env *env,t_prompt_info prompt_info);
 
 //heredoc
-void    get_heredoc_input(t_token *token);
+void    get_heredoc_input(t_token *token, t_prompt_info prompt_info);
 void    get_redirection_files(t_token *token);
 void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
 
@@ -227,7 +227,8 @@ bool	parse_syntax(t_list *token_list);
 t_list	*convert_quotes(t_list *tokens_list);
 
 //expand_vars
-t_list	*expand_vars(t_prompt_info *prompt_info, t_list **tokens_list);
+char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_t key_len);
+t_list	*expand_vars(t_prompt_info prompt_info, t_list **tokens_list);
 
 //define_tokens
 t_token	*define_tokens(t_list *prompt_list);
@@ -236,11 +237,11 @@ t_token	*define_tokens(t_list *prompt_list);
 t_token *build_tree(t_token *tokens_list);
 
 //open_files
-bool    loop_and_open_fd(t_token *token,t_prompt_info  *prompt_info);
+bool    loop_and_open_fd(t_token *token,t_prompt_info prompt_info);
 
 //find_var_value
 size_t	var_key_len(char *str);
-char	*find_var_value(t_prompt_info *prompt_info, char *dollar);
+char	*find_var_value(t_prompt_info prompt_info, char *dollar);
 
 //parsing_utils
 size_t	quote_len(char *str);
