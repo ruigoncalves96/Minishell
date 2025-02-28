@@ -22,7 +22,7 @@ static char	**get_command_array(t_list **node)
 	array_len = command_array_len(*node);
 	if (array_len == 0)
 	    array_len = 1;
-	new_token = ft_calloc(array_len + 1, sizeof(char *));
+	new_token = ft_calloc(array_len + 2, sizeof(char *));
 	if (!new_token)
 		return (NULL);
 	i = 0;
@@ -41,20 +41,23 @@ static char	**get_command_array(t_list **node)
 	return (new_token);
 }
 
-static t_redirect	*redirect_new(t_list *node, int type)
+static t_redirect *redirect_new(t_list *node, int type)
 {
-	t_redirect	*red;
+    t_redirect  *red;
 
-	node = node->next;
-	red = ft_calloc(1, sizeof(t_redirect));
-	if (!red)
-		return (NULL);
-	red->fd = -1;
-	    red->filename = get_command_array(&node);
-	if (!red->filename)
-		return (free(red), NULL);
-	red->type = type;
-	return (red);
+    node = node->next;
+    red = ft_calloc(1, sizeof(t_redirect));
+    if (!red)
+        return (NULL);
+    red->fd = -1;
+    red->filename = get_command_array(&node);
+    if (!red->filename)
+    {
+        free(red);
+        return (NULL);
+    }
+    red->type = type;
+    return (red);
 }
 
 static t_token	*define_redirect_token(t_list **node)

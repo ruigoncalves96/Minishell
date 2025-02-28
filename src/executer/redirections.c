@@ -39,6 +39,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         signal(SIGQUIT, SIG_DFL);
         runcmd(token->previous, env, prompt_info);
         close_fds();
+        cleanup_all(&prompt_info,token);
         exit(prompt_info.builtins->exit_code);
     }
     right_pid = fork();
@@ -51,6 +52,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         signal(SIGQUIT, SIG_DFL);
         runcmd(token->next, env, prompt_info);
         close_fds();
+        cleanup_all(&prompt_info,token);
         exit(prompt_info.builtins->exit_code);
     }
     close(pipes[0]);

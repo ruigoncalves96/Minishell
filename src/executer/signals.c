@@ -16,6 +16,7 @@ static void disable_ctrl_backslash(void)
 {
     struct termios term;
 
+    memset(&term, 0, sizeof(struct termios));
     // Get current terminal attributes
     tcgetattr(STDIN_FILENO, &term);
 

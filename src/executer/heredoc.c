@@ -35,26 +35,39 @@ void    get_heredoc_input(t_token *token)
     int     input_len;
     t_list    *top;
     t_list    *input;
+    char    **old_filename;
 
     input_len = 0;
     top = NULL;
     heredoc = NULL;
+    old_filename = token->red->filename; 
     while (1)
     {
         heredoc = readline("> ");
         if (!heredoc)
+        {
+            free_token_list(token);
             exit (1);
+        }
         if (ft_strncmp(heredoc, token->red->filename[0], ft_strlen((const char*)heredoc)) == 0)
         {
+            free(heredoc);
             token->red->filename = create_double_array(top, input_len);
+            ft_free_double_array(old_filename);
             return ;
         }
         input = ft_lstnew(heredoc);
+        if(!input)
+        {
+            free(heredoc);
+            free_token_list(token);
+            exit(1);
+        }
         ft_lstadd_last(&top, input);
         input_len++;
     }
 }
-//  NOTE: PROTECT ALLOCATION ERRORS ^ -> return bool (false in case of error)
+
 
 size_t  array_len(char **array)
 {
@@ -141,7 +154,8 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     }
     else
     {
-        pipe(pipes);
+        if(pipe(pipes) == -1)
+            return;
         if (fork() == 0)
         {
             close(pipes[0]);
