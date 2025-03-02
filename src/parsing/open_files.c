@@ -118,7 +118,16 @@ static bool open_redirect_heredoc(t_token *token)
 bool    loop_and_open_fd(t_token *token,t_prompt_info *prompt_info)
 {
     bool    open_error;
+    struct sigaction sa_old;
+    struct sigaction sa_new;
 
+    //Setup signal
+    sigemptyset(&sa_new.sa_mask);
+    sa_new.sa_flags = 0;
+    sa_new.sa_handler = SIG_DFL;
+
+    //Salva sinal anterior
+    sigaction(SIGINT, NULL, &sa_old);
     open_error = false;
     while (token)
     {
@@ -146,5 +155,7 @@ bool    loop_and_open_fd(t_token *token,t_prompt_info *prompt_info)
         }
         token = token->next;
     }
+    //restore no sinalcl
+    sigaction(SIGINT, &sa_old, NULL);
     return (true);
 }

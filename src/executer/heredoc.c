@@ -46,8 +46,21 @@ void    get_heredoc_input(t_token *token)
         heredoc = readline("> ");
         if (!heredoc)
         {
-            free_token_list(token);
-            exit (1);
+            print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", true);
+            if (top)
+                free_list(top);
+           
+            // Create an empty array for the heredoc content
+            token->red->filename = ft_calloc(1, sizeof(char*));
+            if (!token->red->filename)
+                token->red->fd = -1;
+            else
+            {
+                token->red->filename[0] = NULL;
+                token->red->fd = -5;  // Special value for EOF in heredoc
+            }
+            ft_free_double_array(old_filename);
+            return;
         }
         if (ft_strncmp(heredoc, token->red->filename[0], ft_strlen((const char*)heredoc)) == 0)
         {
@@ -61,7 +74,8 @@ void    get_heredoc_input(t_token *token)
         {
             free(heredoc);
             free_token_list(token);
-            exit(1);
+            token->red->fd = -1; 
+            return;
         }
         ft_lstadd_last(&top, input);
         input_len++;
@@ -147,7 +161,15 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     i = 0;
     if (!get_heredoc_command_tree(token))
         return ;
-    if (token->red->fd == -4)
+
+    if(token->red->fd == -5)
+    {
+        prompt_info.builtins->exit_code = 1;
+        //Roda comando a mesma
+        if (token->previous && token->previous->type == COMMAND)
+            runcmd(token->previous, env, prompt_info);
+        return;
+    }else if (token->red->fd == -4)
     {
         runcmd(token->previous, env, prompt_info);
         return ;

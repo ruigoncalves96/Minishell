@@ -83,14 +83,18 @@ static char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_
 	return (new_token);
 }
 
-static char	*expand(t_prompt_info *prompt_info, t_list **tokens_list, t_list *token)
+static char	*expand(t_prompt_info *prompt_info, t_list **tokens_list, t_list **token_ptr)
 {
 	char   *var_value;
 	char   *dollar;
 	bool   double_quotes;
-
+	bool free_var_value;
+	t_list *token;
+	
+	token = *token_ptr;
 	var_value = NULL;
 	double_quotes = false;
+	free_var_value = false;
 	while (1)
 	{
         dollar = token->str;
@@ -98,12 +102,22 @@ static char	*expand(t_prompt_info *prompt_info, t_list **tokens_list, t_list *to
 	    dollar = find_expand_dollar(dollar, &double_quotes);
 		if (!dollar)
 			break ;
+		free_var_value = (dollar[1] == '?');
 		var_value = find_var_value(prompt_info, dollar);
 		token->str = join_var(token->str, var_value, dollar, var_key_len(dollar + 1));
+		if (free_var_value && var_value)
+        {
+            free(var_value);
+            var_value = NULL;
+        }
+		
 		if (!token->str)
 			return (NULL);
 		if (double_quotes == false)
+		{
 			split_and_link(tokens_list, &token);
+			*token_ptr = token;
+		}
 	}
 	return (token->str);
 }
@@ -112,19 +126,21 @@ t_list	*expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
 {
 	t_list	*token;
 	bool	double_quotes;
+	t_list *next;
 
 	double_quotes = false;
 	token = *tokens_list;
 	while (token)
 	{
+		next = token->next;
 		if (find_expand_dollar(token->str, &double_quotes))
 		{
-			if (expand(prompt_info, tokens_list, token) == NULL)
+			if (expand(prompt_info, tokens_list, &token) == NULL)
 			     return (NULL);
 			if (double_quotes == true)
 			     double_quotes ^= 1;
 		}
-		token = token->next;
+		token = next;
 	}
 	return (*tokens_list);
 }

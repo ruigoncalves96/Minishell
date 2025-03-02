@@ -3,6 +3,7 @@
 void init_variables_builtins(t_builtins *builtins)
 {
     builtins->echo_flag = true;
+    builtins->exit_code = 0;
 }
 int is_builtin(char *cmd)
 {
@@ -27,6 +28,7 @@ int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *built
     if (!is_builtin(*tokens->token))
         return (0);
 
+    builtins->exit_code = 0;
     if (ft_strcmp(*tokens->token, "env") == 0)
         print_env_list(prompt_info.env);
     else if (ft_strcmp(*tokens->token, "pwd") == 0)
