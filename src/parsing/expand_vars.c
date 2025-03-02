@@ -55,7 +55,7 @@ static t_list	*split_and_link(t_list **tokens_list, t_list **token)
 	return (*tokens_list);
 }
 
-static char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_t key_len)
+char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_t key_len)
 {
 	char	*new_token;
 	size_t	value_len;
@@ -83,14 +83,14 @@ static char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_
 	return (new_token);
 }
 
-static char	*expand(t_prompt_info *prompt_info, t_list **tokens_list, t_list **token_ptr)
+static char	*expand(t_prompt_info prompt_info, t_list **tokens_list, t_list **token_ptr)
 {
 	char   *var_value;
 	char   *dollar;
 	bool   double_quotes;
 	bool free_var_value;
 	t_list *token;
-	
+
 	token = *token_ptr;
 	var_value = NULL;
 	double_quotes = false;
@@ -110,7 +110,7 @@ static char	*expand(t_prompt_info *prompt_info, t_list **tokens_list, t_list **t
             free(var_value);
             var_value = NULL;
         }
-		
+
 		if (!token->str)
 			return (NULL);
 		if (double_quotes == false)
@@ -122,7 +122,7 @@ static char	*expand(t_prompt_info *prompt_info, t_list **tokens_list, t_list **t
 	return (token->str);
 }
 
-t_list	*expand_vars(t_prompt_info *prompt_info, t_list **tokens_list)
+t_list	*expand_vars(t_prompt_info prompt_info, t_list **tokens_list)
 {
 	t_list	*token;
 	bool	double_quotes;

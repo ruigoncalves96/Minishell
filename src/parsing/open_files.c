@@ -97,7 +97,7 @@ static bool open_redirect(t_token *token, bool *open_error)
     return (true);
 }
 
-static bool open_redirect_heredoc(t_token *token)
+static bool open_redirect_heredoc(t_token *token, t_prompt_info prompt_info)
 {
     if (!token || !token->red || !token->red->filename[0])
         return (false);
@@ -110,12 +110,12 @@ static bool open_redirect_heredoc(t_token *token)
         }
         else
             token->red->fd = 0;
-        get_heredoc_input(token);
+        get_heredoc_input(token, prompt_info);
     }
     return (true);
 }
 
-bool    loop_and_open_fd(t_token *token,t_prompt_info *prompt_info)
+bool    loop_and_open_fd(t_token *token, t_prompt_info prompt_info)
 {
     bool    open_error;
     struct sigaction sa_old;
@@ -138,17 +138,17 @@ bool    loop_and_open_fd(t_token *token,t_prompt_info *prompt_info)
             if (open_redirect(token, &open_error) == false)
             {
                 perror(token->red->filename[0]);
-                prompt_info->builtins->exit_code = 1;
+                prompt_info.builtins->exit_code = 1;
                 return (false);
             }
             close_repeated_redirections(token);
         }
         else if (token->subtype == T_REDIRECT && token->red->type == HEREDOC)
         {
-            if (open_redirect_heredoc(token) == false)
+            if (open_redirect_heredoc(token, prompt_info) == false)
             {
                 perror(token->red->filename[0]);
-                prompt_info->builtins->exit_code = 1;
+                prompt_info.builtins->exit_code = 1;
                 return (false);
             }
             close_repeated_redirections(token);

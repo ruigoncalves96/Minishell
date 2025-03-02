@@ -28,8 +28,29 @@ char    **create_double_array(t_list *top, int input_len)
     return (double_array);
 }
 
+static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
+{
+	char   *var_value;
+	char   *dollar;
+
+	var_value = NULL;
+	while (1)
+	{
+        dollar = heredoc;
+        dollar += ft_strlen(var_value);
+	    dollar = ft_strchr(dollar, '$');
+		if (!dollar)
+			break ;
+		var_value = find_var_value(prompt_info, dollar);
+		heredoc = join_var(heredoc, var_value, dollar, var_key_len(dollar + 1));
+		if (!heredoc)
+			return (NULL);
+	}
+	return (heredoc);
+}
+
 //  Creates double array, inside red->filename, with the heredoc input
-void    get_heredoc_input(t_token *token)
+void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
 {
     char    *heredoc;
     int     input_len;
@@ -69,6 +90,8 @@ void    get_heredoc_input(t_token *token)
             ft_free_double_array(old_filename);
             return ;
         }
+        if (token->next->subtype != T_QUOTE && token->red->filename[1] == NULL)
+            heredoc = expand_vars_heredoc(heredoc, prompt_info);
         input = ft_lstnew(heredoc);
         if(!input)
         {
