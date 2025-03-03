@@ -1,34 +1,33 @@
 #include "../../includes/minishell.h"
 
-char    **create_double_array(t_list *top, int input_len)
+char    **create_double_array(t_list *top, size_t input_len)
 {
-    t_list  *temp;
     char    **double_array;
     size_t  i;
 
-    temp = NULL;
     i = 0;
     double_array = ft_calloc(input_len + 1, sizeof(char *));
     if (!double_array)
-        exit (1);
+        return (NULL);
     while (top)
     {
-        temp = top;
-        double_array[i] = ft_strdup(top->str);
+        if (top->str[0] == '\0')
+            double_array[i] = ft_strdup("\n");
+        else
+            double_array[i] = ft_strdup(top->str);
         if (!double_array[i])
         {
             ft_free_double_array(double_array);
-            exit (1);
+            return (NULL);
         }
         top = top->next;
-        ft_lstdelone(temp);
         i++;
     }
     double_array[i] = NULL;
     return (double_array);
 }
 
-static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
+/* static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
 {
 	char   *var_value;
 	char   *dollar;
@@ -47,9 +46,69 @@ static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
 			return (NULL);
 	}
 	return (heredoc);
+} */
+
+static size_t lst_size(t_list *list)
+{
+    size_t i;
+
+    i = 0;
+    while (list)
+    {
+        i++;
+        list = list->next;
+    }
+    return i;
 }
 
+void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
+{
+    char    *heredoc;
+    t_list  *top;
+    t_list  *input;
+
+    (void)prompt_info;
+    top = NULL;
+    input = NULL;
+    while(1)
+    {
+        heredoc = readline("> ");
+        if (!heredoc)
+        {
+            print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", true);
+        }
+        //  Check for EOF
+        if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
+        {
+            free(heredoc);
+            ft_free_double_array(token->red->filename);
+            token->red->filename = create_double_array(top, lst_size(top));
+            if (!token->red->filename)
+            {
+                printf("ERROR ALLOC DOUBLE ARRAY\n");
+            }
+            if (top)
+                free_list(top);
+            return ;
+        }
+        input = ft_lstnew(heredoc);
+        if (!input)
+        {
+            printf("ERROR LISTA\n");
+        }
+        ft_lstadd_last(&top, input);
+    }
+}
+
+
+
+
+
 //  Creates double array, inside red->filename, with the heredoc input
+/*
+
+
+
 void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
 {
     char    *heredoc;
@@ -61,7 +120,7 @@ void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
     input_len = 0;
     top = NULL;
     heredoc = NULL;
-    old_filename = token->red->filename; 
+    old_filename = token->red->filename;
     while (1)
     {
         heredoc = readline("> ");
@@ -70,40 +129,50 @@ void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
             print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", true);
             if (top)
                 free_list(top);
-           
+
             // Create an empty array for the heredoc content
-            token->red->filename = ft_calloc(1, sizeof(char*));
-            if (!token->red->filename)
-                token->red->fd = -1;
+            // token->red->filename = ft_calloc(1, sizeof(char*));
+            // if (!token->red->filename)
+            //    token->red->fd = -1;
             else
             {
-                token->red->filename[0] = NULL;
+                token->red->filename = NULL;
                 token->red->fd = -5;  // Special value for EOF in heredoc
             }
             ft_free_double_array(old_filename);
             return;
         }
-        if (ft_strncmp(heredoc, token->red->filename[0], ft_strlen((const char*)heredoc)) == 0)
+        if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
         {
+
             free(heredoc);
             token->red->filename = create_double_array(top, input_len);
+            if(top)
+                free_list(top);
             ft_free_double_array(old_filename);
             return ;
         }
+        if (heredoc[0] != '\0')
+        {
         if (token->next->subtype != T_QUOTE && token->red->filename[1] == NULL)
             heredoc = expand_vars_heredoc(heredoc, prompt_info);
         input = ft_lstnew(heredoc);
-        if(!input)
+          if(!input)
         {
             free(heredoc);
             free_token_list(token);
-            token->red->fd = -1; 
+            token->red->fd = -1;
             return;
         }
         ft_lstadd_last(&top, input);
+        printf("TOKEN = %s\n", top->str);
+        if (heredoc)
+            free(heredoc);
         input_len++;
+        }
     }
 }
+*/
 
 
 size_t  array_len(char **array)
@@ -184,17 +253,18 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     i = 0;
     if (!get_heredoc_command_tree(token))
         return ;
-
+/*
     if(token->red->fd == -5)
     {
         prompt_info.builtins->exit_code = 1;
-        //Roda comando a mesma
-        if (token->previous && token->previous->type == COMMAND)
-            runcmd(token->previous, env, prompt_info);
+       //Roda comando a mesma
         return;
-    }else if (token->red->fd == -4)
+    }
+*/
+     if (token->red->fd == -4)
     {
         runcmd(token->previous, env, prompt_info);
+
         return ;
     }
     else
@@ -210,6 +280,7 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
                 ft_putstr_fd("\n", pipes[1]);
                 i++;
             }
+            cleanup_all(&prompt_info,token);
             exit(0);
         }
         wait(NULL);
@@ -219,6 +290,7 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
             dup2(pipes[0], STDIN_FILENO);
             close(pipes[0]);
             runcmd(token->previous, env, prompt_info);
+            cleanup_all(&prompt_info,token);
             exit(0);
         }
         close(pipes[0]);

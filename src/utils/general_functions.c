@@ -35,3 +35,10 @@ int	ft_strcmp(const char *s1, const char *s2)
 		i++;
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
+
+t_token	*go_to_tree_top(t_token *token)
+{
+	while (token->prev)
+		token = token->prev;
+	return (token);
+}

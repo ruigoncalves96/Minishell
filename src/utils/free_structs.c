@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_structs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ruigoncalves <ruigoncalves@student.42.f    +#+  +:+       +#+        */
+/*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 14:02:40 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/15 17:54:49 by ruigoncalve      ###   ########.fr       */
+/*   Updated: 2025/03/03 14:14:40 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

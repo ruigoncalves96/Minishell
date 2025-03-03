@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:05:53 by randrade          #+#    #+#             */
-/*   Updated: 2025/01/17 17:32:30 by randrade         ###   ########.fr       */
+/*   Updated: 2025/03/03 14:58:57 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	print_linked_list(t_list *list)
 //			ft_printf("token->previous = %s\n", temp->previous->str);
 //		else
 //			ft_printf("token->previous = NULL\n");
-		if (temp->type == COMMAND)
+/*		if (temp->type == COMMAND)
 			ft_printf("      = type = COMMAND\n");
 		else if (temp->type == OPERATOR)
 			ft_printf("      = type = OPERATOR\n");
@@ -40,7 +40,7 @@ void	print_linked_list(t_list *list)
 			ft_printf("      = subtype = PIPE\n");
 		else if (temp->subtype == T_REDIRECT)
 			ft_printf("      = subtype = REDIRECT\n");
-		temp = temp->next;
+	*/	temp = temp->next;
 	}
 }
 
@@ -97,6 +97,10 @@ void	ft_print_token_tree(t_token *tree)
 	temp = tree;
 	ft_printf("Token = ");
 	print_double_array(temp->token);
+	if (temp->prev)
+		ft_printf("Token->prev = %s\n", temp->prev->token[0]);
+	else
+		ft_printf("Token->prev = NULL\n");
 	// ft_printf("\n");
 	if (temp->red)
 	{
@@ -143,6 +147,6 @@ t_token	*parsing(t_prompt_info *prompt_info)
 	if (loop_and_open_fd(tokens_tree, *prompt_info) == false)
 	    return (NULL);
 	tokens_tree = build_tree(tokens_tree);
-	// print_token_tree(tokens_tree);
+	//ft_print_token_tree(tokens_tree);
 	return (tokens_tree);
 }

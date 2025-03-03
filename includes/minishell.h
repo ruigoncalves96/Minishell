@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/02/19 11:56:26 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/03/03 14:30:01 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ typedef struct s_token
 	int            type;
 	int            subtype;
 	t_redirect     *red;
+	struct s_token *prev;
 	struct s_token *previous;
 	struct s_token *next;
 }				t_token;
@@ -129,6 +130,7 @@ void	print_double_array(char **array);
 int array_size(char **array);
 int	ft_strcmp(const char *s1, const char *s2);
 void print_error(const char *cmd, const char *arg, const char *msg,bool print_bash);
+t_token	*go_to_tree_top(t_token *token);
 
 //List_struct_functions
 t_list	*ft_lstlast(t_list *lst);
@@ -200,7 +202,7 @@ int validate_command_path(char *command, t_env *env);
 //redirections
 void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info);
-int executer_manager(char **str, t_env *env,t_prompt_info prompt_info);
+int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *token);
 void close_fds();
 //heredoc
 void    get_heredoc_input(t_token *token, t_prompt_info prompt_info);

@@ -23,7 +23,7 @@ static int  ft_atol(const char *str, long *result)
         max_last_digit = LONG_MAX % 10;
     else
         max_last_digit = -(LONG_MIN % 10);
-    
+
     while (str[i] >= '0' && str[i] <= '9')
     {
         if (num > LONG_MAX / 10)
@@ -54,7 +54,7 @@ static int check_digit(const char *str)
 void close_fds()
 {
     int fd = 3;
-    while (fd < 256) 
+    while (fd < 256)
     {
         close(fd);
         fd++;
@@ -72,7 +72,8 @@ void cleanup_all(t_prompt_info *prompt_info, t_token *tokens)
     }
 
     if (tokens)
-        free_token_tree(tokens);
+        free_token_tree(go_to_tree_top(tokens));
+
     if (prompt_info->env)
     {
          free_env(prompt_info->env);
@@ -91,7 +92,7 @@ static void free_error_exit(char **args, t_builtins *builtins,t_prompt_info *pro
 void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens)
 {
     long num;
-    
+
     num = 0;
     printf("exit\n");
     if (array_size(args) == 1) {
@@ -105,11 +106,11 @@ void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t
     {
         print_error("exit",NULL,TOO_MANY_ARGS,true);
         builtins->exit_code = 1;
-        return;  
+        return;
     }
     if (!ft_atol(args[1], &num))
         free_error_exit(args,builtins,prompt_info,tokens);
-    
+
     num %= 256;
     if (num < 0)
         num += 256;

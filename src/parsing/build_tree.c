@@ -73,6 +73,10 @@ static t_token  *build_subtree(t_token *list)
         {
             if (subtree)
                 node->previous = subtree;
+            if (node->previous)
+                node->previous->prev = node;
+            if (node->next && node->next->type == COMMAND)
+                node->next->prev = node;
             subtree = node;
             node = node->next;
         }
@@ -100,10 +104,20 @@ t_token *build_tree(t_token *tokens_list)
         if (top_token)
         {
             if (tree)
+            {
                 top_token->previous = tree;
+                top_token->previous->prev = top_token;
+            }
             else
+            {
+                top_token->prev = NULL;
                 top_token->previous = build_subtree(tokens_list);
+                top_token->previous->prev = top_token;
+            }
+
             top_token->next = build_subtree(top_token->next);
+            if (top_token->next)
+                top_token->next->prev = top_token;
             tree = top_token;
             top_token = top_token->next;
         }

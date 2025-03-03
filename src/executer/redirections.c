@@ -12,7 +12,7 @@ static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_in
     {
         valid = validate_command_path(*token->token, env);
         if (valid == 0)
-            executer_manager(token->token, env, prompt_info);
+            executer_manager(token->token, env, prompt_info,token);
         else
             prompt_info.builtins->exit_code = valid;
     }
@@ -197,7 +197,7 @@ static void exit_code_child(t_prompt_info prompt_info)
     prompt_info.builtins->exit_code = exit_code;
 }
 
-static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt_info)
+static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt_info,t_token *token)
 {
     ft_free_double_array(env_array);
 
@@ -221,11 +221,12 @@ static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt
     }
     free(path);
     perror("execve");
-    close_fds();
+    //close_fds();
+    cleanup_all(&prompt_info,token);
     exit(1);
 }
 
-int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
+int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *token)
 {
 	char *path;
 	char **env_array;
@@ -247,16 +248,16 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info)
         signal(SIGQUIT, SIG_DFL);
 
         if(execve(path,str,env_array) == -1)
-            handle_execve_error(path,env_array,prompt_info);
+            handle_execve_error(path,env_array,prompt_info,token);
     }
     else
     {
         signal(SIGINT, SIG_IGN);
         exit_code_child(prompt_info);
         set_signals();
+
     }
     free(path);
-
     ft_free_double_array(env_array);
     return 0;
 }
