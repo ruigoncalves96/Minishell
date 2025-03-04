@@ -27,7 +27,7 @@ char    **create_double_array(t_list *top, size_t input_len)
     return (double_array);
 }
 
-/* static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
+static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
 {
 	char   *var_value;
 	char   *dollar;
@@ -46,7 +46,7 @@ char    **create_double_array(t_list *top, size_t input_len)
 			return (NULL);
 	}
 	return (heredoc);
-} */
+}
 
 static size_t lst_size(t_list *list)
 {
@@ -61,6 +61,7 @@ static size_t lst_size(t_list *list)
     return i;
 }
 
+//  Creates double array, inside red->filename, with the heredoc input
 void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
 {
     char    *heredoc;
@@ -91,6 +92,8 @@ void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
                 free_list(top);
             return ;
         }
+        if (token->next->subtype != T_QUOTE && token->red->filename[1] == NULL)
+            heredoc = expand_vars_heredoc(heredoc, prompt_info);
         input = ft_lstnew(heredoc);
         if (!input)
         {
@@ -99,81 +102,6 @@ void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
         ft_lstadd_last(&top, input);
     }
 }
-
-
-
-
-
-//  Creates double array, inside red->filename, with the heredoc input
-/*
-
-
-
-void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
-{
-    char    *heredoc;
-    int     input_len;
-    t_list    *top;
-    t_list    *input;
-    char    **old_filename;
-
-    input_len = 0;
-    top = NULL;
-    heredoc = NULL;
-    old_filename = token->red->filename;
-    while (1)
-    {
-        heredoc = readline("> ");
-        if (!heredoc)
-        {
-            print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", true);
-            if (top)
-                free_list(top);
-
-            // Create an empty array for the heredoc content
-            // token->red->filename = ft_calloc(1, sizeof(char*));
-            // if (!token->red->filename)
-            //    token->red->fd = -1;
-            else
-            {
-                token->red->filename = NULL;
-                token->red->fd = -5;  // Special value for EOF in heredoc
-            }
-            ft_free_double_array(old_filename);
-            return;
-        }
-        if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
-        {
-
-            free(heredoc);
-            token->red->filename = create_double_array(top, input_len);
-            if(top)
-                free_list(top);
-            ft_free_double_array(old_filename);
-            return ;
-        }
-        if (heredoc[0] != '\0')
-        {
-        if (token->next->subtype != T_QUOTE && token->red->filename[1] == NULL)
-            heredoc = expand_vars_heredoc(heredoc, prompt_info);
-        input = ft_lstnew(heredoc);
-          if(!input)
-        {
-            free(heredoc);
-            free_token_list(token);
-            token->red->fd = -1;
-            return;
-        }
-        ft_lstadd_last(&top, input);
-        printf("TOKEN = %s\n", top->str);
-        if (heredoc)
-            free(heredoc);
-        input_len++;
-        }
-    }
-}
-*/
-
 
 size_t  array_len(char **array)
 {
@@ -261,7 +189,7 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         return;
     }
 */
-     if (token->red->fd == -4)
+    if (token->red->fd == -4)
     {
         runcmd(token->previous, env, prompt_info);
 
