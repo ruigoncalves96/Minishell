@@ -65,6 +65,7 @@ static size_t lst_size(t_list *list)
 void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
 {
     char    *heredoc;
+    char    *tmp;
     t_list  *top;
     t_list  *input;
 
@@ -76,7 +77,17 @@ void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
         heredoc = readline("> ");
         if (!heredoc)
         {
-            print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", true);
+            print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", false);
+            free(heredoc);
+            ft_free_double_array(token->red->filename);
+            token->red->filename = create_double_array(top, lst_size(top));
+            if (!token->red->filename)
+            {
+                printf("ERROR ALLOC DOUBLE ARRAY\n");
+            }
+            if (top)
+                free_list(top);
+            return ;
         }
         //  Check for EOF
         if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
@@ -94,7 +105,9 @@ void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
         }
         if (token->next->subtype != T_QUOTE && token->red->filename[1] == NULL)
             heredoc = expand_vars_heredoc(heredoc, prompt_info);
-        input = ft_lstnew(heredoc);
+        tmp = ft_strjoin(heredoc, "\n");
+        input = ft_lstnew(tmp);
+        free(heredoc);
         if (!input)
         {
             printf("ERROR LISTA\n");
@@ -205,7 +218,7 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
             while (token->red->filename[i])
             {
                 ft_putstr_fd(token->red->filename[i], pipes[1]);
-                ft_putstr_fd("\n", pipes[1]);
+                // ft_putstr_fd("\n", pipes[1]);
                 i++;
             }
             cleanup_all(&prompt_info,token);

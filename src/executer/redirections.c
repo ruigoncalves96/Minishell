@@ -237,7 +237,8 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *t
     if(!path)
     {
         prompt_info.builtins->exit_code = 127;
-        ft_free_double_array(env_array);
+        if (env_array)
+            ft_free_double_array(env_array);
         return 1;
     }
     child = fork();
@@ -258,6 +259,7 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *t
 
     }
     free(path);
-    ft_free_double_array(env_array);
+    if (env_array)
+        ft_free_double_array(env_array);
     return 0;
 }
