@@ -180,7 +180,10 @@ static void exit_code_child(t_prompt_info prompt_info)
     int exit_code;
 
     wait(&status);
-
+    if(status % 128 == 2)
+    {
+        write(1,"\n", 1);
+    }
     //Vou extrair o sinal, se nao for 0 significa que foi usado um sinal
     if ((status & 0x7f) == 0) {
         // sai normal nengue

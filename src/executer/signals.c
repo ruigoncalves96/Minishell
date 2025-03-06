@@ -12,46 +12,49 @@
 
 #include "../../includes/minishell.h"
 
-static void disable_ctrl_backslash(void)
-{
-    struct termios term;
+// static void disable_ctrl_backslash(void)
+// {
+//     struct termios term;
 
-    memset(&term, 0, sizeof(struct termios));
-    // Get current terminal attributes
-    tcgetattr(STDIN_FILENO, &term);
+//     memset(&term, 0, sizeof(struct termios));
+//     // Get current terminal attributes
+//     tcgetattr(STDIN_FILENO, &term);
 
-    // Disable the QUIT character (Ctrl + \)
-    term.c_cc[VQUIT] = _POSIX_VDISABLE;
-    term.c_lflag &= ~(ECHOCTL);
+//     // Disable the QUIT character (Ctrl + \)
+//     term.c_cc[VQUIT] = _POSIX_VDISABLE;
+//     term.c_lflag &= ~(ECHOCTL);
 
-    // Set the modified attributes
-    tcsetattr(STDIN_FILENO, TCSANOW, &term);
-}
+//     // Set the modified attributes
+//     tcsetattr(STDIN_FILENO, TCSANOW, &term);
+// }
 
-static void    handler(int sig)
+volatile sig_atomic_t g_signal = 0;
+volatile sig_atomic_t g_in_heredoc = 0;
+static void handler(int sig)
 {
     if (sig == SIGINT)
     {
+        g_signal = 130;
         write(1, "\n", 1);
-        rl_on_new_line();    // Tell readline we moved to a new line
-        rl_replace_line("", 0);  // Clear the current input
-        rl_redisplay();
+        if (!g_in_heredoc)
+        {
+            rl_on_new_line();
+            rl_replace_line("", 0);
+            rl_redisplay();
+        }
     }
 }
 
 void    set_signals(void)
 {
-    struct sigaction sa_c;
-
-    disable_ctrl_backslash();
-    sa_c.sa_handler = handler;
-    sa_c.sa_flags = SA_RESTART; // Restart system calls if interrupted
-    sigemptyset(&sa_c.sa_mask); // Block no other signals during handler execution
-    sigaction(SIGINT, &sa_c, NULL);
+    struct sigaction sa;
+    sa.sa_handler = handler;
+    sa.sa_flags = 0; // Restart interrupted system calls if desired
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
 
     // Ignore SIGQUIT (Ctrl+\)
-    sa_c.sa_handler = SIG_IGN;
-    sigaction(SIGQUIT, &sa_c, NULL);
-    // signal(SIGINT, handler);
-    // signal(SIGQUIT, SIG_IGN);
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGQUIT, &sa, NULL);
 }
+
