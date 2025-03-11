@@ -70,15 +70,11 @@ void get_heredoc_input(t_token *token, t_prompt_info prompt_info)
 
     top = NULL;
     input = NULL;
-   // g_in_heredoc = 1;
-   // g_signal = 0; // Reset signal at the beginning
    signal(SIGINT,SIG_IGN);
-    int child = fork();
+    pid_t child = fork();
 
-    //
     if(child == 0)
     {
-
         signal(SIGINT,SIG_DFL);
         while (1)
         {
@@ -88,35 +84,51 @@ void get_heredoc_input(t_token *token, t_prompt_info prompt_info)
             // Check for Ctrl+D (EOF)
             if (heredoc == NULL)
             {
-                print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", false);
+                print_error(NULL, NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", true);
                 prompt_info.builtins->exit_code = 0;
-                exit(0);
-            }
 
-            // Check for delimiter
-            if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
-            {
-                free(heredoc);
+                //funciona bem
+                 if(token->red->filename)
+                    ft_free_double_array(token->red->filename);
+
+                if(heredoc)
+                {
+                    free(heredoc);
+                }
+                cleanup_all(&prompt_info,NULL);
+                exit(0);
+                }
+
+                // Check for delimiter
+                if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
+                {
+                    free(heredoc);
+                    if (top)
+                    {
+                        free_list(top);
+                    }
+                    cleanup_all(&prompt_info,NULL);
                 exit(0);
             }
 
             // Process and add the line
             if (token->next->subtype != T_QUOTE && token->red->filename[1] == NULL)
-                heredoc = expand_vars_heredoc(heredoc, prompt_info);
+            heredoc = expand_vars_heredoc(heredoc, prompt_info);
 
             tmp = ft_strjoin(heredoc, "\n");
-            input = ft_lstnew(tmp);
             free(heredoc);
+            input = ft_lstnew(tmp);
 
             if (!input)
             {
-                printf("ERROR LISTA\n");
+                free(tmp);
+                if (top)
+                    free_list(top);
                 break;
             }
             ft_lstadd_last(&top, input);
         }
-
-        // Common cleanup code
+        //Loop sai normalmente
         ft_free_double_array(token->red->filename);
         token->red->filename = create_double_array(top, lst_size(top));
         if (!token->red->filename)
@@ -125,7 +137,11 @@ void get_heredoc_input(t_token *token, t_prompt_info prompt_info)
         }
         if (top)
             free_list(top);
+
+        cleanup_all(&prompt_info,NULL);
+        exit(0);
     }
+
     int status;
     waitpid(child,&status, 0);
     if(status % 128 == 2)
@@ -133,8 +149,6 @@ void get_heredoc_input(t_token *token, t_prompt_info prompt_info)
         prompt_info.builtins->exit_code = 130;
         write(1,"\n", 1);
     }
-   // g_signal = 0; // Reset signal before returning
-    //g_in_heredoc = 1;
     set_signals();
     return;
 }
@@ -166,7 +180,6 @@ t_token    *get_heredoc_command_list(t_token *token)
     return (NULL);
 }
 
-//  Gives the extra file_input from heredoc to the command (creating a new double array)
 void    get_redirection_files(t_token *token)
 {
     t_token *command;
