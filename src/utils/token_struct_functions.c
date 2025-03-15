@@ -35,7 +35,9 @@ void	ft_token_delone(t_token *token)
 	if (token->type == T_REDIRECT)
 	{
 	    if (token->red->filename)
-			ft_free_double_array(token->red->filename);
+			free(token->red->filename);
+		if (token->red->heredoc)
+		    ft_free_double_array(token->red->heredoc);
 		if (token->red->fd != -1)
 		   close(token->red->fd);
 		free(token->red);

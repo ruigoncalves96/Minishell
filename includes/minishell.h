@@ -108,7 +108,8 @@ typedef struct s_list
 typedef struct s_redirect
 {
 	int    fd;
-	char   **filename;
+	char   *filename;
+	char   **heredoc;
 	int    type;
 }		t_redirect;
 

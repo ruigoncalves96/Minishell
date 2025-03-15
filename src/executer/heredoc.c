@@ -98,15 +98,14 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
                 break ;
             }
             // Terminate on the expected delimiter
-            if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
+            if (ft_strcmp(heredoc, token->red->filename) == 0)
                 break ;
-            if (token->next->subtype != T_QUOTE && token->red->filename[1] == NULL)
+            if (token->next->subtype != T_QUOTE && token->next->token[1] == NULL)
                 heredoc = expand_vars_heredoc(heredoc, prompt_info);
             ft_putstr_fd(heredoc, pipefd[1]);
             ft_putstr_fd("\n", pipefd[1]);
             free(heredoc);
          }
-         ft_putstr_fd("TEST\n", 2);
          if (heredoc)
             free(heredoc);
          close(pipefd[1]);
@@ -133,9 +132,7 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
         ft_lstadd_last(&list, ft_lstnew(new_line));
     }
     close(pipefd[0]);
-    if (token->red->filename)
-        ft_free_double_array(token->red->filename);
-    token->red->filename = create_double_array(list, lst_size(list));
+    token->red->heredoc = create_double_array(list, lst_size(list));
     free_list(list);
     return (true);
 }
@@ -194,6 +191,8 @@ size_t  array_len(char **array)
     size_t  i;
 
     i = 0;
+    if (!array)
+        return (0);
     while (array[i])
         i++;
     return (i);
@@ -221,7 +220,7 @@ t_token    *get_heredoc_command_list(t_token *token)
 void    get_redirection_files(t_token *token)
 {
     t_token *command;
-    char    **heredoc_file;
+    char    **red_command;
     char    **new_array;
     int     i;
 
@@ -229,11 +228,11 @@ void    get_redirection_files(t_token *token)
     command = get_heredoc_command_list(token);
     if (!command)
         return ;
-    heredoc_file = token->red->filename + 1;
-    new_array = ft_calloc(array_len(command->token) + array_len(heredoc_file) + 1, sizeof(char *));
+    red_command = token->next->token + 1;
+    new_array = ft_calloc(array_len(command->token) + array_len(red_command) + 1, sizeof(char *));
     if (!new_array)
         return ;
-    while (command->token[i])
+    while (command->token && command->token[i])
     {
         new_array[i] = ft_strdup(command->token[i]);
         if (!new_array[i])
@@ -243,19 +242,20 @@ void    get_redirection_files(t_token *token)
         }
         i++;
     }
-    while (*heredoc_file)
+    while (*red_command)
     {
-        new_array[i] = ft_strdup(*heredoc_file);
+        new_array[i] = ft_strdup(*red_command);
         if (!new_array[i])
         {
             ft_free_double_array(new_array);
             return ;
         }
         i++;
-        heredoc_file++;
+        red_command++;
     }
     new_array[i] = NULL;
-    ft_free_double_array(command->token);
+    if (command->token)
+        ft_free_double_array(command->token);
     command->token = new_array;
 }
 
@@ -275,22 +275,14 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         return;
     }
 */
-    if (token->red->fd == -4)
-    {
-        runcmd(token->previous, env, prompt_info);
-
-        return ;
-    }
-    else
-    {
         if(pipe(pipes) == -1)
             return;
         if (fork() == 0)
         {
             close(pipes[0]);
-            while (token->red->filename[i])
+            while (token->red->heredoc[i])
             {
-                ft_putstr_fd(token->red->filename[i], pipes[1]);
+                ft_putstr_fd(token->red->heredoc[i], pipes[1]);
                 i++;
             }
             cleanup_all(&prompt_info,token);
@@ -309,5 +301,4 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         close(pipes[0]);
         close(pipes[1]);
         wait(NULL);
-    }
 }

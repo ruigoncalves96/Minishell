@@ -76,7 +76,9 @@ void	print_linked_tokens(t_token *list)
 			ft_printf("      = subtype = REDIRECT\n");
 			ft_printf("	 = 	   = 	      = fd = %d\n", temp->red->fd);
 			ft_printf("	 = 	   = 	      = filename = \n");
-			print_double_array(temp->red->filename);
+			printf("%s\n", temp->red->filename);
+			ft_printf("	 = 	   = 	      = heredoc = \n");
+			print_double_array(temp->red->heredoc);
 			if (temp->red->type == IN)
 				ft_printf("	 = 	   = 	      = type = IN\n");
 			else if (temp->red->type == OUT)
@@ -105,7 +107,7 @@ void	ft_print_token_tree(t_token *tree)
 	if (temp->red)
 	{
 	    ft_printf("red->filename = ");
-		print_double_array(temp->red->filename);
+		printf("%s\n", temp->red->filename);
         ft_printf("red->fd = %d\n", temp->red->fd);
         ft_printf("\n");
 	}

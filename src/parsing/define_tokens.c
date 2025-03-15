@@ -44,12 +44,11 @@ static t_redirect *redirect_new(t_list *node, int type)
 {
     t_redirect  *red;
 
-    node = node->next;
     red = ft_calloc(1, sizeof(t_redirect));
     if (!red)
         return (NULL);
     red->fd = -1;
-    red->filename = get_command_array(&node);
+    red->filename = ft_strdup(node->next->str);
     if (!red->filename)
     {
         free(red);
@@ -121,7 +120,11 @@ t_token	*define_tokens(t_list *prompt_list)
 			if (node->subtype == T_PIPE)
 				new_token = define_pipe_token(&node);
 			else if (node->subtype == T_REDIRECT)
+			{
+			    if ((!node->previous || node->previous->type != COMMAND) && node->next->next)
+				    ft_token_add_last(&token_list, ft_token_new(COMMAND, T_WORD, NULL));
 				new_token = define_redirect_token(&node);
+			}
 		}
 		if (new_token == NULL)
 			return (free_token_list(token_list), NULL);

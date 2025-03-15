@@ -68,15 +68,15 @@ void    error_redirection_file(t_token *token, t_prompt_info prompt_info)
 {
     if (token->red->fd == -1)
     {
-        print_error(NULL,token->red->filename[0],ERROR_OPENING_FILE,true);
+        print_error(NULL,token->red->filename,ERROR_OPENING_FILE,true);
     }
     else if (token->red->fd == -2)
     {
-        print_error(NULL,token->red->filename[0],PERMISSION_DENIED,true);
+        print_error(NULL,token->red->filename,PERMISSION_DENIED,true);
     }
     else if (token->red->fd == -3)
     {
-        print_error(NULL,token->red->filename[0],NO_FILE_OR_DIRECTORY,true);
+        print_error(NULL,token->red->filename,NO_FILE_OR_DIRECTORY,true);
     }
     prompt_info.builtins->exit_code = 1;
 }
