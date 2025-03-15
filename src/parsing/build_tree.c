@@ -26,6 +26,8 @@ static t_token  *find_operator(t_token *list)
 
 static t_token  *find_pipe(t_token *list)
 {
+    if (list && list->subtype == T_PIPE)
+        list = list->next;
     while (list)
     {
         if (list->subtype == T_PIPE)
@@ -73,7 +75,7 @@ static t_token  *build_subtree(t_token *list)
         {
             if (subtree)
                 node->previous = subtree;
-            if (node->previous)
+            if (node->previous && node->previous->subtype != T_PIPE)
                 node->previous->prev = node;
             if (node->next && node->next->type == COMMAND)
                 node->next->prev = node;
@@ -114,12 +116,10 @@ t_token *build_tree(t_token *tokens_list)
                 top_token->previous = build_subtree(tokens_list);
                 top_token->previous->prev = top_token;
             }
-
             top_token->next = build_subtree(top_token->next);
             if (top_token->next)
                 top_token->next->prev = top_token;
             tree = top_token;
-            top_token = top_token->next;
         }
         else if (!top_token && !tree)
             tree = build_subtree(tokens_list);

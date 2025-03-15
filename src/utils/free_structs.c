@@ -30,6 +30,8 @@ void	free_token_list(t_token *tokens_list)
 {
 	t_token	*temp;
 
+	while (tokens_list->previous)
+	    tokens_list = tokens_list->previous;
 	while (tokens_list)
 	{
 		temp = tokens_list;

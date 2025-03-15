@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   open_files.c                                          :+:      :+:    :+:   */
+/*   open_files.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -110,7 +110,8 @@ static bool open_redirect_heredoc(t_token *token, t_prompt_info prompt_info)
         }
         else
             token->red->fd = 0;
-        get_heredoc_input(token, prompt_info);
+        if (get_heredoc_input(token, prompt_info) == false)
+            return (false);
     }
     return (true);
 }

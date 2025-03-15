@@ -205,7 +205,7 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
 int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *token);
 void close_fds();
 //heredoc
-void    get_heredoc_input(t_token *token, t_prompt_info prompt_info);
+bool    get_heredoc_input(t_token *token, t_prompt_info prompt_info);
 void    get_redirection_files(t_token *token);
 void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
 

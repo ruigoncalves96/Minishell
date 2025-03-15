@@ -27,7 +27,7 @@ char    **create_double_array(t_list *top, size_t input_len)
     return (double_array);
 }
 
-static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
+char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
 {
 	char   *var_value;
 	char   *dollar;
@@ -48,7 +48,7 @@ static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
 	return (heredoc);
 }
 
-static size_t lst_size(t_list *list)
+size_t lst_size(t_list *list)
 {
     size_t i;
 
@@ -61,47 +61,133 @@ static size_t lst_size(t_list *list)
     return i;
 }
 
-//  Creates double array, inside red->filename, with the heredoc input
-void    get_heredoc_input(t_token *token, t_prompt_info prompt_info)
+bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
 {
+    int pipefd[2];
+    pid_t pid;
     char    *heredoc;
-    t_list  *top;
-    t_list  *input;
+    char    *new_line;
+    int     status;
+    t_list  *list;
 
-    (void)prompt_info;
-    top = NULL;
-    input = NULL;
-    while(1)
+    list = NULL;
+    new_line = NULL;
+    heredoc = NULL;
+    signal(SIGINT,SIG_IGN);
+    if (pipe(pipefd) == -1)
     {
-        heredoc = readline("> ");
-        if (!heredoc)
-        {
-            print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", true);
-        }
-        //  Check for EOF
-        if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
-        {
-            free(heredoc);
-            ft_free_double_array(token->red->filename);
-            token->red->filename = create_double_array(top, lst_size(top));
-            if (!token->red->filename)
-            {
-                printf("ERROR ALLOC DOUBLE ARRAY\n");
-            }
-            if (top)
-                free_list(top);
-            return ;
-        }
-        if (token->next->subtype != T_QUOTE && token->red->filename[1] == NULL)
-            heredoc = expand_vars_heredoc(heredoc, prompt_info);
-        input = ft_lstnew(heredoc);
-        if (!input)
-        {
-            printf("ERROR LISTA\n");
-        }
-        ft_lstadd_last(&top, input);
+         perror("pipe");
+         return (false);
     }
+    pid = fork();
+    if (pid == -1) {
+         perror("fork");
+         return (false);
+    }
+    if (pid == 0) {
+        signal(SIGINT, SIG_DFL);
+         /* Child Process: perform readline() calls and write to pipe */
+         close(pipefd[0]);
+         while (1)
+         {
+            heredoc= readline("> ");
+            if (!heredoc)
+            {
+                print_error("minishell", NULL,
+                    "warning: here-document delimited by end-of-file (wanted `EOF')", 0);
+                break ;
+            }
+            // Terminate on the expected delimiter
+            if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
+                break ;
+            if (token->next->subtype != T_QUOTE && token->red->filename[1] == NULL)
+                heredoc = expand_vars_heredoc(heredoc, prompt_info);
+            ft_putstr_fd(heredoc, pipefd[1]);
+            ft_putstr_fd("\n", pipefd[1]);
+            free(heredoc);
+         }
+         ft_putstr_fd("TEST\n", 2);
+         if (heredoc)
+            free(heredoc);
+         close(pipefd[1]);
+         free_token_list(token);
+         cleanup_all(&prompt_info, NULL);
+         exit(EXIT_SUCCESS);
+    }
+    close(pipefd[1]);
+    waitpid(pid,&status, 0);
+    signal(SIGINT,SIG_IGN);
+    set_signals();
+    if(status % 128 == 2)
+    {
+        prompt_info.builtins->exit_code = 130;
+        write(1,"\n", 1);
+        close(pipefd[0]);
+        return (false);
+    }
+    while (1)
+    {
+        new_line = get_next_line(pipefd[0]);
+        if (!new_line)
+            break;
+        ft_lstadd_last(&list, ft_lstnew(new_line));
+    }
+    close(pipefd[0]);
+    if (token->red->filename)
+        ft_free_double_array(token->red->filename);
+    token->red->filename = create_double_array(list, lst_size(list));
+    free_list(list);
+    return (true);
 }
+
+//  Creates double array, inside red->filename, with the heredoc input
+// void    get_readline_input(t_token *token, t_prompt_info prompt_info)
+// {
+//     char    *heredoc;
+//     t_list  *top;
+//     t_list  *input;
+
+//     top = NULL;
+//     input = NULL;
+//     while(1)
+//     {
+//         heredoc = readline("> ");
+//         if (!heredoc)
+//         {
+//             print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", false);
+//             free(heredoc);
+//             ft_free_double_array(token->red->filename);
+//             token->red->filename = create_double_array(top, lst_size(top));
+//             if (!token->red->filename)
+//             {
+//                 printf("ERROR ALLOC DOUBLE ARRAY\n");
+//             }
+//             if (top)
+//                 free_list(top);
+//             return ;
+//         }
+//         //  Check for EOF
+//         if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
+//         {
+//             free(heredoc);
+//             ft_free_double_array(token->red->filename);
+//             token->red->filename = create_double_array(top, lst_size(top));
+//             if (!token->red->filename)
+//             {
+//                 printf("ERROR ALLOC DOUBLE ARRAY\n");
+//             }
+//             if (top)
+//                 free_list(top);
+//             return ;
+//         }
+//         input = ft_lstnew(heredoc);
+//         if (!input)
+//         {
+//             printf("ERROR LISTA\n");
+//         }
+//         ft_lstadd_last(&top, input);
+//     }
+// }
 
 size_t  array_len(char **array)
 {
@@ -205,7 +291,6 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
             while (token->red->filename[i])
             {
                 ft_putstr_fd(token->red->filename[i], pipes[1]);
-                ft_putstr_fd("\n", pipes[1]);
                 i++;
             }
             cleanup_all(&prompt_info,token);

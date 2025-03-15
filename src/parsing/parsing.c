@@ -54,7 +54,7 @@ void	print_linked_tokens(t_token *list)
 		ft_printf("Tokens =\n");
 		print_double_array(temp->token);
 		if (temp->previous)
-			ft_printf("token->previous = %s\n", temp->previous->token);
+			ft_printf("token->previous = %s\n", temp->previous->token[0]);
 		else
 			ft_printf("token->previous = NULL\n");
 		if (temp->type == COMMAND)
@@ -141,12 +141,12 @@ t_token	*parsing(t_prompt_info *prompt_info)
 	// print_linked_list(prompt_list);
 	tokens_tree = define_tokens(prompt_list);
 	free_list(prompt_list);
-	// print_linked_tokens(tokens_tree);
 	if (!tokens_tree)
 		return (NULL);
 	if (loop_and_open_fd(tokens_tree, *prompt_info) == false)
 	    return (NULL);
+	// print_linked_tokens(tokens_tree);
 	tokens_tree = build_tree(tokens_tree);
-	//ft_print_token_tree(tokens_tree);
+	// ft_print_token_tree(tokens_tree);
 	return (tokens_tree);
 }

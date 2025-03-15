@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <unistd.h>
 
 static char	**get_command_array(t_list **node)
 {

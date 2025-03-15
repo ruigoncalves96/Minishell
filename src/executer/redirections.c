@@ -190,7 +190,7 @@ static void exit_code_child(t_prompt_info prompt_info)
         int signal_num = status & 0x7F;
         if (signal_num == 2)  // SIGINT is 2
             exit_code = 130;
-         else
+        else
             exit_code = 128 + signal_num;
     }
 
