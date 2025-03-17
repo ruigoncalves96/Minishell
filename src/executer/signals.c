@@ -12,23 +12,23 @@
 
 #include "../../includes/minishell.h"
 
-// static void disable_ctrl_backslash(void)
-// {
-//     struct termios term;
-
-//     memset(&term, 0, sizeof(struct termios));
-//     // Get current terminal attributes
-//     tcgetattr(STDIN_FILENO, &term);
-
-//     // Disable the QUIT character (Ctrl + \)
-//     term.c_cc[VQUIT] = _POSIX_VDISABLE;
-//     term.c_lflag &= ~(ECHOCTL);
-
-//     // Set the modified attributes
-//     tcsetattr(STDIN_FILENO, TCSANOW, &term);
-// }
+//vai se identeficar como 69 ou alguma merda quando pressionar o control + c
+volatile sig_atomic_t heredoc_c_pressed = 0;
 
 
+void handler_heredoc(int sig)
+{
+    if(sig == SIGINT)
+    {
+        heredoc_c_pressed = 69;
+        if(heredoc_c_pressed)
+        {
+            write(2, "\n", 1);
+            exit(0);
+            //printf("Devo sair do heredoc\n");
+        }
+    }
+}
 
 static void handler(int sig)
 {

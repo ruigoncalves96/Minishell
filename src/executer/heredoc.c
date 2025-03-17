@@ -87,7 +87,7 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          return (false);
     }
     if (pid == 0) {
-        signal(SIGINT, SIG_DFL);
+        signal(SIGINT, handler_heredoc);
          /* Child Process: perform readline() calls and write to pipe */
          close(pipefd[0]);
          while (1)
@@ -111,6 +111,10 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          if (heredoc)
             free(heredoc);
          close(pipefd[1]);
+         if(heredoc_c_pressed)
+         {
+         cleanup_all(&prompt_info, NULL);
+         }
          free_token_list(token);
          cleanup_all(&prompt_info, NULL);
          exit(EXIT_SUCCESS);

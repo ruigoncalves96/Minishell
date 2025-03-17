@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/03/06 16:32:52 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/03/17 14:46:52 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@
 #define A_OUT 3
 #define	HEREDOC 4
 
-extern volatile sig_atomic_t g_signal;
-extern volatile sig_atomic_t g_in_heredoc;
+extern volatile sig_atomic_t heredoc_c_pressed;
 
+void handler_heredoc(int sig);
 
 typedef struct	s_builtins
 {
