@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   open_files.c                                          :+:      :+:    :+:   */
+/*   open_files.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: randrade <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -33,7 +33,7 @@ static void    close_repeated_redirections(t_token *token)
 
 static bool verify_file_exists(t_token *token)
 {
-    if (access(token->red->filename[0], F_OK) != 0)
+    if (access(token->red->filename, F_OK) != 0)
     {
         token->red->fd = -3;
         return (false);
@@ -45,7 +45,7 @@ static bool verify_file_permissions(t_token *token)
 {
     if (token->red->type == IN)
     {
-        if (access(token->red->filename[0], R_OK) != 0)
+        if (access(token->red->filename, R_OK) != 0)
         {
             token->red->fd = -2;
             return (false);
@@ -53,7 +53,7 @@ static bool verify_file_permissions(t_token *token)
     }
     else if (token->red->type == OUT || token->red->type == A_OUT)
     {
-        if (access(token->red->filename[0], W_OK) != 0)
+        if (access(token->red->filename, W_OK) != 0)
         {
             token->red->fd = -2;
             return (false);
@@ -72,21 +72,21 @@ static bool verify_file_permissions(t_token *token)
 
 static bool open_redirect(t_token *token, bool *open_error)
 {
-    if (!token || !token->red || !token->red->filename[0])
+    if (!token || !token->red || !token->red->filename)
         return (false);
     if (token->red->type == OUT || token->red->type == A_OUT)
     {
         if (!verify_file_exists(token))
-            token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            token->red->fd = open(token->red->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         else if (verify_file_permissions(token))
-            token->red->fd = open(token->red->filename[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            token->red->fd = open(token->red->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     }
     else if(token->red->type == IN)
     {
         if (verify_file_exists(token) && verify_file_permissions(token))
-            token->red->fd = open(token->red->filename[0], O_RDONLY);
+            token->red->fd = open(token->red->filename, O_RDONLY);
     }
-    if (token->red->filename[1] != NULL)
+    if (token->next->token[1] != NULL)
     {
         get_redirection_files(token);
         if (token->red->type == IN)
@@ -99,18 +99,16 @@ static bool open_redirect(t_token *token, bool *open_error)
 
 static bool open_redirect_heredoc(t_token *token, t_prompt_info prompt_info)
 {
-    if (!token || !token->red || !token->red->filename[0])
+    if (!token || !token->red || !token->red->filename)
         return (false);
     if (token->red->type == HEREDOC)
     {
-        if (token->red->filename[1] != NULL)
-        {
+        if (token->next->token[1] != NULL)
             get_redirection_files(token);
-            token->red->fd = -4;
-        }
         else
             token->red->fd = 0;
-        get_heredoc_input(token, prompt_info);
+        if (get_heredoc_input(token, prompt_info) == false)
+            return (false);
     }
     return (true);
 }
@@ -137,7 +135,7 @@ bool    loop_and_open_fd(t_token *token, t_prompt_info prompt_info)
         {
             if (open_redirect(token, &open_error) == false)
             {
-                perror(token->red->filename[0]);
+                perror(token->red->filename);
                 prompt_info.builtins->exit_code = 1;
                 return (false);
             }
@@ -147,7 +145,7 @@ bool    loop_and_open_fd(t_token *token, t_prompt_info prompt_info)
         {
             if (open_redirect_heredoc(token, prompt_info) == false)
             {
-                perror(token->red->filename[0]);
+                perror(token->red->filename);
                 prompt_info.builtins->exit_code = 1;
                 return (false);
             }

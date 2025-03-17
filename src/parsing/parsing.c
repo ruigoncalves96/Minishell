@@ -54,7 +54,7 @@ void	print_linked_tokens(t_token *list)
 		ft_printf("Tokens =\n");
 		print_double_array(temp->token);
 		if (temp->previous)
-			ft_printf("token->previous = %s\n", temp->previous->token);
+			ft_printf("token->previous = %s\n", temp->previous->token[0]);
 		else
 			ft_printf("token->previous = NULL\n");
 		if (temp->type == COMMAND)
@@ -76,7 +76,9 @@ void	print_linked_tokens(t_token *list)
 			ft_printf("      = subtype = REDIRECT\n");
 			ft_printf("	 = 	   = 	      = fd = %d\n", temp->red->fd);
 			ft_printf("	 = 	   = 	      = filename = \n");
-			print_double_array(temp->red->filename);
+			printf("%s\n", temp->red->filename);
+			ft_printf("	 = 	   = 	      = heredoc = \n");
+			print_double_array(temp->red->heredoc);
 			if (temp->red->type == IN)
 				ft_printf("	 = 	   = 	      = type = IN\n");
 			else if (temp->red->type == OUT)
@@ -105,7 +107,7 @@ void	ft_print_token_tree(t_token *tree)
 	if (temp->red)
 	{
 	    ft_printf("red->filename = ");
-		print_double_array(temp->red->filename);
+		printf("%s\n", temp->red->filename);
         ft_printf("red->fd = %d\n", temp->red->fd);
         ft_printf("\n");
 	}
@@ -141,12 +143,12 @@ t_token	*parsing(t_prompt_info *prompt_info)
 	// print_linked_list(prompt_list);
 	tokens_tree = define_tokens(prompt_list);
 	free_list(prompt_list);
-	// print_linked_tokens(tokens_tree);
 	if (!tokens_tree)
 		return (NULL);
 	if (loop_and_open_fd(tokens_tree, *prompt_info) == false)
 	    return (NULL);
+	// print_linked_tokens(tokens_tree);
 	tokens_tree = build_tree(tokens_tree);
-	//ft_print_token_tree(tokens_tree);
+	// ft_print_token_tree(tokens_tree);
 	return (tokens_tree);
 }

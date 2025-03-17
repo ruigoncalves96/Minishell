@@ -68,15 +68,15 @@ void    error_redirection_file(t_token *token, t_prompt_info prompt_info)
 {
     if (token->red->fd == -1)
     {
-        print_error(NULL,token->red->filename[0],ERROR_OPENING_FILE,true);
+        print_error(NULL,token->red->filename,ERROR_OPENING_FILE,true);
     }
     else if (token->red->fd == -2)
     {
-        print_error(NULL,token->red->filename[0],PERMISSION_DENIED,true);
+        print_error(NULL,token->red->filename,PERMISSION_DENIED,true);
     }
     else if (token->red->fd == -3)
     {
-        print_error(NULL,token->red->filename[0],NO_FILE_OR_DIRECTORY,true);
+        print_error(NULL,token->red->filename,NO_FILE_OR_DIRECTORY,true);
     }
     prompt_info.builtins->exit_code = 1;
 }
@@ -193,7 +193,7 @@ static void exit_code_child(t_prompt_info prompt_info)
         int signal_num = status & 0x7F;
         if (signal_num == 2)  // SIGINT is 2
             exit_code = 130;
-         else
+        else
             exit_code = 128 + signal_num;
     }
 

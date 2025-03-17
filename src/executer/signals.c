@@ -28,20 +28,16 @@
 //     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 // }
 
-volatile sig_atomic_t g_signal = 0;
-volatile sig_atomic_t g_in_heredoc = 0;
+
+
 static void handler(int sig)
 {
     if (sig == SIGINT)
     {
-        g_signal = 130;
         write(1, "\n", 1);
-        if (!g_in_heredoc)
-        {
-            rl_on_new_line();
-            rl_replace_line("", 0);
-            rl_redisplay();
-        }
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
     }
 }
 
