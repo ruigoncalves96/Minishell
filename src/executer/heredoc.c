@@ -86,18 +86,39 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          perror("fork");
          return (false);
     }
-    if (pid == 0) {
+    if (pid == 0)
+     {
+        heredoc_c_pressed = 0;
         signal(SIGINT, handler_heredoc);
-         /* Child Process: perform readline() calls and write to pipe */
+
          close(pipefd[0]);
          while (1)
          {
-            heredoc= readline("> ");
-            if (!heredoc)
+            /*
+            if(heredoc_c_pressed)
             {
-                print_error("minishell", NULL,
-                    "warning: here-document delimited by end-of-file (wanted `EOF')", 0);
-                break ;
+                cleanup_all(&prompt_info, NULL);
+                free_token_list(token);
+                close(pipefd[1]);
+                exit(EXIT_FAILURE); 
+            }
+            */
+            heredoc= readline("> ");
+            if (!heredoc || heredoc_c_pressed)
+            {
+                if(heredoc_c_pressed)
+                {
+                    cleanup_all(&prompt_info, NULL);
+                    free_token_list(token);
+                    close(pipefd[1]);
+                    prompt_info.builtins->exit_code = 130;
+                    exit(prompt_info.builtins->exit_code); 
+                }else
+                {
+                    print_error("minishell", NULL,
+                        "warning: here-document delimited by end-of-file (wanted `EOF')", 0);
+                    break ;
+                }
             }
             // Terminate on the expected delimiter
             if (ft_strcmp(heredoc, token->red->filename) == 0)
@@ -121,7 +142,7 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
     }
     close(pipefd[1]);
     waitpid(pid,&status, 0);
-    signal(SIGINT,SIG_IGN);
+    //signal(SIGINT,SIG_IGN);
     set_signals();
     if(status % 128 == 2)
     {

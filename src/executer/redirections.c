@@ -180,21 +180,24 @@ static void exit_code_child(t_prompt_info prompt_info)
     int exit_code;
 
     wait(&status);
-    if(status % 128 == 2)
+    
+    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
     {
-        write(1,"\n", 1);
+        write(1, "\n", 1);
     }
-    //Vou extrair o sinal, se nao for 0 significa que foi usado um sinal
-    if ((status & 0x7f) == 0) {
-        // sai normal nengue
-        exit_code = (status >> 8) & 0xFF;
-    } else {
-        // Process was terminated by a signal
-        int signal_num = status & 0x7F;
-        if (signal_num == 2)  // SIGINT is 2
+    
+    // Rest of your exit code extraction
+    if (WIFEXITED(status)) {
+        exit_code = WEXITSTATUS(status);
+    } else if (WIFSIGNALED(status)) {
+        int signal_num = WTERMSIG(status);
+        if (signal_num == SIGINT)  // SIGINT is 2
             exit_code = 130;
         else
             exit_code = 128 + signal_num;
+    } else {
+        //Default
+        exit_code = 1;
     }
 
     prompt_info.builtins->exit_code = exit_code;

@@ -20,12 +20,12 @@ void handler_heredoc(int sig)
 {
     if(sig == SIGINT)
     {
-        heredoc_c_pressed = 69;
+        heredoc_c_pressed = 1;
+        close(STDIN_FILENO);
         if(heredoc_c_pressed)
         {
             write(2, "\n", 1);
-            exit(0);
-            //printf("Devo sair do heredoc\n");
+            //exit(0);
         }
     }
 }
