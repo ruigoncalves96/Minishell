@@ -61,6 +61,7 @@ size_t lst_size(t_list *list)
     return i;
 }
 
+//  Creates double array, inside red->filename, with the heredoc input
 bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
 {
     int pipefd[2];
@@ -136,55 +137,6 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
     free_list(list);
     return (true);
 }
-
-//  Creates double array, inside red->filename, with the heredoc input
-// void    get_readline_input(t_token *token, t_prompt_info prompt_info)
-// {
-//     char    *heredoc;
-//     t_list  *top;
-//     t_list  *input;
-
-//     top = NULL;
-//     input = NULL;
-//     while(1)
-//     {
-//         heredoc = readline("> ");
-//         if (!heredoc)
-//         {
-//             print_error("minishell", NULL, "warning: here-document delimited by end-of-file (wanted `EOF')", false);
-//             free(heredoc);
-//             ft_free_double_array(token->red->filename);
-//             token->red->filename = create_double_array(top, lst_size(top));
-//             if (!token->red->filename)
-//             {
-//                 printf("ERROR ALLOC DOUBLE ARRAY\n");
-//             }
-//             if (top)
-//                 free_list(top);
-//             return ;
-//         }
-//         //  Check for EOF
-//         if (ft_strcmp(heredoc, token->red->filename[0]) == 0)
-//         {
-//             free(heredoc);
-//             ft_free_double_array(token->red->filename);
-//             token->red->filename = create_double_array(top, lst_size(top));
-//             if (!token->red->filename)
-//             {
-//                 printf("ERROR ALLOC DOUBLE ARRAY\n");
-//             }
-//             if (top)
-//                 free_list(top);
-//             return ;
-//         }
-//         input = ft_lstnew(heredoc);
-//         if (!input)
-//         {
-//             printf("ERROR LISTA\n");
-//         }
-//         ft_lstadd_last(&top, input);
-//     }
-// }
 
 size_t  array_len(char **array)
 {
@@ -267,38 +219,30 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     i = 0;
     if (!get_heredoc_command_tree(token))
         return ;
-/*
-    if(token->red->fd == -5)
-    {
-        prompt_info.builtins->exit_code = 1;
-       //Roda comando a mesma
+    if(pipe(pipes) == -1)
         return;
-    }
-*/
-        if(pipe(pipes) == -1)
-            return;
-        if (fork() == 0)
-        {
-            close(pipes[0]);
-            while (token->red->heredoc[i])
-            {
-                ft_putstr_fd(token->red->heredoc[i], pipes[1]);
-                i++;
-            }
-            cleanup_all(&prompt_info,token);
-            exit(0);
-        }
-        wait(NULL);
-        if (fork() == 0)
-        {
-            close(pipes[1]);
-            dup2(pipes[0], STDIN_FILENO);
-            close(pipes[0]);
-            runcmd(token->previous, env, prompt_info);
-            cleanup_all(&prompt_info,token);
-            exit(0);
-        }
+    if (fork() == 0)
+    {
         close(pipes[0]);
+        while (token->red->heredoc[i])
+        {
+            ft_putstr_fd(token->red->heredoc[i], pipes[1]);
+            i++;
+        }
+        cleanup_all(&prompt_info,token);
+        exit(0);
+    }
+    wait(NULL);
+    if (fork() == 0)
+    {
         close(pipes[1]);
-        wait(NULL);
+        dup2(pipes[0], STDIN_FILENO);
+        close(pipes[0]);
+        runcmd(token->previous, env, prompt_info);
+        cleanup_all(&prompt_info,token);
+        exit(0);
+    }
+    close(pipes[0]);
+    close(pipes[1]);
+    wait(NULL);
 }
