@@ -74,6 +74,11 @@ static bool open_redirect(t_token *token, bool *open_error)
 {
     if (!token || !token->red || !token->red->filename)
         return (false);
+    if (*open_error)
+    {
+        token->red->fd = -4;
+        return (true);
+    }
     if (token->red->type == OUT || token->red->type == A_OUT)
     {
         if (!verify_file_exists(token))
@@ -130,7 +135,7 @@ bool    loop_and_open_fd(t_token *token, t_prompt_info prompt_info)
     {
         if (token->subtype == T_PIPE && open_error == true)
             open_error = false;
-        if (token->subtype == T_REDIRECT && token->red->type != HEREDOC && open_error == false)
+        if (token->subtype == T_REDIRECT && token->red->type != HEREDOC/* && open_error == false*/)
         {
             if (open_redirect(token, &open_error) == false)
             {
@@ -144,8 +149,11 @@ bool    loop_and_open_fd(t_token *token, t_prompt_info prompt_info)
         {
             if (open_redirect_heredoc(token, prompt_info) == false)
             {
-                perror(token->red->filename);
-                prompt_info.builtins->exit_code = 1;
+                if (prompt_info.builtins->exit_code != 130)
+                {
+                    perror(token->red->filename);
+                    prompt_info.builtins->exit_code = 1;
+                }
                 return (false);
             }
             close_repeated_redirections(token);

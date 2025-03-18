@@ -30,21 +30,17 @@
 #define TOO_MANY_ARGS "too many arguments"
 #define ERROR_OPENING_FILE "Error on opening redirect file"
 #define NO_FILE_OR_DIRECTORY "No such file or directory"
-//Exit
+//exit
 #define	EXIT_NUMERIC_ERROR "numeric argument required"
-
-//CD
+//cd
 #define HOME_NOT_SET "HOME not set"
-
-//COMANDS
+//commands
 #define DIRECTORY "Is a directory"
-#define COMMAND_NOT_FOUND "Command not found"
+#define COMMAND_NOT_FOUND "command not found"
 #define PERMISSION_DENIED "Permission denied"
-
-
-
-//Export
+//export
 #define NOT_VALID_IDENTIFIER "not a valid identifier"
+
 //	TOKEN_TYPE
 #define COMMAND 1
 #define OPERATOR 2
@@ -56,7 +52,6 @@
 #define T_SPACE 's'
 #define T_PIPE '|'
 #define T_REDIRECT '>'
-
 //	TOKENS_SUBTYPE_CHARS
 #define OPERATOR_TOKENS	"|<>"
 #define SPACE_TOKENS " \t\r\n\v"

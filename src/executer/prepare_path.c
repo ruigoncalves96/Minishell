@@ -105,7 +105,10 @@ int validate_command_path(char *command, t_env *env)
     command_path = get_command_path(command, env);
     if (!command_path)
     {
-        print_error(NULL, command, COMMAND_NOT_FOUND, false);
+        if (command[0] == '.' || command[0] == '/')
+            print_error(NULL, command, NO_FILE_OR_DIRECTORY, false);
+        else
+            print_error(NULL, command, COMMAND_NOT_FOUND, false);
         return (127);
     }
     if (is_directory(command_path))
