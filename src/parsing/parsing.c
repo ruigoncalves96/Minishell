@@ -109,6 +109,7 @@ void	ft_print_token_tree(t_token *tree)
 	    ft_printf("red->filename = ");
 		printf("%s\n", temp->red->filename);
         ft_printf("red->fd = %d\n", temp->red->fd);
+        ft_printf("red->type = %d\n", temp->red->type);
         ft_printf("\n");
 	}
 	if (temp->previous)

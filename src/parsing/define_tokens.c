@@ -121,7 +121,7 @@ t_token	*define_tokens(t_list *prompt_list)
 				new_token = define_pipe_token(&node);
 			else if (node->subtype == T_REDIRECT)
 			{
-			    if ((!node->previous || node->previous->type != COMMAND) && node->next->next)
+			    if ((!node->previous || node->previous->type != COMMAND) && (node->next && node->next->next && node->next->next->type == COMMAND))
 				    ft_token_add_last(&token_list, ft_token_new(COMMAND, T_WORD, NULL));
 				new_token = define_redirect_token(&node);
 			}

@@ -217,32 +217,35 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     int     i;
 
     i = 0;
-    if (!get_heredoc_command_tree(token))
-        return ;
-    if(pipe(pipes) == -1)
-        return;
-    if (fork() == 0)
-    {
-        close(pipes[0]);
-        while (token->red->heredoc[i])
-        {
-            ft_putstr_fd(token->red->heredoc[i], pipes[1]);
-            i++;
-        }
-        cleanup_all(&prompt_info,token);
-        exit(0);
-    }
-    wait(NULL);
-    if (fork() == 0)
-    {
-        close(pipes[1]);
-        dup2(pipes[0], STDIN_FILENO);
-        close(pipes[0]);
+    if (token->red->fd == -4 || !get_heredoc_command_tree(token))
         runcmd(token->previous, env, prompt_info);
-        cleanup_all(&prompt_info,token);
-        exit(0);
+    else
+    {
+        if (pipe(pipes) == -1)
+            return;
+        if (fork() == 0)
+        {
+            close(pipes[0]);
+            while (token->red->heredoc[i])
+            {
+                ft_putstr_fd(token->red->heredoc[i], pipes[1]);
+                i++;
+            }
+            cleanup_all(&prompt_info,token);
+            exit(0);
+        }
+        wait(NULL);
+        if (fork() == 0)
+        {
+            close(pipes[1]);
+            dup2(pipes[0], STDIN_FILENO);
+            close(pipes[0]);
+            runcmd(token->previous, env, prompt_info);
+            cleanup_all(&prompt_info,token);
+            exit(0);
+        }
+        close(pipes[0]);
+        close(pipes[1]);
+        wait(NULL);
     }
-    close(pipes[0]);
-    close(pipes[1]);
-    wait(NULL);
 }

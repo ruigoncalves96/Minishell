@@ -129,6 +129,8 @@ static void redirections_executer(t_token *token, t_env *env, t_prompt_info prom
 
 void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
+    if (!token)
+        return ;
     if (token->type == OPERATOR)
     {
         if (token->subtype == T_PIPE)

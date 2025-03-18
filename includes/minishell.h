@@ -209,6 +209,7 @@ void close_fds();
 bool    get_heredoc_input(t_token *token, t_prompt_info prompt_info);
 void    get_redirection_files(t_token *token);
 void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
+t_token    *get_heredoc_command_list(t_token *token);
 
 //signals
 void    set_signals(void);

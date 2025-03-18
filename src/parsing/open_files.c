@@ -101,15 +101,14 @@ static bool open_redirect_heredoc(t_token *token, t_prompt_info prompt_info)
 {
     if (!token || !token->red || !token->red->filename)
         return (false);
-    if (token->red->type == HEREDOC)
-    {
-        if (token->next->token[1] != NULL)
-            get_redirection_files(token);
-        else
-            token->red->fd = 0;
-        if (get_heredoc_input(token, prompt_info) == false)
-            return (false);
-    }
+    if (token->next->token[1] != NULL)
+        get_redirection_files(token);
+    else if (!get_heredoc_command_list(token))
+        token->red->fd = -4;
+    if (get_heredoc_input(token, prompt_info) == false)
+        return (false);
+    if (token->red->fd != -4)
+        token->red->fd = 0;
     return (true);
 }
 
