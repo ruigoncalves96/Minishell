@@ -114,7 +114,10 @@ t_token	*define_tokens(t_list *prompt_list)
 	while (node)
 	{
 		if (node->type == COMMAND)
-			new_token = ft_token_new(COMMAND, node->subtype, get_command_array(&node));
+		{
+			char c = (char)node->subtype;
+			new_token = ft_token_new(COMMAND, c, get_command_array(&node));
+		}
 		else
 		{
 			if (node->subtype == T_PIPE)

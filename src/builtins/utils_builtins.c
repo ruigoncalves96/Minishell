@@ -1,13 +1,13 @@
 #include "../../includes/minishell.h"
 
 /// @brief Print a error message
-/// @param cmd COMAND USED 
+/// @param cmd COMAND USED
 /// @param arg ARGUMENT FOR THE COMAND (PASS NULL TO IGNORE)
 /// @param msg MESSAGE ERROR
 void print_error(const char *cmd, const char *arg, const char *msg,bool print_bash)
 {
     if(print_bash)
-        ft_putstr_fd("bash: ", 2);
+        ft_putstr_fd("minishell: ", 2);
     if(cmd)
     {
         ft_putstr_fd((char *)cmd, 2);
@@ -19,7 +19,7 @@ void print_error(const char *cmd, const char *arg, const char *msg,bool print_ba
         ft_putstr_fd((char *)arg, 2);
         ft_putstr_fd(": ", 2);
     }
-    
+
     ft_putstr_fd((char *)msg, 2);
     ft_putstr_fd("\n", 2);
 }
@@ -28,7 +28,7 @@ void print_error(const char *cmd, const char *arg, const char *msg,bool print_ba
 char *get_key(char *env)
 {
     int len;
-    
+
     len = 0;
     while (env[len] && env[len] != '=')
         len++;

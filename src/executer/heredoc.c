@@ -61,6 +61,7 @@ size_t lst_size(t_list *list)
     return i;
 }
 
+
 //  Creates double array, inside red->filename, with the heredoc input
 bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
 {
@@ -85,18 +86,39 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          perror("fork");
          return (false);
     }
-    if (pid == 0) {
-        signal(SIGINT, SIG_DFL);
-         /* Child Process: perform readline() calls and write to pipe */
+    if (pid == 0)
+     {
+        heredoc_c_pressed = 0;
+        signal(SIGINT, handler_heredoc);
+
          close(pipefd[0]);
          while (1)
          {
-            heredoc= readline("> ");
-            if (!heredoc)
+            /*
+            if(heredoc_c_pressed)
             {
-                print_error("minishell", NULL,
-                    "warning: here-document delimited by end-of-file (wanted `EOF')", 0);
-                break ;
+                cleanup_all(&prompt_info, NULL);
+                free_token_list(token);
+                close(pipefd[1]);
+                exit(EXIT_FAILURE);
+            }
+            */
+            heredoc= readline("> ");
+            if (!heredoc || heredoc_c_pressed)
+            {
+                if(heredoc_c_pressed)
+                {
+                    cleanup_all(&prompt_info, NULL);
+                    free_token_list(token);
+                    close(pipefd[1]);
+                    prompt_info.builtins->exit_code = 130;
+                    exit(prompt_info.builtins->exit_code);
+                }else
+                {
+                    print_error("minishell", NULL,
+                        "warning: here-document delimited by end-of-file (wanted `EOF')", 0);
+                    break ;
+                }
             }
             // Terminate on the expected delimiter
             if (ft_strcmp(heredoc, token->red->filename) == 0)
@@ -110,13 +132,17 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          if (heredoc)
             free(heredoc);
          close(pipefd[1]);
+         if(heredoc_c_pressed)
+         {
+         cleanup_all(&prompt_info, NULL);
+         }
          free_token_list(token);
          cleanup_all(&prompt_info, NULL);
          exit(EXIT_SUCCESS);
     }
     close(pipefd[1]);
     waitpid(pid,&status, 0);
-    signal(SIGINT,SIG_IGN);
+    //signal(SIGINT,SIG_IGN);
     set_signals();
     if(status % 128 == 2)
     {
@@ -168,7 +194,6 @@ t_token    *get_heredoc_command_list(t_token *token)
     return (NULL);
 }
 
-//  Gives the extra file_input from heredoc to the command (creating a new double array)
 void    get_redirection_files(t_token *token)
 {
     t_token *command;

@@ -12,21 +12,23 @@
 
 #include "../../includes/minishell.h"
 
-// static void disable_ctrl_backslash(void)
-// {
-//     struct termios term;
+//vai se identeficar como 69 ou alguma merda quando pressionar o control + c
+volatile sig_atomic_t heredoc_c_pressed = 0;
 
-//     memset(&term, 0, sizeof(struct termios));
-//     // Get current terminal attributes
-//     tcgetattr(STDIN_FILENO, &term);
 
-//     // Disable the QUIT character (Ctrl + \)
-//     term.c_cc[VQUIT] = _POSIX_VDISABLE;
-//     term.c_lflag &= ~(ECHOCTL);
-
-//     // Set the modified attributes
-//     tcsetattr(STDIN_FILENO, TCSANOW, &term);
-// }
+void handler_heredoc(int sig)
+{
+    if(sig == SIGINT)
+    {
+        heredoc_c_pressed = 1;
+        close(STDIN_FILENO);
+        if(heredoc_c_pressed)
+        {
+            write(2, "\n", 1);
+            //exit(0);
+        }
+    }
+}
 
 static void handler(int sig)
 {
@@ -51,3 +53,4 @@ void    set_signals(void)
     sa.sa_handler = SIG_IGN;
     sigaction(SIGQUIT, &sa, NULL);
 }
+

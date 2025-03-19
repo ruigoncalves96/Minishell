@@ -68,8 +68,5 @@ int main(int argc, char *argv[],char *envp[])
 	        return (1);
 	update_shlvl(prompt_info.env);
 	shell_loop(prompt_info);
-	//cleanup_all(&prompt_info,NULL);
-	//free_env(prompt_info.env);
-	//rl_clear_history();
 	return 0;
 }
