@@ -156,6 +156,7 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
     original_fd[0] = dup(STDIN_FILENO);
     original_fd[1] = dup(STDOUT_FILENO);
 
+
     if (original_fd[0] == -1 || original_fd[1] == -1)
     {
         if (original_fd[0] != -1)
@@ -175,6 +176,10 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
     // Close the duplicated file descriptors
     close(original_fd[0]);
     close(original_fd[1]);
+	if(prompt_info.builtins->exit_code % 128 == SIGINT && prompt_info.builtins->exit_code > 128)
+	{
+		write(1, "\n", 1);
+	}
 }
 static void exit_code_child(t_prompt_info prompt_info)
 {
@@ -182,12 +187,12 @@ static void exit_code_child(t_prompt_info prompt_info)
     int exit_code;
 
     wait(&status);
-    
+
     if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
     {
         write(1, "\n", 1);
     }
-    
+
     // Rest of your exit code extraction
     if (WIFEXITED(status)) {
         exit_code = WEXITSTATUS(status);
@@ -253,7 +258,7 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *t
 
     if(child == 0)
     {
-        signal(SIGINT, SIG_DFL);
+   	    signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
 
         if(execve(path,str,env_array) == -1)

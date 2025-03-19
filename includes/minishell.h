@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:40:49 by randrade          #+#    #+#             */
-/*   Updated: 2025/03/17 14:46:52 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/03/19 15:48:26 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,5 +260,7 @@ size_t	command_array_len(t_list *node);
 //error_handling
 void	quote_error();
 void	syntax_error(t_list *token_list, t_list *token);
+
+//TEMP
 
 #endif
