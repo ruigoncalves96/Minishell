@@ -94,15 +94,6 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          close(pipefd[0]);
          while (1)
          {
-            /*
-            if(heredoc_c_pressed)
-            {
-                cleanup_all(&prompt_info, NULL);
-                free_token_list(token);
-                close(pipefd[1]);
-                exit(EXIT_FAILURE);
-            }
-            */
             heredoc= readline("> ");
             if (!heredoc || heredoc_c_pressed)
             {
@@ -134,7 +125,7 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          close(pipefd[1]);
          if(heredoc_c_pressed)
          {
-         cleanup_all(&prompt_info, NULL);
+            cleanup_all(&prompt_info, NULL);
          }
          free_token_list(token);
          cleanup_all(&prompt_info, NULL);
@@ -144,10 +135,10 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
     waitpid(pid,&status, 0);
     //signal(SIGINT,SIG_IGN);
     set_signals();
-    if(status % 128 == 2)
+    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
     {
-        prompt_info.builtins->exit_code = 130;
-        write(1,"\n", 1);
+        prompt_info.builtins->exit_code = get_exit_status(status);
+        write(1, "\n", 1);
         close(pipefd[0]);
         return (false);
     }
@@ -259,7 +250,9 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
             cleanup_all(&prompt_info,token);
             exit(0);
         }
-        wait(NULL);
+        int status;
+
+        wait(&status);
         if (fork() == 0)
         {
             close(pipes[1]);
@@ -271,6 +264,7 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         }
         close(pipes[0]);
         close(pipes[1]);
-        wait(NULL);
+        wait(&status);
+        prompt_info.builtins->exit_code = get_exit_status(status);
     }
 }

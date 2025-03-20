@@ -262,5 +262,5 @@ void	quote_error();
 void	syntax_error(t_list *token_list, t_list *token);
 
 //TEMP
-
+int get_exit_status(int status);
 #endif

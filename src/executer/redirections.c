@@ -17,7 +17,25 @@ static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_in
             prompt_info.builtins->exit_code = valid;
     }
 }
-
+int get_exit_status(int status)
+{
+    int signal_num;
+    if (WIFEXITED(status)) {
+        // Normal termination
+        return WEXITSTATUS(status);
+    } else if (WIFSIGNALED(status)) {
+        // Terminated by signal
+         signal_num = WTERMSIG(status);
+        if (signal_num == SIGINT)  // Ctrl+C
+            return 130;
+        else if (signal_num == SIGQUIT)  // Ctrl+ barra
+            return 131;
+        else
+            return 128 + signal_num;
+    } else {
+        return 1;
+    }
+}
 static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
     int pipes[2];
@@ -60,7 +78,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     waitpid(left_pid,NULL,0);
     waitpid(right_pid,&status,0);
     set_signals();
-    prompt_info.builtins->exit_code = (status >> 8) & 0xFF;
+    prompt_info.builtins->exit_code = get_exit_status(status);
     return (0);
 }
 
@@ -181,34 +199,6 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
 		write(1, "\n", 1);
 	}
 }
-static void exit_code_child(t_prompt_info prompt_info)
-{
-    int status;
-    int exit_code;
-
-    wait(&status);
-
-    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-    {
-        write(1, "\n", 1);
-    }
-
-    // Rest of your exit code extraction
-    if (WIFEXITED(status)) {
-        exit_code = WEXITSTATUS(status);
-    } else if (WIFSIGNALED(status)) {
-        int signal_num = WTERMSIG(status);
-        if (signal_num == SIGINT)  // SIGINT is 2
-            exit_code = 130;
-        else
-            exit_code = 128 + signal_num;
-    } else {
-        //Default
-        exit_code = 1;
-    }
-
-    prompt_info.builtins->exit_code = exit_code;
-}
 
 static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt_info,t_token *token)
 {
@@ -267,7 +257,16 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *t
     else
     {
         signal(SIGINT, SIG_IGN);
-        exit_code_child(prompt_info);
+
+        int status;
+
+        wait(&status);
+    
+        if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+            write(1, "\n", 1);
+    
+        prompt_info.builtins->exit_code = get_exit_status(status);
+        
         set_signals();
 
     }
