@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <stdbool.h>
+#include <unistd.h>
 
 size_t	quote_len(char *str)
 {
@@ -30,18 +32,12 @@ size_t	quote_len(char *str)
 
 char	*find_expand_dollar(char *str, bool *double_quote)
 {
-	size_t	quotelen;
-
-	quotelen = 0;
 	while (*str)
 	{
 		if (*str == '"')
 			*double_quote ^= 1;
 		else if (*double_quote == false && *str == '\'')
-		{
-			quotelen += quote_len(str);
-			str += quotelen;
-		}
+			str += quote_len(str);
 		if (*str == '$' && var_key_len(str + 1))
 			return (str);
 		str++;
@@ -95,14 +91,38 @@ int	check_redirect_type(char *redirect)
 	return (type);
 }
 
+size_t  strlen_until_expansion(char *str, char *dollar)
+{
+    size_t  i;
+
+    i = 0;
+    if (!str || !dollar)
+        return (0);
+    while (str[i])
+    {
+        if (&str[i] == dollar)
+            return (i);
+        i++;
+    }
+    return (i);
+}
+
 size_t	strlen_until_spaces(char *str)
 {
 	size_t	i;
+	bool	quotes;
 
 	i = 0;
+	quotes = false;
+	if (!str)
+		return (0);
 	while (str[i])
 	{
-		if (check_token_subtype(str[i]) == T_SPACE)
+		if (str[i] == '\'' || str[i] == '"')
+			quotes ^= 1;
+		if (quotes == true)
+			i += quote_len(&str[i]);
+		else if (check_token_subtype(str[i]) == T_SPACE)
 			return (i);
 		i++;
 	}
