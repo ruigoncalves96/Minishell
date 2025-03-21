@@ -11,9 +11,11 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <signal.h>
 
 //vai se identeficar como 69 ou alguma merda quando pressionar o control + c
 volatile sig_atomic_t heredoc_c_pressed = 0;
+// volatile sig_atomic_t sigint_process = -1;
 
 
 void handler_heredoc(int sig)
@@ -32,8 +34,11 @@ void handler_heredoc(int sig)
 
 static void handler(int sig)
 {
-    
-    if (sig == SIGINT)
+    // if (sig == SIGINT && sigint_process != -1)
+    // {
+
+    // }
+    /*else */if (sig == SIGINT/* && sigint_process == -1*/)
     {
         write(1, "\n", 1);
         rl_on_new_line();
@@ -46,7 +51,7 @@ void    set_signals(void)
 {
     struct sigaction sa;
     sa.sa_handler = handler;
-    sa.sa_flags = 0; // Restart interrupted system calls if desired
+    sa.sa_flags = SA_RESTART; // Restart interrupted system calls if desired
     sigemptyset(&sa.sa_mask);
     sigaction(SIGINT, &sa, NULL);
 
@@ -54,4 +59,3 @@ void    set_signals(void)
     sa.sa_handler = SIG_IGN;
     sigaction(SIGQUIT, &sa, NULL);
 }
-

@@ -75,7 +75,7 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     }
     close(pipes[0]);
     close(pipes[1]);
-    waitpid(left_pid,NULL,0);
+    waitpid(left_pid,&status,0);
     waitpid(right_pid,&status,0);
     set_signals();
     prompt_info.builtins->exit_code = get_exit_status(status);
@@ -245,12 +245,10 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *t
         return 1;
     }
     child = fork();
-
     if(child == 0)
     {
    	    signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
-
         if(execve(path,str,env_array) == -1)
             handle_execve_error(path,env_array,prompt_info,token);
     }
@@ -260,13 +258,13 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *t
 
         int status;
 
-        wait(&status);
-    
-        if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-            write(1, "\n", 1);
-    
+        waitpid(child,&status, 0);
+
+        // if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+        //     write(1, "\n", 1);
+
         prompt_info.builtins->exit_code = get_exit_status(status);
-        
+
         set_signals();
 
     }

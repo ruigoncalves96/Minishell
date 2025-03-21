@@ -125,7 +125,9 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          close(pipefd[1]);
          if(heredoc_c_pressed)
          {
+            free_token_list(token);
             cleanup_all(&prompt_info, NULL);
+            exit(130);
          }
          free_token_list(token);
          cleanup_all(&prompt_info, NULL);
@@ -135,7 +137,7 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
     waitpid(pid,&status, 0);
     //signal(SIGINT,SIG_IGN);
     set_signals();
-    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+    if (get_exit_status(status) == 130) //|| (IFSIGNALED(status) && WTERMSIG(status) == SIGINT)
     {
         prompt_info.builtins->exit_code = get_exit_status(status);
         write(1, "\n", 1);
