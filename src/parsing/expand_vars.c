@@ -132,7 +132,7 @@ t_list	*expand_vars(t_prompt_info prompt_info, t_list **tokens_list)
 	token = *tokens_list;
 	while (token)
 	{
-		if ((token->previous && check_redirect_type(token->previous->str) != HEREDOC) && find_expand_dollar(token->str, &double_quotes))
+		if (((token->previous && check_redirect_type(token->previous->str) != HEREDOC) || !token->previous) && find_expand_dollar(token->str, &double_quotes))
 		{
 			if (expand(prompt_info, tokens_list, &token) == NULL)
 			     return (NULL);
