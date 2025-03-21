@@ -139,6 +139,7 @@ t_token	*parsing(t_prompt_info *prompt_info)
 		return (NULL);
 	if (expand_vars(*prompt_info, &prompt_list) == NULL)
 		return (NULL);
+	// print_linked_list(prompt_list);
 	if (convert_quotes(prompt_list) == NULL)
 		return (NULL);
 	// print_linked_list(prompt_list);

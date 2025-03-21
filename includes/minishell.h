@@ -252,6 +252,7 @@ char	*find_expand_dollar(char *str, bool *double_quotes);
 int	check_token_type(char c);
 int	check_token_subtype(char c);
 int	check_redirect_type(char *redirect);
+size_t  strlen_until_expansion(char *str, char *dollar);
 size_t	strlen_until_spaces(char *str);
 void	skip_spaces(char **prompt);
 void	insert_list(t_list **tokens_list, t_list *token, t_list *new_list);

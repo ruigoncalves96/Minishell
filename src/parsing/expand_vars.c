@@ -92,7 +92,7 @@ char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_t key_l
 	return (new_token);
 }
 
-static char	*expand(t_prompt_info prompt_info, t_list **tokens_list, t_list *token)
+static char	*expand(t_prompt_info prompt_info, t_list **tokens_list, t_list **token)
 {
 	char   *var_value;
 	char   *dollar;
@@ -104,20 +104,23 @@ static char	*expand(t_prompt_info prompt_info, t_list **tokens_list, t_list *tok
 	var_value_len = 0;
 	while (1)
 	{
-        dollar = token->str;
+        dollar = (*token)->str;
         dollar += var_value_len;
 	    dollar = find_expand_dollar(dollar, &double_quotes);
 		if (!dollar)
 			break ;
 		var_value = find_var_value(prompt_info, dollar);
-		var_value_len = ft_strlen(var_value);
-		token->str = join_var(token->str, var_value, dollar, var_key_len(dollar + 1));
-		if (!token->str)
+		if (double_quotes == true)
+		    var_value_len = ft_strlen(var_value) + strlen_until_expansion((*token)->str, dollar);
+		else
+		    var_value_len = strlen_until_spaces(var_value) + strlen_until_expansion((*token)->str, dollar);
+		(*token)->str = join_var((*token)->str, var_value, dollar, var_key_len(dollar + 1));
+		if (!(*token)->str)
 			return (NULL);
 		if (double_quotes == false)
-			split_and_link(tokens_list, &token);
+			split_and_link(tokens_list, token);
 	}
-	return (token->str);
+	return ((*token)->str);
 }
 
 t_list	*expand_vars(t_prompt_info prompt_info, t_list **tokens_list)
@@ -129,14 +132,14 @@ t_list	*expand_vars(t_prompt_info prompt_info, t_list **tokens_list)
 	token = *tokens_list;
 	while (token)
 	{
-		if (find_expand_dollar(token->str, &double_quotes))
+		if ((token->previous && check_redirect_type(token->previous->str) != HEREDOC) && find_expand_dollar(token->str, &double_quotes))
 		{
-			if (expand(prompt_info, tokens_list, token) == NULL)
+			if (expand(prompt_info, tokens_list, &token) == NULL)
 			     return (NULL);
 			if (double_quotes == true)
 			     double_quotes ^= 1;
 		}
-		token = token->next;
+;		token = token->next;
 	}
 	return (*tokens_list);
 }
