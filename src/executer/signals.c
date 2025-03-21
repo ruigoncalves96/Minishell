@@ -25,7 +25,6 @@ void handler_heredoc(int sig)
         if(heredoc_c_pressed)
         {
             write(2, "\n", 1);
-            //exit(0);
         }
     }
 }
@@ -33,9 +32,7 @@ void handler_heredoc(int sig)
 
 static void handler(int sig)
 {
-    //printf("smgjdga::%i", fd_saver(-4));
-   // write(fd_saver(-4), "batata\n", 7);
-    //write(1, "batata\n", 7);
+    
     if (sig == SIGINT)
     {
         write(1, "\n", 1);
