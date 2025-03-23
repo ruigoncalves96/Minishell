@@ -11,13 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <signal.h>
 
-//vai se identeficar como 69 ou alguma merda quando pressionar o control + c
 volatile sig_atomic_t heredoc_c_pressed = 0;
-// volatile sig_atomic_t sigint_process = -1;
-
-
 void handler_heredoc(int sig)
 {
     if(sig == SIGINT)
@@ -31,14 +26,10 @@ void handler_heredoc(int sig)
     }
 }
 
-
 static void handler(int sig)
 {
-    // if (sig == SIGINT && sigint_process != -1)
-    // {
 
-    // }
-    /*else */if (sig == SIGINT/* && sigint_process == -1*/)
+if (sig == SIGINT)
     {
         write(1, "\n", 1);
         rl_on_new_line();

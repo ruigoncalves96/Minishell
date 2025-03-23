@@ -1,5 +1,21 @@
 #include "../../includes/minishell.h"
 
+static void remove_env_node(t_env *env, t_env_var *current)
+{
+    if (current->prev)
+        current->prev->next = current->next;
+    if (current->next)
+        current->next->prev = current->prev;
+    
+    if (current == env->vars)
+        env->vars = current->next;
+
+    free(current->key);
+    free(current->value);
+    free(current);
+    
+    env->var_count--;
+}
 /**
  * @brief Unset a variable to the environment
  * @param env Environment structure
@@ -11,30 +27,16 @@ int unset_env_var(t_env *env, char *key_to_unset)
     if (!env || !key_to_unset || !env->vars)
         return -1;
 
-    t_env_var *current = env->vars;
+    t_env_var *current;
     t_env_var *next;
 
+    current = env->vars;
     while (current)
     {
-        // Store next pointer before potentially freeing current
         next = current->next;
-        
         if (ft_strcmp(current->key, key_to_unset) == 0)
         {
-            if (current->prev)
-                current->prev->next = current->next;
-            if (current->next)
-                current->next->prev = current->prev;
-            
-            if (current == env->vars)
-                env->vars = current->next;
-
-            // Free the node
-            free(current->key);
-            free(current->value);
-            free(current);
-            
-            env->var_count--;
+            remove_env_node(env, current);
             return 1; 
         }
         current = next; 
@@ -43,18 +45,14 @@ int unset_env_var(t_env *env, char *key_to_unset)
     return 0; 
 }
 
-
 int manager_unset(char **str, t_env *env)
 {
-       if (str == NULL || *str == NULL)
-       {
+    if (str == NULL || *str == NULL || array_size(str) == 1)
+    {
         return 1;
-       }
+    }
 
         int i;
-        
-        if(array_size(str) == 1)
-            return 1;
         if(array_size(str) >= 2)
         {
             i = 1;

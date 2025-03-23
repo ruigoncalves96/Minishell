@@ -1,10 +1,5 @@
 #include "../../includes/minishell.h"
 
-void init_variables_builtins(t_builtins *builtins)
-{
-    builtins->echo_flag = true;
-    builtins->exit_code = 0;
-}
 int is_builtin(char *cmd)
 {
     const char *builtins[] = {"pwd", "echo", "env", "cd", "export", "unset", "exit", NULL};
@@ -20,37 +15,35 @@ int is_builtin(char *cmd)
     return (0);
 }
 
-int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *builtins)
+static int handle_specific_builtin(char **args, t_prompt_info *prompt_info, t_builtins *builtins,t_token *tokens)
 {
-    if (!tokens || !tokens->token || !*tokens->token)
-        return (0);
+    if (ft_strcmp(*args, "env") == 0)
+        print_env_list(prompt_info->env);
+    else if (ft_strcmp(*args, "pwd") == 0)
+        pwd_builtin();
+    else if (ft_strcmp(*args, "cd") == 0)
+    {
+        if(cd_manager(args, prompt_info->env) == -1)
+            builtins->exit_code = 1;
+    }
+    else if (ft_strcmp(*args, "export") == 0)
+        export_manager(args, prompt_info->env, builtins);
+    else if (ft_strcmp(*args, "unset") == 0)
+        manager_unset(args, prompt_info->env);
+    else if (ft_strcmp(*args, "echo") == 0)
+        handle_echo(args);
+    else if (ft_strcmp(*args, "exit") == 0)
+        exit_manager(args, builtins, prompt_info, tokens);
+    return (1);
+}
 
-    if (!is_builtin(*tokens->token))
+int execute_builtin(t_token *tokens, t_prompt_info prompt_info, t_builtins *builtins)
+{
+    if (!tokens || !tokens->token || !*tokens->token || !is_builtin(*tokens->token))
         return (0);
 
     builtins->exit_code = 0;
-    if (ft_strcmp(*tokens->token, "env") == 0)
-        print_env_list(prompt_info.env);
-    else if (ft_strcmp(*tokens->token, "pwd") == 0)
-        pwd_builtin();
-    else if (ft_strcmp(*tokens->token, "cd") == 0)
-    {
-        if(cd_manager(tokens->token, prompt_info.env) == -1)
-        {
-            builtins ->exit_code = 1;
-        }
-    }
-    else if (ft_strcmp(*tokens->token, "export") == 0)
-    {
-        export_manager(tokens->token, prompt_info.env,builtins);
-    }
-    else if (ft_strcmp(*tokens->token, "unset") == 0)
-        manager_unset(tokens->token, prompt_info.env);
-    else if (ft_strcmp(*tokens->token, "echo") == 0)
-        handle_echo(tokens->token);
-	else if (ft_strcmp(*tokens->token, "exit") == 0)
-		exit_manager(tokens->token,builtins,&prompt_info,tokens);
-    return (1);
+    return (handle_specific_builtin(tokens->token, &prompt_info, builtins, tokens));
 }
 
 // Create a string in format "KEY=VALUE"
@@ -95,3 +88,4 @@ char **convert_env_to_array(t_env *env)
     envp[i] = NULL;
     return (envp);
 }
+

@@ -64,8 +64,6 @@
 
 extern volatile sig_atomic_t heredoc_c_pressed;
 
-void handler_heredoc(int sig);
-
 typedef struct	s_builtins
 {
     bool echo_flag;
@@ -123,7 +121,13 @@ typedef struct s_token
 	struct s_token *next;
 }				t_token;
 
-//_____________	Utils ______________
+/*
+				_   _ _____ ___ _     ____  
+				| | | |_   _|_ _| |   / ___| 
+				| | | | | |  | || |   \___ \ 
+				| |_| | | |  | || |___ ___) |
+				\___/  |_| |___|_____|____/ 
+*/
 
 //General functions
 void	print_double_array(char **array);
@@ -152,7 +156,13 @@ void	free_token_list(t_token *tokens_list);
 void    free_token_tree(t_token *token_tree);
 
 
-//_____________	Builtins ______________
+/*
+				____  _   _ ___ _   _____ ___ _   _ ____  
+				| __ )| | | |_ _| | |_   _|_ _| \ | / ___| 
+				|  _ \| | | || || |   | |  | ||  \| \___ \ 
+				| |_) | |_| || || |___| |  | || |\  |___) |
+				|____/ \___/|___|_____|_| |___|_| \_|____/ 
+*/
 
 //Init Builtins
 void init_variables_builtins(t_builtins *builtins);
@@ -160,15 +170,19 @@ int is_builtin(char *cmd);
 int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *builtins);
 void update_shlvl(t_env *env);
 //Exit
+int ft_atol(const char *str, long *result);
 void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens);
 void cleanup_all(t_prompt_info *prompt_info, t_token *tokens);
+
 //cd
 int cd_manager(char **str, t_env *env);
+
 //PWD
 void pwd_builtin(void);
 
 //Echo
 void handle_echo(char *argv[]);
+
 //Export
 char *get_key(char *env);
 void handle_export(t_env *env);
@@ -179,19 +193,28 @@ int export_env_var(t_env *env, const char *key, const char *value,int is_export_
 void append_env_var(t_env_var **head, t_env_var *new_var);
 char *get_value(char *env_str);
 void set_export_only(t_env *env, const char *key, int is_export_only);
-
 int export_manager(char **str, t_env *env,t_builtins *builtins);
+
+
 //ENV FUNCTIONS
 t_env *init_env(char **envp);
 t_env_var *create_env_node(char *env_str);
 void free_env(t_env *env);
 void print_env_list(t_env *env);
+t_env_var *copy_env_list(t_env_var *list);
+
 //UNSET FUNCTIONS
 int unset_env_var(t_env *env,char *key_to_unset);
 int manager_unset(char **str, t_env *env);
 
 
-//_____________	Executing______________
+/*
+				_______  _______ ____ _   _ _____ ___ _   _  ____ 
+				| ____\ \/ / ____/ ___| | | |_   _|_ _| \ | |/ ___|
+				|  _|  \  /|  _|| |   | | | | | |  | ||  \| | |  _ 
+				| |___ /  \| |__| |___| |_| | | |  | || |\  | |_| |
+				|_____/_/\_\_____\____|\___/  |_| |___|_| \_|\____|
+*/
 
 //prepare_path
 char **convert_env_to_array(t_env *env);
@@ -209,11 +232,18 @@ bool    get_heredoc_input(t_token *token, t_prompt_info prompt_info);
 void    get_redirection_files(t_token *token);
 void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
 t_token    *get_heredoc_command_list(t_token *token);
+void handler_heredoc(int sig);
 
 //signals
 void    set_signals(void);
 
-//_____________	Parsing	______________
+/*
+				____   _    ____  ____ ___ _   _  ____ 
+				|  _ \ / \  |  _ \/ ___|_ _| \ | |/ ___|
+				| |_) / _ \ | |_) \___ \| ||  \| | |  _ 
+				|  __/ ___ \|  _ < ___) | || |\  | |_| |
+				|_| /_/   \_\_| \_\____/___|_| \_|\____|
+*/
 
 //Parsing
 void	print_linked_list(t_list *list);

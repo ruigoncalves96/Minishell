@@ -49,3 +49,19 @@ char *get_value(char *env_str)
         return NULL;
     return ft_strdup(equals + 1);
 }
+///@return value of a variable
+char *get_env_value(t_env *env,const char *key)
+{
+    t_env_var *current;
+    if(!env || !key)
+        return (NULL);
+
+    current = env->vars;
+    while (current)
+    {
+        if(ft_strcmp(current->key,key) == 0)
+            return(current->value);
+        current = current->next;
+    }
+    return (NULL);
+}

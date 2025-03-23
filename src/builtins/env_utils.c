@@ -24,9 +24,9 @@ void update_shlvl(t_env *env)
 
 	shlvl_value = get_env_value(env,"SHLVL");
 	if(!shlvl_value)
-	{
 		shlvl_number = 1;
-	}else{
+    else
+    {
 		shlvl_number = ft_atoi(shlvl_value);
 		shlvl_number++;
 	}

@@ -30,23 +30,22 @@ static bool is_valid_n_flag(const char *str)
             return false;
         i++;
     }
-    //Vou checar se existe um mais que um n depois do traço
+    //Checking if exist more then one n in the argument
     return (i > 1);
 }
 void handle_echo(char *argv[])
 {
     t_builtins vars;
-    int start = 1;
+    int start;
 
-    // Inicializa as variáveis do comando
     vars.echo_flag = false;
-
+    start = 1;
     if(argv[1])
     {
         while (argv[start] && is_valid_n_flag(argv[start]))
         {
             vars.echo_flag = true;
-            start++; // Ignora o argumento "-n"
+            start++; // Ignores -n
             if (!argv[start])
                 break;
         }
