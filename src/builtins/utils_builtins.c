@@ -13,10 +13,12 @@ void print_error(const char *cmd, const char *arg, const char *msg,bool print_ba
         ft_putstr_fd((char *)cmd, 2);
         ft_putstr_fd(": ", 2);
     }
-
     if (arg)
     {
-        ft_putstr_fd((char *)arg, 2);
+        if (arg[0] == '\0')
+            ft_putstr_fd("'' ", 2);
+        else
+            ft_putstr_fd((char *)arg, 2);
         ft_putstr_fd(": ", 2);
     }
 

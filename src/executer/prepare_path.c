@@ -97,7 +97,7 @@ int validate_command_path(char *command, t_env *env)
 {
     char *command_path;
 
-    if (command[0] == '.' && (command[1] == '\0' || (command[1] == '.' && command[2] == '\0')))
+    if (command[0] == '\0' || (command[0] == '.' && (command[1] == '\0' || (command[1] == '.' && command[2] == '\0'))))
     {
         print_error(NULL, command, COMMAND_NOT_FOUND, false);
         return (127);

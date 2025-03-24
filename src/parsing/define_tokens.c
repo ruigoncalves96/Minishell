@@ -27,13 +27,13 @@ static char	**get_command_array(t_list **node)
 	i = 0;
 	while (*node && (*node)->type == COMMAND)
 	{
-	    if ((*node)->str[0] != '\0' || command_array_len(*node) == 0)
-		{
+	 //    if (/*(*node)->str[0] != '\0' ||*/ command_array_len(*node) == 0)
+		// {
 		    new_token[i] = ft_strdup((*node)->str);
 		    if (new_token[i] == NULL)
 	            return (ft_free_double_array(new_token), NULL);
 		    i++;
-		}
+		// }
 		*node = (*node)->next;
 	}
 	new_token[i] = NULL;
