@@ -144,6 +144,9 @@ t_token	*parsing(t_prompt_info *prompt_info)
 		return (NULL);
 	// print_linked_list(prompt_list);
 	tokens_tree = define_tokens(prompt_list);
+	// printf("token->ptr-> %p\n", tokens_tree->token[0]);
+	// printf("token->str-> %s\n", tokens_tree->token[0]);
+	// printf("token->str-> %d\n", tokens_tree->token[0][0]);
 	// print_linked_tokens(tokens_tree);
 	free_list(prompt_list);
 	if (!tokens_tree)

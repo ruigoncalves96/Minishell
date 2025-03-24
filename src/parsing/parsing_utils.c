@@ -12,6 +12,7 @@
 
 #include "../../includes/minishell.h"
 #include <stdbool.h>
+#include <stdio.h>
 #include <unistd.h>
 
 size_t	quote_len(char *str)
@@ -165,8 +166,10 @@ size_t	command_array_len(t_list *node)
 	nbr_commands = 0;
 	while (node && node->type == COMMAND)
 	{
-	    // if (node->str[0] != '\0')
+	    if (node->str[0] != '\0'|| (node->str[0] == '\0' && node->subtype == T_QUOTE))
 			nbr_commands++;
+		else if (node->str[0] == '\0' && node->subtype != T_QUOTE && (!node->previous && !node->next))
+		    nbr_commands++;
 		node = node->next;
 	}
 	return (nbr_commands);

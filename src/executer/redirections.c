@@ -4,8 +4,8 @@ static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_in
 {
     int valid;
 
-    // if (token->token[0][0] == '\0')
-    //     return ;
+    if (token->token[0][0] == '\0' && token->subtype != T_QUOTE)
+        return ;
     if (is_builtin(*token->token))
         execute_builtin(token, prompt_info, prompt_info.builtins);
     else
