@@ -88,16 +88,16 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
     }
     if (pid == 0)
      {
-        heredoc_c_pressed = 0;
+        g_heredoc_c_pressed = 0;
         signal(SIGINT, handler_heredoc);
 
          close(pipefd[0]);
          while (1)
          {
             heredoc= readline("> ");
-            if (!heredoc || heredoc_c_pressed)
+            if (!heredoc || g_heredoc_c_pressed)
             {
-                if(heredoc_c_pressed)
+                if(g_heredoc_c_pressed)
                 {
                     cleanup_all(&prompt_info, NULL);
                     free_token_list(token);
@@ -123,7 +123,7 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          if (heredoc)
             free(heredoc);
          close(pipefd[1]);
-         if(heredoc_c_pressed)
+         if(g_heredoc_c_pressed)
          {
             free_token_list(token);
             cleanup_all(&prompt_info, NULL);
