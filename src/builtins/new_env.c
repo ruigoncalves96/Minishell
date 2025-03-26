@@ -93,7 +93,9 @@ static void	create_vars_env_flag(t_env *env)
 t_env	*init_env(char **envp)
 {
 	t_env	*env;
+	bool empty_env;
 
+	empty_env = false;
 	env = ft_calloc(1, sizeof(t_env));
 	if (!env)
 		return (NULL);
@@ -101,11 +103,14 @@ t_env	*init_env(char **envp)
 	env->var_count = 0;
 	if (!envp || !envp[0])
 	{
+		empty_env = true;
 		create_vars_env_flag(env);
 	}
 	else
 	{
 		apeend_env_to_list(envp, env);
 	}
+	if(!empty_env)
+		update_shlvl(env);
 	return (env);
 }
