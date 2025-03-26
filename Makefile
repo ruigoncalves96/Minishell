@@ -33,7 +33,7 @@ LIBFT     = $(LIBFT_DIR)/libft.a
 
 SRC_FILES = main.c \
 	    $(addprefix utils/, general_functions.c list_struct_functions.c token_struct_functions.c free_structs.c) \
-	    $(addprefix parsing/, parsing.c build_tokens.c parse_syntax.c convert_quotes.c expand_vars.c define_tokens.c build_tree.c open_files.c find_var_value.c parsing_utils.c error_handling.c ) \
+	    $(addprefix parsing/, parsing.c build_tokens.c parse_syntax.c convert_quotes.c expand_vars.c define_tokens.c build_tree.c open_files.c find_var_value.c verify_files.c parsing_utils.c error_handling.c ) \
 	    $(addprefix builtins/, exit.c utils_builtins.c pwd.c echo.c cd.c init_builtins.c  new_env.c env_utils.c new_export_variables.c new_export.c manager_export.c manager_unset.c) \
 	    $(addprefix executer/, prepare_path.c redirections.c heredoc.c signals.c)
 

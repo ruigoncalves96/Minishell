@@ -16,6 +16,8 @@ void	ft_free_double_array(char **ptr)
 {
 	int	i;
 
+	if (!ptr)
+	    return ;
 	i = 0;
 	while (ptr[i])
 	{

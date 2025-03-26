@@ -11,9 +11,10 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <stdio.h>
 
 //  ------   //   ------
-//  REDIRECTIONS FD CODES
+//  FD CODES REDS
 //      >= 0 -> EXECUTE RED
 //      -1 -> ERROR ON OPEN
 //      -2 -> PERMISSION DENIED
@@ -48,20 +49,13 @@ static bool open_redirect(t_token *token, bool *open_error)
         token->red->fd = -4;
         return (true);
     }
-    if (token->red->type == OUT || token->red->type == A_OUT)
-    {
-        if (!verify_file_exists(token))
-            token->red->fd = open(token->red->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        else if (verify_file_permissions(token))
-            token->red->fd = open(token->red->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    }
-    else if(token->red->type == IN)
-    {
-        if (verify_file_exists(token) && verify_file_permissions(token))
-            token->red->fd = open(token->red->filename, O_RDONLY);
-    }
+    verify_and_open_file(token);
     if (token->next->token[1] != NULL)
+    {
         get_redirection_files(token);
+        // if (token->red->type == IN)
+        //     token->red->fd = -4;
+    }
     if (token->red->fd < 0 && token->red->fd > -4)
         *open_error ^= 1;
     return (true);
@@ -109,7 +103,7 @@ static bool    open_redirections(t_token *token, t_prompt_info prompt_info, bool
     return (true);
 }
 
-bool    loop_and_open_fd(t_token *token, t_prompt_info prompt_info)
+bool    open_files(t_token *token, t_prompt_info prompt_info)
 {
     bool    open_error;
     struct sigaction sa_old;

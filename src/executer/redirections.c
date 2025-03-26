@@ -1,22 +1,5 @@
 #include "../../includes/minishell.h"
 
-static void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
-{
-    int valid;
-
-    if (token->token[0][0] == '\0' && token->subtype != T_QUOTE)
-        return ;
-    if (is_builtin(*token->token))
-        execute_builtin(token, prompt_info, prompt_info.builtins);
-    else
-    {
-        valid = validate_command_path(*token->token, env);
-        if (valid == 0)
-            executer_manager(token->token, env, prompt_info,token);
-        else
-            prompt_info.builtins->exit_code = valid;
-    }
-}
 int get_exit_status(int status)
 {
     int signal_num;
@@ -36,7 +19,10 @@ int get_exit_status(int status)
         return 1;
     }
 }
-static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
+
+//  PIPE.c
+
+int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
     int pipes[2];
     pid_t   left_pid;
@@ -82,7 +68,9 @@ static int  pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     return (0);
 }
 
-void    error_redirection_file(t_token *token, t_prompt_info prompt_info)
+//  REDIRECTIONS.c
+
+static void    error_redirection_file(t_token *token, t_prompt_info prompt_info)
 {
     if (token->red->fd == -1)
     {
@@ -99,16 +87,7 @@ void    error_redirection_file(t_token *token, t_prompt_info prompt_info)
     prompt_info.builtins->exit_code = 1;
 }
 
-//  ------   //   ------
-//  FD CODES REDS
-//      >= 0 -> EXECUTE RED
-//      -1 -> ERROR ON OPEN
-//      -2 -> PERMISSION DENIED
-//      -3 -> DOESNT EXIST
-//      -4 -> DONT EXECUTE
-//
-
-static void redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
+void redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
     if (token->red->fd < 0 && token->red->fd != -4)
     {
@@ -145,6 +124,26 @@ static void redirections_executer(t_token *token, t_env *env, t_prompt_info prom
         runcmd(token->previous, env, prompt_info);
 }
 
+// EXECUTER.c
+
+void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
+{
+    int valid;
+
+    if (token->token[0][0] == '\0' && token->subtype != T_QUOTE)
+        return ;
+    if (is_builtin(*token->token))
+        execute_builtin(token, prompt_info, prompt_info.builtins);
+    else
+    {
+        valid = validate_command_path(*token->token, env);
+        if (valid == 0)
+            executer_manager(token->token, env, prompt_info,token);
+        else
+            prompt_info.builtins->exit_code = valid;
+    }
+}
+
 void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
 {
     if (!token)
@@ -165,7 +164,6 @@ void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
             type_of_executer(token, env, prompt_info);
 }
 
-
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info)
 {
     t_token *token;
@@ -173,8 +171,6 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
 
     original_fd[0] = dup(STDIN_FILENO);
     original_fd[1] = dup(STDOUT_FILENO);
-
-
     if (original_fd[0] == -1 || original_fd[1] == -1)
     {
         if (original_fd[0] != -1)
@@ -183,7 +179,6 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
             close(original_fd[1]);
         return;
     }
-
     token = token_head;
     if (!token->next)
         type_of_executer(token, env, prompt_info);
@@ -191,20 +186,17 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
         runcmd(token, env, prompt_info);
     dup2(original_fd[0], STDIN_FILENO);
     dup2(original_fd[1], STDOUT_FILENO);
-    // Close the duplicated file descriptors
     close(original_fd[0]);
     close(original_fd[1]);
 	if(prompt_info.builtins->exit_code % 128 == SIGINT && prompt_info.builtins->exit_code > 128)
-	{
 		write(1, "\n", 1);
-	}
 }
+
+// EXECVE.c
 
 static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt_info,t_token *token)
 {
     ft_free_double_array(env_array);
-
-    //arquivo existe
     if (access(path, F_OK) != 0)
     {
         free(path);
@@ -213,7 +205,6 @@ static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt
         prompt_info.builtins->exit_code = 127;
         exit(127);
     }
-    // arquivo existe mas nao tem permisao de execucao
     if (access(path, X_OK) != 0)
     {
         free(path);
@@ -224,7 +215,6 @@ static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt
     }
     free(path);
     perror("execve");
-    //close_fds();
     cleanup_all(&prompt_info,token);
     exit(1);
 }
@@ -234,6 +224,7 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *t
 	char *path;
 	char **env_array;
 	pid_t child;
+	int status;
 
     path = get_command_path(*str,env);
     env_array = convert_env_to_array(env);
@@ -252,22 +243,10 @@ int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *t
         if(execve(path,str,env_array) == -1)
             handle_execve_error(path,env_array,prompt_info,token);
     }
-    else
-    {
-        signal(SIGINT, SIG_IGN);
-
-        int status;
-
-        waitpid(child,&status, 0);
-
-        // if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-        //     write(1, "\n", 1);
-
-        prompt_info.builtins->exit_code = get_exit_status(status);
-
-        set_signals();
-
-    }
+    signal(SIGINT, SIG_IGN);
+    waitpid(child,&status, 0);
+    prompt_info.builtins->exit_code = get_exit_status(status);
+    set_signals();
     free(path);
     if (env_array)
         ft_free_double_array(env_array);

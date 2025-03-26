@@ -160,6 +160,7 @@ int is_builtin(char *cmd);
 int execute_builtin(t_token *tokens, t_prompt_info prompt_info,t_builtins *builtins);
 void update_shlvl(t_env *env);
 //Exit
+void close_fds();
 void exit_manager(char **args, t_builtins *builtins,t_prompt_info *prompt_info,t_token *tokens);
 void cleanup_all(t_prompt_info *prompt_info, t_token *tokens);
 //cd
@@ -200,10 +201,12 @@ char *get_command_path(char *command, t_env *env);
 int validate_command_path(char *command, t_env *env);
 
 //redirections
-void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
+int     pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
+void    redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
+void    type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
+void    runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info);
-int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *token);
-void close_fds();
+int     executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *token);
 //heredoc
 bool    get_heredoc_input(t_token *token, t_prompt_info prompt_info);
 void    get_redirection_files(t_token *token);
@@ -245,6 +248,10 @@ bool    loop_and_open_fd(t_token *token,t_prompt_info prompt_info);
 //find_var_value
 size_t	var_key_len(char *str);
 char	*find_var_value(t_prompt_info prompt_info, char *dollar);
+
+//verify_files
+bool verify_file_permissions(t_token *token);
+bool verify_file_exists(t_token *token);
 
 //parsing_utils
 size_t	quote_len(char *str);
