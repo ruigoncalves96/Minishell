@@ -39,7 +39,7 @@ static void execute_redirection(t_token *token, t_prompt_info prompt_info)
     }
 }
 
-void redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
+void redirections_executer(t_token *token, t_prompt_info prompt_info)
 {
     if (token->red->fd < 0 && token->red->fd != -4)
     {
@@ -48,7 +48,7 @@ void redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info
     }
     execute_redirection(token, prompt_info);
     if (token->previous && token->previous->type == COMMAND && (token->red->fd >= 0 || token->red->fd == -4))
-        type_of_executer(token->previous, env, prompt_info);
+        type_of_executer(token->previous, prompt_info);
     else if (token->previous && token->previous->type == OPERATOR)
-        runcmd(token->previous, env, prompt_info);
+        runcmd(token->previous, prompt_info);
 }

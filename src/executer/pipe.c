@@ -9,7 +9,7 @@ static void execute_pipe(t_token *token, t_prompt_info *prompt_info, int pipes[2
     close_pipes(pipes);
     signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
-    runcmd(token, prompt_info->env, *prompt_info);
+    runcmd(token, *prompt_info);
     close_fds();
     cleanup_all(prompt_info,token);
     exit(prompt_info->builtins->exit_code);

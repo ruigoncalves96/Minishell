@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
+void type_of_executer(t_token *token, t_prompt_info prompt_info)
 {
     int valid;
 
@@ -10,7 +10,7 @@ void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
         execute_builtin(token, prompt_info, prompt_info.builtins);
     else
     {
-        valid = validate_command_path(*token->token, env);
+        valid = validate_command_path(*token->token, prompt_info.env);
         if (valid == 0)
             executer_manager(token->token, prompt_info,token);
         else
@@ -18,7 +18,7 @@ void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     }
 }
 
-void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
+void runcmd(t_token *token, t_prompt_info prompt_info)
 {
     if (!token)
         return ;
@@ -29,16 +29,16 @@ void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
         else if (token->subtype == T_REDIRECT)
         {
             if (token->red->type == HEREDOC)
-                heredoc_executer(token, env, prompt_info);
+                heredoc_executer(token, prompt_info);
             else
-                redirections_executer(token, env, prompt_info);
+                redirections_executer(token, prompt_info);
         }
     }
     else if (token->type == COMMAND)
-            type_of_executer(token, env, prompt_info);
+            type_of_executer(token, prompt_info);
 }
 
-void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info)
+void    loop_executer(t_token *token_head, t_prompt_info prompt_info)
 {
     t_token *token;
     int original_fd[2];
@@ -55,9 +55,9 @@ void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info
     }
     token = token_head;
     if (!token->next)
-        type_of_executer(token, env, prompt_info);
+        type_of_executer(token, prompt_info);
     else
-        runcmd(token, env, prompt_info);
+        runcmd(token, prompt_info);
     dup2(original_fd[0], STDIN_FILENO);
     dup2(original_fd[1], STDOUT_FILENO);
     close(original_fd[0]);

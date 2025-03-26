@@ -13,13 +13,13 @@ static void write_heredoc(t_token *token, int pipes[2])
     }
 }
 
-void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
+void    heredoc_executer(t_token *token, t_prompt_info prompt_info)
 {
     int     pipes[2];
     int status;
 
     if (token->red->fd == -4 || !get_heredoc_command_tree(token))
-        runcmd(token->previous, env, prompt_info);
+        runcmd(token->previous, prompt_info);
     if (pipe(pipes) == -1)
         return;
     if (fork() == 0)
@@ -33,7 +33,7 @@ void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     {
         dup2(pipes[0], STDIN_FILENO);
         close_pipes(pipes);
-        runcmd(token->previous, env, prompt_info);
+        runcmd(token->previous, prompt_info);
         cleanup_all(&prompt_info,token);
         exit(0);
     }

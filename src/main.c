@@ -41,7 +41,7 @@ static void shell_loop(t_prompt_info prompt_info)
 		    tokens = parsing(&prompt_info);
 			if (tokens)
 			{
-			    loop_executer(tokens, prompt_info.env, prompt_info);
+			    loop_executer(tokens, prompt_info);
 				free_token_tree(tokens);
 				tokens = NULL;
 			}

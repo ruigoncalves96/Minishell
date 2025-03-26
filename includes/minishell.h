@@ -207,11 +207,11 @@ char *get_env_value(t_env *env,const char *key);
 char *get_command_path(char *command, t_env *env);
 int validate_command_path(char *command, t_env *env);
 //redirections
-void    redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
+void    redirections_executer(t_token *token, t_prompt_info prompt_info);
 //executer
-void    type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
-void    runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
-void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info);
+void    type_of_executer(t_token *token, t_prompt_info prompt_info);
+void    runcmd(t_token *token, t_prompt_info prompt_info);
+void    loop_executer(t_token *token_head, t_prompt_info prompt_info);
 //others
 int     pipe_executer(t_token *token, t_prompt_info prompt_info);
 int     executer_manager(char **str, t_prompt_info prompt_info,t_token *token);
@@ -219,7 +219,7 @@ int     executer_manager(char **str, t_prompt_info prompt_info,t_token *token);
 size_t lst_size(t_list *list);
 size_t  array_len(char **array);
 bool    get_heredoc_input(t_token *token, t_prompt_info prompt_info);
-void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
+void    heredoc_executer(t_token *token, t_prompt_info prompt_info);
 t_token    *get_heredoc_command_list(t_token *token);
 
 //signals
