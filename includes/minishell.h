@@ -213,8 +213,8 @@ void    type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info);
 //others
-int     pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
-int     executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *token);
+int     pipe_executer(t_token *token, t_prompt_info prompt_info);
+int     executer_manager(char **str, t_prompt_info prompt_info,t_token *token);
 //heredoc
 size_t lst_size(t_list *list);
 size_t  array_len(char **array);

@@ -25,21 +25,34 @@ static void handle_execve_error(char *path,char **env_array,t_prompt_info prompt
     exit(1);
 }
 
-int executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *token)
+static bool get_path_and_env(char **str, char **path, char ***env_array, t_prompt_info prompt_info)
+{
+    *path = get_command_path(*str,prompt_info.env);
+    if (!*path)
+    {
+        prompt_info.builtins->exit_code = 127;
+        return (false);
+    }
+    *env_array = convert_env_to_array(prompt_info.env);
+    if (!*env_array)
+    {
+        free(*path);
+        return (false);
+    }
+    return (true);
+}
+
+int executer_manager(char **str, t_prompt_info prompt_info,t_token *token)
 {
 	char *path;
 	char **env_array;
 	pid_t child;
 	int status;
 
-    path = get_command_path(*str,env);
-    env_array = convert_env_to_array(env);
-    if(!path)
-    {
-        prompt_info.builtins->exit_code = 127;
-        ft_free_double_array(env_array);
-        return (1);
-    }
+	path = NULL;
+	env_array = NULL;
+	if (get_path_and_env(str, &path, &env_array, prompt_info) == false)
+	    return (1); // check exit code when malloc fails
     child = fork();
     if(child == 0)
     {

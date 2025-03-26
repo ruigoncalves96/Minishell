@@ -12,7 +12,7 @@ void type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info)
     {
         valid = validate_command_path(*token->token, env);
         if (valid == 0)
-            executer_manager(token->token, env, prompt_info,token);
+            executer_manager(token->token, prompt_info,token);
         else
             prompt_info.builtins->exit_code = valid;
     }
@@ -25,7 +25,7 @@ void runcmd(t_token *token, t_env *env, t_prompt_info prompt_info)
     if (token->type == OPERATOR)
     {
         if (token->subtype == T_PIPE)
-            pipe_executer(token, env, prompt_info);
+            pipe_executer(token, prompt_info);
         else if (token->subtype == T_REDIRECT)
         {
             if (token->red->type == HEREDOC)
