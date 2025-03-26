@@ -40,6 +40,8 @@
 #define PERMISSION_DENIED "Permission denied"
 //export
 #define NOT_VALID_IDENTIFIER "not a valid identifier"
+//heredoc
+#define EOF_HEREDOC_WARNING "warning: here-document delimited by end-of-file (wanted `EOF')"
 
 //	TOKEN_TYPE
 #define COMMAND 1
@@ -131,6 +133,11 @@ int array_size(char **array);
 int	ft_strcmp(const char *s1, const char *s2);
 void print_error(const char *cmd, const char *arg, const char *msg,bool print_bash);
 t_token	*go_to_tree_top(t_token *token);
+t_token    *get_heredoc_command_list(t_token *token);
+t_token    *get_heredoc_command_tree(t_token *token);
+void close_pipes(int pipes[2]);
+int get_exit_status(int status);
+
 
 //List_struct_functions
 t_list	*ft_lstlast(t_list *lst);
@@ -199,17 +206,19 @@ char **convert_env_to_array(t_env *env);
 char *get_env_value(t_env *env,const char *key);
 char *get_command_path(char *command, t_env *env);
 int validate_command_path(char *command, t_env *env);
-
 //redirections
-int     pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    redirections_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
+//executer
 void    type_of_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    runcmd(t_token *token, t_env *env, t_prompt_info prompt_info);
 void    loop_executer(t_token *token_head, t_env *env, t_prompt_info prompt_info);
+//others
+int     pipe_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
 int     executer_manager(char **str, t_env *env,t_prompt_info prompt_info,t_token *token);
 //heredoc
+size_t lst_size(t_list *list);
+size_t  array_len(char **array);
 bool    get_heredoc_input(t_token *token, t_prompt_info prompt_info);
-void    get_redirection_files(t_token *token);
 void    heredoc_executer(t_token *token, t_env *env, t_prompt_info prompt_info);
 t_token    *get_heredoc_command_list(t_token *token);
 
@@ -245,6 +254,15 @@ t_token *build_tree(t_token *tokens_list);
 //open_files
 bool    loop_and_open_fd(t_token *token,t_prompt_info prompt_info);
 
+//get_redirection_files
+bool    get_redirection_files(t_token *token);
+
+//get_heredoc_input
+bool get_heredoc_input(t_token *token, t_prompt_info prompt_info);
+
+//readline_heredoc
+void readline_heredoc(t_token *token, t_prompt_info *prompt_info, int pipefd);
+
 //find_var_value
 size_t	var_key_len(char *str);
 char	*find_var_value(t_prompt_info prompt_info, char *dollar);
@@ -268,8 +286,5 @@ size_t	command_array_len(t_list *node);
 //error_handling
 void	quote_error();
 void	syntax_error(t_list *token_list, t_list *token);
-
-//TEMP
-int get_exit_status(int status);
 
 #endif

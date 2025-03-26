@@ -61,7 +61,10 @@ static bool open_redirect(t_token *token, bool *open_error)
             token->red->fd = open(token->red->filename, O_RDONLY);
     }
     if (token->next->token[1] != NULL)
-        get_redirection_files(token);
+    {
+        if (get_redirection_files(token) == false)
+            return (false);
+    }
     if (token->red->fd < 0 && token->red->fd > -4)
         *open_error ^= 1;
     return (true);
@@ -72,7 +75,10 @@ static bool open_heredoc(t_token *token, t_prompt_info prompt_info)
     if (!token || !token->red || !token->red->filename)
         return (false);
     if (token->next->token[1] != NULL)
-        get_redirection_files(token);
+    {
+        if (get_redirection_files(token) == false)
+            return (false);
+    }
     else if (!get_heredoc_command_list(token))
         token->red->fd = -4;
     if (get_heredoc_input(token, prompt_info) == false)
