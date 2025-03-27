@@ -37,9 +37,9 @@ static size_t	command_len_def(t_list *token, char *str)
 		if (token_subtype == T_QUOTE)
 		{
 			quotelen = quote_len(&str[i]);
-			if (quotelen == 0)
+			if (quotelen == 0 && str[i] != str[i + 1])
 				return (0);
-			i += quotelen;
+			i += quotelen + 1;
 			token->subtype = T_QUOTE;
 		}
 		if (token_type == OPERATOR || token_subtype == T_SPACE)

@@ -17,7 +17,7 @@ size_t	var_key_len(char *str)
 	size_t	i;
 
 	i = 0;
-	if (str[i] &&  (ft_isdigit(str[i]) || str[i] == '?'))
+	if (str[i] && (ft_isdigit(str[i]) || str[i] == '?'))
 	    return (1);
 	while (str[i])
 	{

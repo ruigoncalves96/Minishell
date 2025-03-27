@@ -65,8 +65,3 @@ bool	parse_syntax(t_list *token_list,t_prompt_info *prompt_info)
 	}
 	return (true);
 }
-
-//	PARSE SYNTAX NODE TYPE
-	//		| -> cmd1 | cmd2 = CORRECT / | cmd = INCORRECT / cmd | = INCORRECT
-	//		< > << >> -> < filename = CORRECT / cmd < filename = CORRECT / cmd > = INCORRECT
-	//		general rule -> no operators next to another

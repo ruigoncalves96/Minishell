@@ -5,16 +5,19 @@ static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
 {
 	char   *var_value;
 	char   *dollar;
+	size_t expanded_str_len;
 
 	var_value = NULL;
+	expanded_str_len = 0;
 	while (1)
 	{
         dollar = heredoc;
-        dollar += ft_strlen(var_value);
-	    dollar = ft_strchr(dollar, '$');
+        dollar += expanded_str_len;
+	    dollar = find_expand_dollar(heredoc, NULL, true);
 		if (!dollar)
 			break ;
 		var_value = find_var_value(prompt_info, dollar);
+		expanded_str_len = ft_strlen(var_value) + strlen_until_expansion(heredoc, dollar);
 		heredoc = join_var(heredoc, var_value, dollar, var_key_len(dollar + 1));
 		if (!heredoc)
 			return (NULL);

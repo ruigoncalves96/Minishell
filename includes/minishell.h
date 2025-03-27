@@ -138,6 +138,21 @@ t_token    *get_heredoc_command_tree(t_token *token);
 void close_pipes(int pipes[2]);
 int get_exit_status(int status);
 
+//parsing_utils
+size_t	quote_len(char *str);
+size_t  strlen_until_expansion(char *str, char *dollar);
+size_t	strlen_until_spaces(char *str);
+size_t	command_array_len(t_list *node);
+//parsing_utils_2
+char	*find_expand_dollar(char *str, bool *double_quotes, bool heredoc);
+t_token  *find_operator(t_token *list);
+t_token  *find_pipe(t_token *list);
+void	skip_spaces(char **prompt);
+void	insert_list(t_list **tokens_list, t_list *token, t_list *new_list);
+//parsing_utils_3
+int	check_token_type(char c);
+int	check_token_subtype(char c);
+int	check_redirect_type(char *redirect);
 
 //List_struct_functions
 t_list	*ft_lstlast(t_list *lst);
@@ -248,6 +263,9 @@ t_list	*expand_vars(t_prompt_info prompt_info, t_list **tokens_list);
 //define_tokens
 t_token	*define_tokens(t_list *prompt_list);
 
+//get_command_array
+char	**get_command_array(t_list **node);
+
 //build_tree
 t_token *build_tree(t_token *tokens_list);
 
@@ -270,18 +288,7 @@ char	*find_var_value(t_prompt_info prompt_info, char *dollar);
 //verify_files
 bool verify_file_permissions(t_token *token);
 bool verify_file_exists(t_token *token);
-
-//parsing_utils
-size_t	quote_len(char *str);
-char	*find_expand_dollar(char *str, bool *double_quotes);
-int	check_token_type(char c);
-int	check_token_subtype(char c);
-int	check_redirect_type(char *redirect);
-size_t  strlen_until_expansion(char *str, char *dollar);
-size_t	strlen_until_spaces(char *str);
-void	skip_spaces(char **prompt);
-void	insert_list(t_list **tokens_list, t_list *token, t_list *new_list);
-size_t	command_array_len(t_list *node);
+void    close_repeated_redirections(t_token *token);
 
 //error_handling
 void	quote_error();

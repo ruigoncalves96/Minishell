@@ -33,7 +33,7 @@ static bool get_path_and_env(char **str, char **path, char ***env_array, t_promp
         prompt_info.builtins->exit_code = 127;
         return (false);
     }
-    *env_array = convert_env_to_array(prompt_info.env);
+    *env_array = convert_env_to_array(prompt_info.env); // <- protecting malloc
     if (!*env_array)
     {
         free(*path);

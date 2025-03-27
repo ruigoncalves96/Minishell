@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <stdbool.h>
-#include <unistd.h>
 
 static t_list	*build_list(t_list **new_list, t_list *token)
 {
@@ -57,39 +55,12 @@ static t_list	*split_and_link(t_list **tokens_list, t_list **token)
 	return (*tokens_list);
 }
 
-char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_t key_len)
+static size_t   get_expanded_str_len(t_list **token, char *var_value, char *dollar, bool double_quotes)
 {
-	char	*new_token;
-	bool    free_exit_code;
-	size_t	value_len;
-	size_t	i;
-	size_t	j;
-
-	if (var_key_pos[1] == '?')
-	    free_exit_code = true;
+    if (double_quotes == true)
+		return (ft_strlen(var_value) + strlen_until_expansion((*token)->str, dollar));
 	else
-	    free_exit_code = false;
-	value_len = ft_strlen(var_value);
-	new_token = ft_calloc((ft_strlen(token_str) - key_len) + value_len, sizeof(char));
-	if (!new_token)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (token_str[j])
-	{
-		if (&token_str[j] != var_key_pos)
-			new_token[i++] = token_str[j++];
-		else
-		{
-			i += ft_strlcpy(&new_token[i], var_value, value_len + 1);
-			j += key_len + 1;
-		}
-	}
-	new_token[i] = '\0';
-	if (free_exit_code == true)
-	    free(var_value);
-	free(token_str);
-	return (new_token);
+		return (strlen_until_spaces(var_value) + strlen_until_expansion((*token)->str, dollar));
 }
 
 static char	*expand(t_prompt_info prompt_info, t_list **tokens_list, t_list **token)
@@ -97,23 +68,20 @@ static char	*expand(t_prompt_info prompt_info, t_list **tokens_list, t_list **to
 	char   *var_value;
 	char   *dollar;
 	bool   double_quotes;
-	size_t var_value_len;
+	size_t expanded_str_len;
 
 	var_value = NULL;
 	double_quotes = false;
-	var_value_len = 0;
+	expanded_str_len = 0;
 	while (1)
 	{
         dollar = (*token)->str;
-        dollar += var_value_len;
-	    dollar = find_expand_dollar(dollar, &double_quotes);
+        dollar += expanded_str_len;
+	    dollar = find_expand_dollar(dollar, &double_quotes, false);
 		if (!dollar)
 			break ;
 		var_value = find_var_value(prompt_info, dollar);
-		if (double_quotes == true)
-		    var_value_len = ft_strlen(var_value) + strlen_until_expansion((*token)->str, dollar);
-		else
-		    var_value_len = strlen_until_spaces(var_value) + strlen_until_expansion((*token)->str, dollar);
+		expanded_str_len = get_expanded_str_len(token, var_value, dollar, double_quotes);
 		(*token)->str = join_var((*token)->str, var_value, dollar, var_key_len(dollar + 1));
 		if (!(*token)->str)
 			return (NULL);
@@ -132,14 +100,14 @@ t_list	*expand_vars(t_prompt_info prompt_info, t_list **tokens_list)
 	token = *tokens_list;
 	while (token)
 	{
-		if (((token->previous && check_redirect_type(token->previous->str) != HEREDOC) || !token->previous) && find_expand_dollar(token->str, &double_quotes))
+		if (((token->previous && check_redirect_type(token->previous->str) != HEREDOC) || !token->previous) && find_expand_dollar(token->str, &double_quotes, false))
 		{
 			if (expand(prompt_info, tokens_list, &token) == NULL)
 			     return (NULL);
 			if (double_quotes == true)
 			     double_quotes ^= 1;
 		}
-;		token = token->next;
+		token = token->next;
 	}
 	return (*tokens_list);
 }

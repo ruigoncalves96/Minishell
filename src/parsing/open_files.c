@@ -20,23 +20,14 @@
 //      -3 -> DOESNT EXIST
 //      -4 -> DONT EXECUTE
 
-static void    close_repeated_redirections(t_token *token)
+static int check_args(t_token *token)
 {
-    t_token *previous;
-
-    previous = NULL;
-    if (token->previous && token->previous->previous && token->previous->previous->red)
-        previous = token->previous->previous;
-    else
-        return ;
-    if (((token->red->type == OUT || token->red->type == A_OUT) && (previous->red->type == OUT || previous->red->type == A_OUT))
-            || ((token->red->type == HEREDOC || token->red->type == IN) && (token->red->type == HEREDOC || token->red->type == IN)))
+    if (token->next->token[1] != NULL)
     {
-        if (previous->red->type != HEREDOC && token->red->fd >= 0)
-            close(previous->red->fd);
-        if (previous->red->fd >= 0 || previous->red->type == HEREDOC)
-            previous->red->fd = -4;
+        if (get_redirection_files(token) == false)
+            return (0);
     }
+    return (1);
 }
 
 static bool open_redirect(t_token *token, bool *open_error)
@@ -60,11 +51,8 @@ static bool open_redirect(t_token *token, bool *open_error)
         if (verify_file_exists(token) && verify_file_permissions(token))
             token->red->fd = open(token->red->filename, O_RDONLY);
     }
-    if (token->next->token[1] != NULL)
-    {
-        if (get_redirection_files(token) == false)
-            return (false);
-    }
+    if (!check_args(token))
+        return (false);
     if (token->red->fd < 0 && token->red->fd > -4)
         *open_error ^= 1;
     return (true);
@@ -74,11 +62,8 @@ static bool open_heredoc(t_token *token, t_prompt_info prompt_info)
 {
     if (!token || !token->red || !token->red->filename)
         return (false);
-    if (token->next->token[1] != NULL)
-    {
-        if (get_redirection_files(token) == false)
-            return (false);
-    }
+    if (!check_args(token))
+        return (false);
     else if (!get_heredoc_command_list(token))
         token->red->fd = -4;
     if (get_heredoc_input(token, prompt_info) == false)

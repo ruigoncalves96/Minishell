@@ -12,41 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-static char	**get_command_array(t_list **node)
-{
-	char   **new_token;
-	size_t array_len;
-	size_t i;
-
-	array_len = command_array_len(*node);
-	if (array_len == 0)
-	    array_len = 1;
-	new_token = ft_calloc(array_len + 2, sizeof(char *));
-	if (!new_token)
-		return (NULL);
-	i = 0;
-	while (*node && (*node)->type == COMMAND)
-	{
-		if ((*node)->str[0] != '\0'|| ((*node)->str[0] == '\0' && (*node)->subtype == T_QUOTE))
-		{
-		    new_token[i] = ft_strdup((*node)->str);
-		    if (new_token[i] == NULL)
-	            return (ft_free_double_array(new_token), NULL);
-			i++;
-		}
-		else if ((*node)->str[0] == '\0' && (*node)->subtype != T_QUOTE && (!(*node)->previous && !(*node)->next))
-		{
-		    new_token[i] = ft_strdup((*node)->str);
-		    if (new_token[i] == NULL)
-	            return (ft_free_double_array(new_token), NULL);
-			i++;
-		}
-		*node = (*node)->next;
-	}
-	new_token[i] = NULL;
-	return (new_token);
-}
-
 static t_redirect *redirect_new(t_list *node, int type)
 {
     t_redirect  *red;
@@ -110,6 +75,24 @@ static t_token	*define_pipe_token(t_list **node)
 	return (new_token);
 }
 
+static t_token *define_operators(t_list **node, t_token **token_list)
+{
+    t_token *new_token;
+
+    new_token = NULL;
+    if ((*node)->subtype == T_PIPE)
+		new_token = define_pipe_token(node);
+	else if ((*node)->subtype == T_REDIRECT)
+	{
+		if ((!(*node)->previous || (*node)->previous->type != COMMAND) && ((*node)->next && (*node)->next->next && (*node)->next->next->type == COMMAND))
+			ft_token_add_last(token_list, ft_token_new(COMMAND, T_WORD, NULL));
+		new_token = define_redirect_token(node);
+	}
+    if (!new_token)
+        return (NULL);
+    return (new_token);
+}
+
 t_token	*define_tokens(t_list *prompt_list)
 {
 	t_token	*token_list;
@@ -121,21 +104,9 @@ t_token	*define_tokens(t_list *prompt_list)
 	while (node)
 	{
 		if (node->type == COMMAND)
-		{
-			char c = (char)node->subtype;
-			new_token = ft_token_new(COMMAND, c, get_command_array(&node));
-		}
+			new_token = ft_token_new(COMMAND, (char)node->subtype, get_command_array(&node));
 		else
-		{
-			if (node->subtype == T_PIPE)
-				new_token = define_pipe_token(&node);
-			else if (node->subtype == T_REDIRECT)
-			{
-			    if ((!node->previous || node->previous->type != COMMAND) && (node->next && node->next->next && node->next->next->type == COMMAND))
-				    ft_token_add_last(&token_list, ft_token_new(COMMAND, T_WORD, NULL));
-				new_token = define_redirect_token(&node);
-			}
-		}
+		    new_token = define_operators(&node, &token_list);
 		if (new_token == NULL)
 			return (free_token_list(token_list), NULL);
 		ft_token_add_last(&token_list, new_token);

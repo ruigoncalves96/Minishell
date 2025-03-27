@@ -21,7 +21,7 @@ static size_t	quotes_nbr(char *str)
 	{
 		if (*str == '"' || *str == '\'')
 		{
-			str += quote_len(str);
+			str += quote_len(str) + 1;
 			quotes_nbr++;
 		}
 		str++;
@@ -102,10 +102,3 @@ t_list	*convert_quotes(t_list *tokens_list)
 	}
 	return (tokens_list);
 }
-
-	//	FIND SUBTYPE QUOTE
-	//		STRLEN
-	//		MALLOC STRLEN -2 (removing quotes)
-	//		COPY EVERYTHING BESIDES THE QUOTES
-	//	FREE CURRENT NODE STR
-	//	ALLOC NEW
