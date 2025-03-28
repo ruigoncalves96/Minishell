@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
+/*   By: randrade <randrade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:34:14 by randrade          #+#    #+#             */
-/*   Updated: 2025/03/28 15:03:05 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/03/28 18:02:32 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,16 @@ static void	check_control_c_code(t_prompt_info prompt_info)
 	}
 }
 
+static void	check_prompt_eof(t_prompt_info prompt_info)
+{
+	if (!prompt_info.prompt)
+	{
+		ft_putstr_fd("exit\n", 2);
+		cleanup_all(&prompt_info, NULL);
+		exit (0);
+	}
+}
+
 static void	shell_loop(t_prompt_info prompt_info)
 {
 	t_token	*tokens;
@@ -30,11 +40,7 @@ static void	shell_loop(t_prompt_info prompt_info)
 	{
 		prompt_info.prompt = readline("Minishell> ");
 		check_control_c_code(prompt_info);
-		if (!prompt_info.prompt)
-		{
-			cleanup_all(&prompt_info, NULL);
-			break ;
-		}
+		check_prompt_eof(prompt_info);
 		if (prompt_info.prompt[0] != '\0')
 		{
 			add_history(prompt_info.prompt);

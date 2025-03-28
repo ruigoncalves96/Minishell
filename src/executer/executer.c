@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
+/*   By: randrade <randrade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 15:20:26 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/03/28 15:20:28 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/03/28 18:07:12 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ void	type_of_executer(t_token *token, t_prompt_info prompt_info)
 {
 	int	valid;
 
-	if (!token->token[0] || (token->token[0][0] == '\0' && token->subtype != T_QUOTE))
+	if (!token->token[0] || (token->token[0][0] == '\0'
+		&& token->subtype != T_QUOTE))
 		return ;
 	if (is_builtin(*token->token))
 		execute_builtin(token, prompt_info, prompt_info.builtins);

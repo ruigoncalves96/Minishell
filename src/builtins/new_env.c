@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   new_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
+/*   By: randrade <randrade@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:39:45 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/03/24 12:40:15 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/03/28 18:05:01 by randrade         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static void	create_vars_env_flag(t_env *env)
 		free(pwd);
 	}
 	export_env_var(env, "PATH",
-		"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", 1);
+		"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", 0);
 	export_env_var(env, "_", "/usr/bin/env", 0);
 }
 
