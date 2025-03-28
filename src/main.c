@@ -30,6 +30,11 @@ static void shell_loop(t_prompt_info prompt_info)
 	while (1)
 	{
 		prompt_info.prompt = readline("Minishell> ");
+		if(g_heredoc_c_pressed)
+		{
+			prompt_info.builtins->exit_code = 130;
+			g_heredoc_c_pressed = 0;
+		}
 		if(!prompt_info.prompt)
 		{
 			cleanup_all(&prompt_info, NULL);
@@ -66,7 +71,7 @@ int main(int argc, char *argv[],char *envp[])
 	prompt_info.builtins = &builtins;
 	if(!prompt_info.env)
 	        return (1);
-	update_shlvl(prompt_info.env);
+	//update_shlvl(prompt_info.env);
 	shell_loop(prompt_info);
 	return 0;
 }

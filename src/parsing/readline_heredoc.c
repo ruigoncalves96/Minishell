@@ -27,9 +27,9 @@ static char	*expand_vars_heredoc(char *heredoc, t_prompt_info prompt_info)
 
 static bool handle_heredoc_exit(t_token *token, t_prompt_info *prompt_info, char *heredoc, int pipefd)
 {
-    if (!heredoc || heredoc_c_pressed)
+    if (!heredoc || g_heredoc_c_pressed)
     {
-        if(heredoc_c_pressed)
+        if(g_heredoc_c_pressed)
         {
             cleanup_all(prompt_info, NULL);
             free_token_list(token);
@@ -84,7 +84,7 @@ void readline_heredoc(t_token *token, t_prompt_info *prompt_info, int pipefd)
             handle_heredoc_exit(token, prompt_info, heredoc, pipefd);
     }
     close(pipefd);
-    if(heredoc_c_pressed)
+    if(g_heredoc_c_pressed)
     {
        free_token_list(token);
        cleanup_all(prompt_info, NULL);

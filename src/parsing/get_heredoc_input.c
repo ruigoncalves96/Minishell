@@ -81,7 +81,7 @@ bool get_heredoc_input(t_token *token, t_prompt_info prompt_info)
          return (perror("fork"), false);
     if (pid == 0)
     {
-        heredoc_c_pressed = 0;
+        g_heredoc_c_pressed = 0;
         signal(SIGINT, handler_heredoc);
         close(pipefd[0]);
         readline_heredoc(token, &prompt_info, pipefd[1]);
