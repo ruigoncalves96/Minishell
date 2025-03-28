@@ -16,7 +16,7 @@ void	type_of_executer(t_token *token, t_prompt_info prompt_info)
 {
 	int	valid;
 
-	if (token->token[0][0] == '\0' && token->subtype != T_QUOTE)
+	if (!token->token[0] || (token->token[0][0] == '\0' && token->subtype != T_QUOTE))
 		return ;
 	if (is_builtin(*token->token))
 		execute_builtin(token, prompt_info, prompt_info.builtins);
