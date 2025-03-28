@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	quote_error()
+void	quote_error(void)
 {
 	ft_putstr_fd(QUOTE_ERROR, 2);
 	ft_putstr_fd("\n", 2);
@@ -20,15 +20,15 @@ void	quote_error()
 
 void	syntax_error(t_list *token_list, t_list *token)
 {
-    ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(SYNTAX_ERROR, 2);
 	ft_putstr_fd(" `", 2);
 	if (token->subtype != T_PIPE && !token->next)
-	    ft_putstr_fd("newline", 2);
+		ft_putstr_fd("newline", 2);
 	else if (token->subtype == T_PIPE)
-	    ft_putstr_fd(token->str, 2);
+		ft_putstr_fd(token->str, 2);
 	else
-	    ft_putstr_fd(token->next->str, 2);
+		ft_putstr_fd(token->next->str, 2);
 	ft_putstr_fd("'\n", 2);
 	free_list(token_list);
 }

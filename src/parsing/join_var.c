@@ -12,17 +12,19 @@
 
 #include "../../includes/minishell.h"
 
-static char *add_value_to_str(char *token_str, char *var_value, char *var_key_pos, size_t key_len)
+static char	*add_value_to_str(char *token_str, char *var_value,
+		char *var_key_pos, size_t key_len)
 {
-    char	*new_token;
-    size_t	value_len;
+	char	*new_token;
+	size_t	value_len;
 	size_t	i;
 	size_t	j;
 
-    i = 0;
+	i = 0;
 	j = 0;
 	value_len = ft_strlen(var_value);
-	new_token = ft_calloc((ft_strlen(token_str) - key_len) + value_len, sizeof(char));
+	new_token = ft_calloc((ft_strlen(token_str) - key_len) + value_len,
+			sizeof(char));
 	if (!new_token)
 		return (NULL);
 	while (token_str[j])
@@ -39,17 +41,18 @@ static char *add_value_to_str(char *token_str, char *var_value, char *var_key_po
 	return (new_token);
 }
 
-char	*join_var(char *token_str, char *var_value, char *var_key_pos, size_t key_len)
+char	*join_var(char *token_str, char *var_value, char *var_key_pos,
+		size_t key_len)
 {
-    char    *new_token;
-	bool    free_exit_code;
+	char	*new_token;
+	bool	free_exit_code;
 
 	free_exit_code = false;
 	if (var_key_pos[1] == '?')
-	    free_exit_code = true;
+		free_exit_code = true;
 	new_token = add_value_to_str(token_str, var_value, var_key_pos, key_len);
 	if (free_exit_code == true)
-	    free(var_value);
+		free(var_value);
 	free(token_str);
 	return (new_token);
 }

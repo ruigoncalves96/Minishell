@@ -74,19 +74,19 @@
 // 		/*else*/ if (temp->subtype == T_REDIRECT)
 // 		{
 // 			ft_printf("      = subtype = REDIRECT\n");
-// 			ft_printf("	 = 	   = 	      = fd = %d\n", temp->red->fd);
-// 			ft_printf("	 = 	   = 	      = filename = \n");
+// 			ft_printf("		= 	   = 	      = fd = %d\n", temp->red->fd);
+// 			ft_printf("		= 	   = 	      = filename = \n");
 // 			printf("%s\n", temp->red->filename);
-// 			ft_printf("	 = 	   = 	      = heredoc = \n");
+// 			ft_printf("		= 	   = 	      = heredoc = \n");
 // 			print_double_array(temp->red->heredoc);
 // 			if (temp->red->type == IN)
-// 				ft_printf("	 = 	   = 	      = type = IN\n");
+// 				ft_printf("		= 	   = 	      = type = IN\n");
 // 			else if (temp->red->type == OUT)
-// 				ft_printf("	 = 	   = 	      = type = OUT\n");
+// 				ft_printf("		= 	   = 	      = type = OUT\n");
 // 			else if (temp->red->type == A_OUT)
-// 				ft_printf("	 = 	   = 	      = type = A_OUT\n");
+// 				ft_printf("		= 	   = 	      = type = A_OUT\n");
 // 			else if (temp->red->type == HEREDOC)
-// 				ft_printf("	 = 	   = 	      = type = HEREDOC\n");
+// 				ft_printf("		= 	   = 	      = type = HEREDOC\n");
 // 		}
 // 		temp = temp->next;
 // 	}
@@ -106,7 +106,7 @@
 // 	// ft_printf("\n");
 // 	if (temp->red)
 // 	{
-// 	    ft_printf("red->filename = ");
+// 		 ft_printf("red->filename = ");
 // 		printf("%s\n", temp->red->filename);
 //         ft_printf("red->fd = %d\n", temp->red->fd);
 //         ft_printf("red->type = %d\n", temp->red->type);
@@ -114,28 +114,28 @@
 // 	}
 // 	if (temp->previous)
 // 	{
-// 	    ft_printf("left = \n");
+// 		 ft_printf("left = \n");
 //         ft_print_token_tree(temp->previous);
 //         ft_printf("\n");
 // 	}
 // 	if (temp->next)
 // 	{
 //         ft_printf("right = \n");
-// 	    ft_print_token_tree(temp->next);
+// 		 ft_print_token_tree(temp->next);
 // 		ft_printf("\n");
 // 	}
 // }
 
 t_token	*parsing(t_prompt_info *prompt_info)
 {
-	t_list     *prompt_list;
-	t_token    *tokens_tree;
+	t_list	*prompt_list;
+	t_token	*tokens_tree;
 
 	tokens_tree = NULL;
 	prompt_list = build_tokens_list(prompt_info->prompt);
 	if (!prompt_list)
 		return (NULL);
-	if (parse_syntax(prompt_list,prompt_info) == false)
+	if (parse_syntax(prompt_list, prompt_info) == false)
 		return (NULL);
 	if (expand_vars(*prompt_info, &prompt_list) == NULL)
 		return (NULL);
@@ -146,7 +146,7 @@ t_token	*parsing(t_prompt_info *prompt_info)
 	if (!tokens_tree)
 		return (NULL);
 	if (loop_and_open_fd(tokens_tree, *prompt_info) == false)
-	    return (free_token_list(tokens_tree), NULL);
+		return (free_token_list(tokens_tree), NULL);
 	tokens_tree = build_tree(tokens_tree);
 	return (tokens_tree);
 }

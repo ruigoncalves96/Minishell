@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:52:20 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/03/24 12:53:18 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/03/28 15:23:12 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ static int	is_directory(const char *path)
 
 static int	handle_dot_commands(char *command)
 {
-	if (command[0] == '\0' || (command[0] == '.' && (command[1] == '\0' || (command[1] == '.'
-				&& command[2] == '\0'))))
+	if (command[0] == '\0' || (command[0] == '.' && (command[1] == '\0'
+				|| (command[1] == '.' && command[2] == '\0'))))
 	{
 		print_error(NULL, command, COMMAND_NOT_FOUND, false);
 		return (127);

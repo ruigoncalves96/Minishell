@@ -42,18 +42,18 @@ int	check_token_subtype(char c)
 
 int	check_redirect_type(char *redirect)
 {
-	int	type;
+	int		type;
 	size_t	len;
 
 	type = 0;
 	len = ft_strlen(redirect);
-	if (ft_strncmp(redirect, "<", len) ==  0)
+	if (ft_strncmp(redirect, "<", len) == 0)
 		type = IN;
-	else if (ft_strncmp(redirect, ">", len) ==  0)
+	else if (ft_strncmp(redirect, ">", len) == 0)
 		type = OUT;
-	else if (ft_strncmp(redirect, ">>", len) ==  0)
+	else if (ft_strncmp(redirect, ">>", len) == 0)
 		type = A_OUT;
-	else if (ft_strncmp(redirect, "<<", len) ==  0)
+	else if (ft_strncmp(redirect, "<<", len) == 0)
 		type = HEREDOC;
 	return (type);
 }

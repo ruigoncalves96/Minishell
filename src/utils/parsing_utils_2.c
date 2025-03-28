@@ -14,57 +14,57 @@
 
 char	*find_expand_dollar(char *str, bool *double_quote, bool heredoc)
 {
-    if (heredoc == true)
-    {
-        while (*str)
-        {
-            if (*str == '$')
-            {
-                if (var_key_len(str + 1))
-                    return (str);
-            }
-            str++;
-        }
-        return (NULL);
-    }
+	if (heredoc == true)
+	{
+		while (*str)
+		{
+			if (*str == '$')
+			{
+				if (var_key_len(str + 1))
+					return (str);
+			}
+			str++;
+		}
+		return (NULL);
+	}
 	while (*str)
 	{
 		if (*str == '"')
 			*double_quote ^= 1;
 		else if (*double_quote == false && *str == '\'')
 			str += quote_len(str) + 1;
-		if (*str == '$' && ((check_token_subtype(*(str + 1)) == T_QUOTE && *double_quote == false)
-		      || var_key_len(str + 1)))
+		if (*str == '$' && ((check_token_subtype(*(str + 1)) == T_QUOTE
+					&& *double_quote == false) || var_key_len(str + 1)))
 			return (str);
 		str++;
 	}
 	return (NULL);
 }
 
-t_token  *find_operator(t_token *list)
+t_token	*find_operator(t_token *list)
 {
-    while (list)
-    {
-        if (list->type == OPERATOR)
-            return (list);
-        else
-            list = list->next;
-    }
-    return (NULL);
+	while (list)
+	{
+		if (list->type == OPERATOR)
+			return (list);
+		else
+			list = list->next;
+	}
+	return (NULL);
 }
 
-t_token  *find_pipe(t_token *list)
+t_token	*find_pipe(t_token *list)
 {
-    if (list && list->subtype == T_PIPE)
-        list = list->next;
-    while (list)
-    {
-        if (list->subtype == T_PIPE)
-            return (list);
-        else
-            list = list->next;
-    }
-    return (NULL);
+	if (list && list->subtype == T_PIPE)
+		list = list->next;
+	while (list)
+	{
+		if (list->subtype == T_PIPE)
+			return (list);
+		else
+			list = list->next;
+	}
+	return (NULL);
 }
 
 void	skip_spaces(char **prompt)

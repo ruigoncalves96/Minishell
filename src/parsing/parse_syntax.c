@@ -14,9 +14,9 @@
 
 static bool	parse_pipe(t_list *token)
 {
-	if ((token->previous && token->previous->type == COMMAND)
-		&& ((token->next && token->next->type == COMMAND)
-		|| (token->next && token->next->subtype == T_REDIRECT)))
+	if ((token->previous && token->previous->type == COMMAND) && ((token->next
+				&& token->next->type == COMMAND) || (token->next
+				&& token->next->subtype == T_REDIRECT)))
 		return (true);
 	return (false);
 }
@@ -45,7 +45,7 @@ static bool	parse_operator(t_list *token)
 	return (true);
 }
 
-bool	parse_syntax(t_list *token_list,t_prompt_info *prompt_info)
+bool	parse_syntax(t_list *token_list, t_prompt_info *prompt_info)
 {
 	t_list	*token;
 

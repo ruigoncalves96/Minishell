@@ -18,10 +18,11 @@ size_t	var_key_len(char *str)
 
 	i = 0;
 	if (str[i] && (ft_isdigit(str[i]) || str[i] == '?'))
-	    return (1);
+		return (1);
 	while (str[i])
 	{
-		if (ft_isalpha(str[i]) || ft_isdigit(str[i]) || str[i] == '_' || str[i] == '?')
+		if (ft_isalpha(str[i]) || ft_isdigit(str[i]) || str[i] == '_'
+			|| str[i] == '?')
 			i++;
 		else
 			break ;
@@ -42,14 +43,14 @@ static char	*get_var_key(char *dollar)
 	if (!key)
 		return (NULL);
 	ft_strlcpy(key, dollar, key_len + 1);
-	dollar+= key_len;
+	dollar += key_len;
 	return (key);
 }
 
 static char	*get_var_value(t_env_var *env, char *key)
 {
 	t_env_var	*var;
-	char	*var_value;
+	char		*var_value;
 
 	var_value = NULL;
 	var = env;
@@ -71,7 +72,7 @@ char	*find_var_value(t_prompt_info prompt_info, char *dollar)
 	char	*var_value;
 
 	if (dollar[1] == '?')
-	    return (ft_itoa(prompt_info.builtins->exit_code));
+		return (ft_itoa(prompt_info.builtins->exit_code));
 	var_key = get_var_key(dollar);
 	if (!var_key)
 		return (NULL);

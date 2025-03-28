@@ -12,29 +12,29 @@
 
 #include "../../includes/minishell.h"
 
-static t_redirect *redirect_new(t_list *node, int type)
+static t_redirect	*redirect_new(t_list *node, int type)
 {
-    t_redirect  *red;
+	t_redirect	*red;
 
-    red = ft_calloc(1, sizeof(t_redirect));
-    if (!red)
-        return (NULL);
-    red->fd = -1;
-    red->filename = ft_strdup(node->next->str);
-    if (!red->filename)
-    {
-        free(red);
-        return (NULL);
-    }
-    red->type = type;
-    return (red);
+	red = ft_calloc(1, sizeof(t_redirect));
+	if (!red)
+		return (NULL);
+	red->fd = -1;
+	red->filename = ft_strdup(node->next->str);
+	if (!red->filename)
+	{
+		free(red);
+		return (NULL);
+	}
+	red->type = type;
+	return (red);
 }
 
 static t_token	*define_redirect_token(t_list **node)
 {
 	t_token	*new_token;
 	char	**new_str;
-	int	type;
+	int		type;
 
 	type = 0;
 	new_str = ft_calloc(2, sizeof(char *));
@@ -75,22 +75,24 @@ static t_token	*define_pipe_token(t_list **node)
 	return (new_token);
 }
 
-static t_token *define_operators(t_list **node, t_token **token_list)
+static t_token	*define_operators(t_list **node, t_token **token_list)
 {
-    t_token *new_token;
+	t_token	*new_token;
 
-    new_token = NULL;
-    if ((*node)->subtype == T_PIPE)
+	new_token = NULL;
+	if ((*node)->subtype == T_PIPE)
 		new_token = define_pipe_token(node);
 	else if ((*node)->subtype == T_REDIRECT)
 	{
-		if ((!(*node)->previous || (*node)->previous->type != COMMAND) && ((*node)->next && (*node)->next->next && (*node)->next->next->type == COMMAND))
+		if ((!(*node)->previous || (*node)->previous->type != COMMAND)
+			&& ((*node)->next && (*node)->next->next
+				&& (*node)->next->next->type == COMMAND))
 			ft_token_add_last(token_list, ft_token_new(COMMAND, T_WORD, NULL));
 		new_token = define_redirect_token(node);
 	}
-    if (!new_token)
-        return (NULL);
-    return (new_token);
+	if (!new_token)
+		return (NULL);
+	return (new_token);
 }
 
 t_token	*define_tokens(t_list *prompt_list)
@@ -104,9 +106,10 @@ t_token	*define_tokens(t_list *prompt_list)
 	while (node)
 	{
 		if (node->type == COMMAND)
-			new_token = ft_token_new(COMMAND, (char)node->subtype, get_command_array(&node));
+			new_token = ft_token_new(COMMAND, (char)node->subtype,
+					get_command_array(&node));
 		else
-		    new_token = define_operators(&node, &token_list);
+			new_token = define_operators(&node, &token_list);
 		if (new_token == NULL)
 			return (free_token_list(token_list), NULL);
 		ft_token_add_last(&token_list, new_token);

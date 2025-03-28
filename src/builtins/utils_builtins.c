@@ -19,24 +19,23 @@
 void	print_error(const char *cmd, const char *arg, const char *msg,
 		bool print_bash)
 {
-    if(print_bash)
-        ft_putstr_fd("minishell: ", 2);
-    if(cmd)
-    {
-        ft_putstr_fd((char *)cmd, 2);
-        ft_putstr_fd(": ", 2);
-    }
-    if (arg)
-    {
-        if (arg[0] == '\0')
-            ft_putstr_fd("'' ", 2);
-        else
-            ft_putstr_fd((char *)arg, 2);
-        ft_putstr_fd(": ", 2);
-    }
-
-    ft_putstr_fd((char *)msg, 2);
-    ft_putstr_fd("\n", 2);
+	if (print_bash)
+		ft_putstr_fd("minishell: ", 2);
+	if (cmd)
+	{
+		ft_putstr_fd((char *)cmd, 2);
+		ft_putstr_fd(": ", 2);
+	}
+	if (arg)
+	{
+		if (arg[0] == '\0')
+			ft_putstr_fd("'' ", 2);
+		else
+			ft_putstr_fd((char *)arg, 2);
+		ft_putstr_fd(": ", 2);
+	}
+	ft_putstr_fd((char *)msg, 2);
+	ft_putstr_fd("\n", 2);
 }
 
 char	*get_key(char *env)

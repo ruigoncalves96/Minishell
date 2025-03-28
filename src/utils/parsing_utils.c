@@ -29,20 +29,20 @@ size_t	quote_len(char *str)
 	return (0);
 }
 
-size_t  strlen_until_expansion(char *str, char *dollar)
+size_t	strlen_until_expansion(char *str, char *dollar)
 {
-    size_t  i;
+	size_t	i;
 
-    i = 0;
-    if (!str || !dollar)
-        return (0);
-    while (str[i])
-    {
-        if (&str[i] == dollar)
-            return (i);
-        i++;
-    }
-    return (i);
+	i = 0;
+	if (!str || !dollar)
+		return (0);
+	while (str[i])
+	{
+		if (&str[i] == dollar)
+			return (i);
+		i++;
+	}
+	return (i);
 }
 
 size_t	strlen_until_spaces(char *str)
@@ -74,10 +74,12 @@ size_t	command_array_len(t_list *node)
 	nbr_commands = 0;
 	while (node && node->type == COMMAND)
 	{
-	    if (node->str[0] != '\0'|| (node->str[0] == '\0' && node->subtype == T_QUOTE))
+		if (node->str[0] != '\0' || (node->str[0] == '\0'
+				&& node->subtype == T_QUOTE))
 			nbr_commands++;
-		else if (node->str[0] == '\0' && node->subtype != T_QUOTE && (!node->previous && !node->next))
-		    nbr_commands++;
+		else if (node->str[0] == '\0' && node->subtype != T_QUOTE
+			&& (!node->previous && !node->next))
+			nbr_commands++;
 		node = node->next;
 	}
 	return (nbr_commands);
