@@ -56,7 +56,7 @@ static char	*get_var_value(t_env_var *env, char *key)
 	var = env;
 	while (var)
 	{
-		if (ft_strncmp(var->key, key, ft_strlen(var->key)) == 0)
+		if (ft_strcmp(var->key, key) == 0)
 		{
 			var_value = var->value;
 			break ;

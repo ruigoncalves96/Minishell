@@ -22,14 +22,23 @@
 
 static void	verify_and_open(t_token *token)
 {
-	if (token->red->type == OUT || token->red->type == A_OUT)
+	if (token->red->type == OUT)
 	{
 		if (!verify_file_exists(token))
 			token->red->fd = open(token->red->filename,
-					O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			    O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (verify_file_permissions(token))
 			token->red->fd = open(token->red->filename,
-					O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	}
+	else if (token->red->type == A_OUT)
+	{
+	    if (!verify_file_exists(token))
+			token->red->fd = open(token->red->filename,
+			    O_WRONLY | O_CREAT | O_APPEND, 0644);
+	    else if (verify_file_permissions(token))
+			token->red->fd = open(token->red->filename,
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
 	}
 	else if (token->red->type == IN)
 	{
